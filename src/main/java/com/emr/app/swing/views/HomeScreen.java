@@ -23,13 +23,13 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
+
+import com.emr.app.swing.service.UIService;
 
 public class HomeScreen extends JFrame {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JPanel titleBar;
@@ -72,42 +72,53 @@ public class HomeScreen extends JFrame {
 	private RoutingPanel addPatientPanel;
 	private PatientPanel patientPanel;
 	private JProgressBar progressBar;
+	private UIService uiService;
+	private CasePanel casePanel;
 
-	public static void startUIComponent() {
+	public static void startUIComponent(UIService uiService) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					// Maintain initialization order
 					HomeScreen frame = new HomeScreen();
-					frame.setVisible(true);
+					frame.uiService = uiService;
+					frame.initComponents();
 					frame.initEvents();
+					frame.initRouters();
+					frame.setVisible(true);
+
+					// Load appointment panel
+					SwingUtilities.invokeLater(() -> frame.progressBar.setValue(100));
+					Router.INSTANCE.route(AppointmentPanel.class);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
 	}
-	
-	public HomeScreen() {
-		initComponents();
+
+	private void initRouters() {
 		Router.INSTANCE.setLayeredPane(bodyLayeredPan);
-		appointmentPanel = new AppointmentPanel();
-		appointmentPanel.setProgressDialog(progressBar);
+
+		appointmentPanel = new AppointmentPanel(uiService, progressBar);
 		Router.INSTANCE.registerRoute(appointmentPanel);
-		bodyLayeredPan.add(appointmentPanel, BorderLayout.CENTER);
+
+		casePanel = new CasePanel(uiService, progressBar);
+		Router.INSTANCE.registerRoute(casePanel);
+		
 		addPatientPanel = new AddAppointmentPanel();
 		Router.INSTANCE.registerRoute(addPatientPanel);
-		bodyLayeredPan.add(addPatientPanel, BorderLayout.CENTER);
+
 		patientPanel = new PatientPanel();
-		patientPanel.setProgressDialog(progressBar);
 		Router.INSTANCE.registerRoute(patientPanel);
-		bodyLayeredPan.add(patientPanel, BorderLayout.CENTER);
+		
+		
 	}
 
 	private void initComponents() {
 		setTitle("Orange EMR");
 		setFont(new Font("Open Sans", Font.BOLD, 12));
-		setIconImage(Toolkit.getDefaultToolkit()
-				.getImage(HomeScreen.class.getResource("/icons/breakfast-30.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(HomeScreen.class.getResource("/icons/breakfast-30.png")));
 		setBackground(Color.decode("#ffffff"));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setUndecorated(true);
@@ -513,9 +524,6 @@ public class HomeScreen extends JFrame {
 
 class DateLabelFormatter extends AbstractFormatter {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private String datePattern = "yyyy-MM-dd";
 	private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);

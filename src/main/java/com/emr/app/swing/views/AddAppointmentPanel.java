@@ -388,7 +388,7 @@ public class AddAppointmentPanel extends RoutingPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Router.INSTANCE.route(PatientPanel.class);
+				Router.INSTANCE.route(CasePanel.class);
 			}
 		});
 

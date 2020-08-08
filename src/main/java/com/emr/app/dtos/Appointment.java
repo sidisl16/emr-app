@@ -6,7 +6,7 @@ public class Appointment {
 
 	private Date date;
 	private User assignedTo;
-	private Status status;
+	private boolean acknowledged;
 
 	public Appointment() {
 	}
@@ -33,11 +33,11 @@ public class Appointment {
 		this.assignedTo = assignedTo;
 	}
 
-	public Status getStatus() {
-		return status;
+	public boolean isAcknowledged() {
+		return acknowledged;
 	}
 
-	public void setStatus(Status status) {
-		this.status = status;
-	}
+	public void setAcknowledged(boolean acknowledged) {
+		this.acknowledged = acknowledged;
+	}	
 }

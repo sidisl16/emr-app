@@ -11,11 +11,10 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -33,11 +32,11 @@ import javax.swing.table.JTableHeader;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 
+import com.emr.app.dtos.PatientDto;
+import com.emr.app.swing.service.UIService;
+
 public class AppointmentPanel extends RoutingPanel {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel appointmentHeadingPanel;
 	private JPanel addRefreshAppointmentContainer;
@@ -58,20 +57,15 @@ public class AppointmentPanel extends RoutingPanel {
 	private JTable appointmentTable;
 	private JLabel copyrightInfo;
 	private JTableHeader tableHeader;
-	private JDialog progressDialog;
 	private JProgressBar progressBar;
-	private volatile Integer count = 0;
+	private UIService uiService;
+	private UneditableTableDataModel uneditableTableDataModel;
 
-	/**
-	 * Create the panel.
-	 */
-	public AppointmentPanel() {
+	public AppointmentPanel(UIService uiService, JProgressBar progressBar) {
+		this.uiService = uiService;
+		this.progressBar = progressBar;
 		initComponents();
 		initEvents();
-	}
-
-	public void setProgressDialog(JProgressBar progressBar) {
-		this.progressBar = progressBar;
 	}
 
 	private void initComponents() {
@@ -192,10 +186,7 @@ public class AppointmentPanel extends RoutingPanel {
 		appointmentTable.setGridColor(Color.decode("#737373"));
 		appointmentTable.setFont(new Font("Open Sans", Font.PLAIN, 16));
 		appointmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		UneditableTableDataModel uneditableTableDataModel = new UneditableTableDataModel(
-				new Object[][] { { null, null, null, null, null, null }, { null, null, null, null, null, null },
-						{ null, null, null, null, null, null }, { null, null, null, null, null, null },
-						{ null, null, null, null, null, null }, },
+		uneditableTableDataModel = new UneditableTableDataModel(new Object[][] {null, null, null, null, null, null},
 				new String[] { "Sl. No.", "Patient Name", "Age", "Gender", "Patient Number", "Appointment Time" });
 		appointmentTable.setModel(uneditableTableDataModel);
 		tableHeader = appointmentTable.getTableHeader();
@@ -243,7 +234,7 @@ public class AppointmentPanel extends RoutingPanel {
 					SwingUtilities.invokeLater(() -> progressBar.setValue(50));
 					SwingUtilities.invokeLater(() -> progressBar.setValue(70));
 					SwingUtilities.invokeLater(() -> progressBar.setValue(100));
-					Router.INSTANCE.route(PatientPanel.class);
+					Router.INSTANCE.route(CasePanel.class);
 				}
 
 			}
@@ -254,16 +245,21 @@ public class AppointmentPanel extends RoutingPanel {
 		component.setBackground(color);
 	}
 
+	private void loadAppointmentTable() {
+		
+	}
+
 	@Override
 	public void execute() {
-		
+		SwingUtilities.invokeLater(() -> this.progressBar.setValue(50));
+		loadAppointmentTable();
+		SwingUtilities.invokeLater(() -> this.progressBar.setValue(100));
+		SwingUtilities.invokeLater(() -> this.progressBar.setValue(0));
 	}
 }
 
 class TextPrompt extends JLabel implements FocusListener, DocumentListener {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	JTextComponent component;
 	Document document;

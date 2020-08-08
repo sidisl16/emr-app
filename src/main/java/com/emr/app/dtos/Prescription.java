@@ -10,7 +10,7 @@ public class Prescription {
 	private Vitals vitals;
 	private List<MedicineAdvice> medicineAdvices;
 	private List<String> examinationAdvices;
-	private Appointment appointment;
+	private Status status;
 
 	public String getPrescriptionId() {
 		return prescriptionId;
@@ -60,11 +60,11 @@ public class Prescription {
 		this.examinationAdvices = examinationAdvices;
 	}
 
-	public Appointment getAppointment() {
-		return appointment;
+	public Status getStatus() {
+		return status;
 	}
 
-	public void setAppointment(Appointment appointment) {
-		this.appointment = appointment;
-	}
+	public void setStatus(Status status) {
+		this.status = status;
+	}	
 }

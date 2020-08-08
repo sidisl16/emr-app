@@ -116,16 +116,9 @@ public class PatientPanel extends RoutingPanel {
 	private AutoSuggestionComponent examinationAutoSuggestion;
 	private JProgressBar progressBar;
 
-	/**
-	 * Create the panel.
-	 */
 	public PatientPanel() {
 		initComponents();
 		initEvents();
-	}
-
-	public void setProgressDialog(JProgressBar progressBar) {
-		this.progressBar = progressBar;
 	}
 
 	private void initComponents() {
@@ -161,7 +154,7 @@ public class PatientPanel extends RoutingPanel {
 		patientProfileText.setHorizontalAlignment(SwingConstants.CENTER);
 		patientProfileText.setForeground(Color.decode("#ffffff"));
 		patientProfileText.setFont(new Font("Open Sans", Font.BOLD, 14));
-		patientProfileText.setBounds(85, 12, 320, 47);
+		patientProfileText.setBounds(85, 12, 353, 47);
 		patientProfilePanel.add(patientProfileText);
 
 		sideMenuPanel = new JPanel();
@@ -607,7 +600,7 @@ public class PatientPanel extends RoutingPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Router.INSTANCE.route(AppointmentPanel.class);
+				Router.INSTANCE.route(CasePanel.class);
 			}
 		});
 

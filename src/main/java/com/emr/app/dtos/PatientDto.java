@@ -12,6 +12,23 @@ public class PatientDto {
 	private String gender;
 	private String address;
 	private List<Prescription> prescriptionList;
+	private Appointment appointment;
+
+	public PatientDto() {
+	}
+
+	public PatientDto(String patientId, String name, int age, String contactNo, String email, String gender,
+			String address, List<Prescription> prescriptionList) {
+		super();
+		this.patientId = patientId;
+		this.name = name;
+		this.age = age;
+		this.contactNo = contactNo;
+		this.email = email;
+		this.gender = gender;
+		this.address = address;
+		this.prescriptionList = prescriptionList;
+	}
 
 	public String getPatientId() {
 		return patientId;

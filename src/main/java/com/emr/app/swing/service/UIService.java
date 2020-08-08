@@ -14,5 +14,5 @@ public interface UIService {
 
 	public void createAppointment(PatientDto patientAppointment);
 
-	public List<PatientDto> searchExistingPatient(PatientDto patientAppointment);
+	public List<PatientDto> searchExistingPatient(String patientId, String name, String contactNo);
 }

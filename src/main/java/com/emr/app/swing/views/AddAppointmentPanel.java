@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.stream.IntStream;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
@@ -83,6 +84,7 @@ public class AddAppointmentPanel extends RoutingPanel {
 	private JTable searchPatientTable;
 	private JTableHeader tableHeader;
 	private JScrollPane searchPatientScrollPane;
+	private UneditableTableDataModel uneditableTableDataModel;
 
 	/**
 	 * Create the panel.
@@ -275,19 +277,19 @@ public class AddAppointmentPanel extends RoutingPanel {
 		patientDetailsContainer.add(emailLbl);
 
 		emailTextField = new JTextField();
-		emailTextField.setBorder(new LineBorder(Color.DARK_GRAY));
+		emailTextField.setBorder(new LineBorder(Color.decode("#262626")));
 		emailTextField.setColumns(10);
 		emailTextField.setBounds(92, 332, 230, 30);
 		patientDetailsContainer.add(emailTextField);
 
 		contactTextField = new JTextField();
-		contactTextField.setBorder(new LineBorder(Color.DARK_GRAY));
+		contactTextField.setBorder(new LineBorder(Color.decode("#262626")));
 		contactTextField.setColumns(10);
 		contactTextField.setBounds(92, 287, 230, 30);
 		patientDetailsContainer.add(contactTextField);
 
 		ageTextField = new JTextField();
-		ageTextField.setBorder(new LineBorder(Color.DARK_GRAY));
+		ageTextField.setBorder(new LineBorder(Color.decode("#262626")));
 		ageTextField.setColumns(10);
 		ageTextField.setBounds(92, 240, 230, 30);
 		patientDetailsContainer.add(ageTextField);
@@ -363,7 +365,7 @@ public class AddAppointmentPanel extends RoutingPanel {
 		searchPatientPanel.add(searchPatientScrollPane);
 
 		searchPatientTable = new JTable();
-		UneditableTableDataModel uneditableTableDataModel = new UneditableTableDataModel(new Object[][] {},
+		uneditableTableDataModel = new UneditableTableDataModel(new Object[][] {},
 				new String[] { "Patient No.", "Patient Name", "Contact No." });
 		searchPatientTable.setModel(uneditableTableDataModel);
 		searchPatientTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -454,12 +456,53 @@ public class AddAppointmentPanel extends RoutingPanel {
 	}
 
 	private void searchExistingCustomer() {
-
 		JOptionPane.showMessageDialog(getParent(), "testing");
+	}
+
+	private void resetAll() {
+
+		// clear all fields
+		for (Component component : patientDetailsContainer.getComponents()) {
+
+			if (component instanceof JTextField) {
+				((JTextField) component).setText("");
+			}
+
+			if (component instanceof JTextArea) {
+				((JTextArea) component).setText("");
+			}
+
+			if (component instanceof JComboBox) {
+				((JComboBox) component).setSelectedIndex(-1);
+			}
+		}
+
+		for (Component component : searchPatientPanel.getComponents()) {
+
+			if (component instanceof JTextField) {
+				((JTextField) component).setText("");
+			}
+
+		}
+
+		for (Component component : appointmentScheduleContainer.getComponents()) {
+
+			if (component instanceof JComboBox) {
+				((JComboBox) component).setSelectedIndex(-1);
+			}
+
+		}
+
+		IntStream.range(0, uneditableTableDataModel.getRowCount())
+				.forEach(rowIndex -> uneditableTableDataModel.removeRow(0));
+
+		dateTimePicker.setDateTimePermissive(LocalDateTime.now());
+
 	}
 
 	@Override
 	public void execute() {
+		resetAll();
 	}
 
 	@Override

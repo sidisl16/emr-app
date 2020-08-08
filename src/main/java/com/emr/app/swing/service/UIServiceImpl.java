@@ -48,7 +48,7 @@ public class UIServiceImpl implements UIService {
 	}
 
 	@Override
-	public List<PatientDto> searchExistingPatient(PatientDto patientAppointment) {
+	public List<PatientDto> searchExistingPatient(String patientId, String name, String contactNo) {
 		return null;
 	}
 

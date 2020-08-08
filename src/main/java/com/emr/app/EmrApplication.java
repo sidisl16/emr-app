@@ -25,7 +25,7 @@ public class EmrApplication {
 	}
 
 	private void init() {
-		logger.info("Starting UI components");
+		logger.info("Starting swing UI service");
 		uiService.startUIComponents();
 	}
 

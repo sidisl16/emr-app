@@ -14,14 +14,21 @@ import java.time.temporal.ChronoUnit;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.JTableHeader;
 
+import com.emr.app.swing.service.UIService;
 import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.components.DateTimePicker;
 
@@ -71,19 +78,26 @@ public class AddAppointmentPanel extends RoutingPanel {
 	private JLabel lblContactNo;
 	private JPanel searchButton;
 	private JLabel searchPatientBtnLbl;
+	private UIService uiService;
+	private JProgressBar progressBar;
+	private JTable searchPatientTable;
+	private JTableHeader tableHeader;
+	private JScrollPane searchPatientScrollPane;
 
 	/**
 	 * Create the panel.
 	 */
-	public AddAppointmentPanel() {
+	public AddAppointmentPanel(UIService uiService, JProgressBar progressBar) {
 		initComponents();
 		initEvents();
+		this.uiService = uiService;
+		this.progressBar = progressBar;
 	}
 
 	private void initComponents() {
 		setBackground(Color.decode("#ffffff"));
 		setLayout(new BorderLayout(0, 0));
-		setSize(1200, 600);
+		setSize(1300, 600);
 
 		appointmentHeadingPanel = new JPanel();
 		appointmentHeadingPanel.setBorder(new LineBorder(Color.decode("#bfbfbf")));
@@ -226,13 +240,13 @@ public class AddAppointmentPanel extends RoutingPanel {
 
 		nameTextField = new JTextField();
 		nameTextField.setBorder(new LineBorder(Color.decode("#262626")));
-		nameTextField.setBounds(68, 45, 230, 30);
+		nameTextField.setBounds(92, 41, 230, 30);
 		patientDetailsContainer.add(nameTextField);
 		nameTextField.setColumns(10);
 
 		ageLbl = new JLabel("Age");
 		ageLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
-		ageLbl.setBounds(363, 47, 51, 17);
+		ageLbl.setBounds(12, 242, 51, 17);
 		patientDetailsContainer.add(ageLbl);
 
 		genderLbl = new JLabel("Gender");
@@ -242,7 +256,7 @@ public class AddAppointmentPanel extends RoutingPanel {
 
 		contactLbl = new JLabel("Contact No");
 		contactLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
-		contactLbl.setBounds(363, 94, 72, 17);
+		contactLbl.setBounds(12, 289, 72, 17);
 		patientDetailsContainer.add(contactLbl);
 
 		addressLbl = new JLabel("Address");
@@ -252,27 +266,30 @@ public class AddAppointmentPanel extends RoutingPanel {
 
 		addressTextArea = new JTextArea();
 		addressTextArea.setBorder(new LineBorder(Color.decode("#262626")));
-		addressTextArea.setBounds(68, 138, 230, 90);
+		addressTextArea.setBounds(92, 138, 230, 90);
 		patientDetailsContainer.add(addressTextArea);
 
 		emailLbl = new JLabel("Email");
 		emailLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
-		emailLbl.setBounds(363, 139, 51, 17);
+		emailLbl.setBounds(12, 334, 51, 17);
 		patientDetailsContainer.add(emailLbl);
 
 		emailTextField = new JTextField();
+		emailTextField.setBorder(new LineBorder(Color.DARK_GRAY));
 		emailTextField.setColumns(10);
-		emailTextField.setBounds(443, 137, 230, 30);
+		emailTextField.setBounds(92, 332, 230, 30);
 		patientDetailsContainer.add(emailTextField);
 
 		contactTextField = new JTextField();
+		contactTextField.setBorder(new LineBorder(Color.DARK_GRAY));
 		contactTextField.setColumns(10);
-		contactTextField.setBounds(443, 92, 230, 30);
+		contactTextField.setBounds(92, 287, 230, 30);
 		patientDetailsContainer.add(contactTextField);
 
 		ageTextField = new JTextField();
+		ageTextField.setBorder(new LineBorder(Color.DARK_GRAY));
 		ageTextField.setColumns(10);
-		ageTextField.setBounds(443, 45, 230, 30);
+		ageTextField.setBounds(92, 240, 230, 30);
 		patientDetailsContainer.add(ageTextField);
 
 		genderDropdown = new JComboBox<>();
@@ -283,7 +300,7 @@ public class AddAppointmentPanel extends RoutingPanel {
 		genderDropdown.setFont(new Font("Open Sans", Font.BOLD, 12));
 		genderDropdown.setBorder(new LineBorder(Color.decode("#262626")));
 		genderDropdown.setBackground(Color.decode("#ffffff"));
-		genderDropdown.setBounds(67, 89, 231, 26);
+		genderDropdown.setBounds(91, 87, 230, 26);
 		patientDetailsContainer.add(genderDropdown);
 
 		searchPatientPanel = new JPanel();
@@ -291,7 +308,7 @@ public class AddAppointmentPanel extends RoutingPanel {
 		searchPatientPanel.setBorder(new TitledBorder(new LineBorder(new Color(64, 64, 64)), "Search Existing Patient",
 				TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		searchPatientPanel.setOpaque(false);
-		searchPatientPanel.setBounds(767, 26, 345, 238);
+		searchPatientPanel.setBounds(391, 26, 826, 332);
 		patientDetailsContainer.add(searchPatientPanel);
 		searchPatientPanel.setLayout(null);
 
@@ -340,6 +357,23 @@ public class AddAppointmentPanel extends RoutingPanel {
 		searchPatientBtnLbl.setForeground(Color.decode("#ffffff"));
 		searchPatientBtnLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
 		searchButton.add(searchPatientBtnLbl, BorderLayout.CENTER);
+
+		searchPatientScrollPane = new JScrollPane();
+		searchPatientScrollPane.setBounds(345, 12, 469, 308);
+		searchPatientPanel.add(searchPatientScrollPane);
+
+		searchPatientTable = new JTable();
+		UneditableTableDataModel uneditableTableDataModel = new UneditableTableDataModel(new Object[][] {},
+				new String[] { "Patient No.", "Patient Name", "Contact No." });
+		searchPatientTable.setModel(uneditableTableDataModel);
+		searchPatientTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		searchPatientTable.setGridColor(Color.decode("#737373"));
+		searchPatientTable.setFont(new Font("Open Sans", Font.PLAIN, 12));
+		searchPatientTable.setRowHeight(32);
+		tableHeader = searchPatientTable.getTableHeader();
+		tableHeader.setPreferredSize(new Dimension(100, 32));
+
+		searchPatientScrollPane.setViewportView(searchPatientTable);
 	}
 
 	private void initEvents() {
@@ -403,6 +437,11 @@ public class AddAppointmentPanel extends RoutingPanel {
 			public void mouseExited(MouseEvent e) {
 				changeColor(Color.decode("#4d94ff"), searchButton);
 			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				searchExistingCustomer();
+			}
 		});
 	}
 
@@ -410,8 +449,20 @@ public class AddAppointmentPanel extends RoutingPanel {
 		component.setBackground(color);
 	}
 
+	private void createAppointment() {
+
+	}
+
+	private void searchExistingCustomer() {
+
+		JOptionPane.showMessageDialog(getParent(), "testing");
+	}
+
 	@Override
 	public void execute() {
+	}
 
+	@Override
+	public void execute(Object... dtos) {
 	}
 }

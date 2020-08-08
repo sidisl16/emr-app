@@ -27,13 +27,12 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
+import com.emr.app.dtos.PatientDto;
+import com.emr.app.swing.service.UIService;
 import com.google.common.base.Strings;
 
 public class PatientPanel extends RoutingPanel {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel patientHeadingPanel;
 	private JPanel patientProfilePanel;
@@ -115,10 +114,13 @@ public class PatientPanel extends RoutingPanel {
 	private AutoSuggestionComponent medicineAutoSuggestion;
 	private AutoSuggestionComponent examinationAutoSuggestion;
 	private JProgressBar progressBar;
+	private UIService uiService;
 
-	public PatientPanel() {
+	public PatientPanel(UIService uiService, JProgressBar progressBar) {
 		initComponents();
 		initEvents();
+		this.uiService = uiService;
+		this.progressBar = progressBar;
 	}
 
 	private void initComponents() {
@@ -755,6 +757,11 @@ public class PatientPanel extends RoutingPanel {
 	@Override
 	public void execute() {
 		SwingUtilities.invokeLater(() -> progressBar.setValue(0));
+	}
+
+	@Override
+	public void execute(Object... dtos) {
+		
 	}
 
 }

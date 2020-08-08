@@ -2,7 +2,7 @@ package com.emr.app.dtos;
 
 import java.util.List;
 
-public class Prescription {
+public class Case {
 
 	private String prescriptionId;
 	private List<String> chiefComplaints;

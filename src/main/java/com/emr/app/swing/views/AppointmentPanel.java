@@ -12,6 +12,7 @@ import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -184,9 +185,9 @@ public class AppointmentPanel extends RoutingPanel {
 
 		appointmentTable = new JTable();
 		appointmentTable.setGridColor(Color.decode("#737373"));
-		appointmentTable.setFont(new Font("Open Sans", Font.PLAIN, 16));
+		appointmentTable.setFont(new Font("Open Sans", Font.PLAIN, 12));
 		appointmentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		uneditableTableDataModel = new UneditableTableDataModel(new Object[][] {null, null, null, null, null, null},
+		uneditableTableDataModel = new UneditableTableDataModel(new Object[][] {},
 				new String[] { "Sl. No.", "Patient Name", "Age", "Gender", "Patient Number", "Appointment Time" });
 		appointmentTable.setModel(uneditableTableDataModel);
 		tableHeader = appointmentTable.getTableHeader();
@@ -207,6 +208,12 @@ public class AppointmentPanel extends RoutingPanel {
 			public void mouseExited(MouseEvent e) {
 				changeColor(Color.decode("#4d94ff"), refreshPanel);
 			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				loadAppointmentTable();
+			}
+
 		});
 
 		addPanel.addMouseListener(new MouseAdapter() {
@@ -246,15 +253,34 @@ public class AppointmentPanel extends RoutingPanel {
 	}
 
 	private void loadAppointmentTable() {
-		
+		SwingUtilities.invokeLater(() -> {
+			SwingUtilities.invokeLater(() -> progressBar.setValue(0));
+			IntStream.range(0, uneditableTableDataModel.getRowCount())
+					.forEach(rowIndex -> uneditableTableDataModel.removeRow(0));
+			SwingUtilities.invokeLater(() -> progressBar.setValue(10));
+			List<PatientDto> patientAppointments = uiService.getAllActiveAppointments();
+
+			SwingUtilities.invokeLater(() -> progressBar.setValue(50));
+
+			if (patientAppointments != null && !patientAppointments.isEmpty()) {
+				patientAppointments.stream().forEach(patient -> {
+					uneditableTableDataModel.addRow(new Object[] { uneditableTableDataModel.getRowCount() + 1,
+							patient.getName(), patient.getAge(), patient.getGender(), patient.getPatientId(),
+							patient.getAppointment().getDate() });
+				});
+			}
+			SwingUtilities.invokeLater(() -> progressBar.setValue(100));
+			SwingUtilities.invokeLater(() -> progressBar.setValue(0));
+		});
 	}
 
 	@Override
 	public void execute() {
-		SwingUtilities.invokeLater(() -> this.progressBar.setValue(50));
 		loadAppointmentTable();
-		SwingUtilities.invokeLater(() -> this.progressBar.setValue(100));
-		SwingUtilities.invokeLater(() -> this.progressBar.setValue(0));
+	}
+
+	@Override
+	public void execute(Object... dtos) {
 	}
 }
 

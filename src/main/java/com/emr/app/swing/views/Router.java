@@ -3,7 +3,6 @@ package com.emr.app.swing.views;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JLayeredPane;
-import javax.swing.SwingUtilities;
 
 public enum Router {
 
@@ -27,9 +26,17 @@ public enum Router {
 	public void route(Class route) {
 		layeredPane.removeAll();
 		RoutingPanel panel = routes.get(route);
-		panel.execute();
 		layeredPane.add(panel);
 		layeredPane.revalidate();
+		panel.execute();
+	}
+
+	public void routeWithData(Class route, Object... dtos) {
+		layeredPane.removeAll();
+		RoutingPanel panel = routes.get(route);
+		layeredPane.add(panel);
+		layeredPane.revalidate();
+		panel.execute(dtos);
 	}
 
 }

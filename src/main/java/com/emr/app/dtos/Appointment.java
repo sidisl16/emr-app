@@ -11,10 +11,11 @@ public class Appointment {
 	public Appointment() {
 	}
 
-	public Appointment(Date date, User assignedTo) {
+	public Appointment(Date date, User assignedTo, boolean acknowledged) {
 		super();
 		this.date = date;
 		this.assignedTo = assignedTo;
+		this.acknowledged = acknowledged;
 	}
 
 	public Date getDate() {
@@ -39,5 +40,5 @@ public class Appointment {
 
 	public void setAcknowledged(boolean acknowledged) {
 		this.acknowledged = acknowledged;
-	}	
+	}
 }

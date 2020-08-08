@@ -20,6 +20,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import javax.swing.table.JTableHeader;
 
+import com.emr.app.dtos.PatientDto;
 import com.emr.app.swing.service.UIService;
 
 public class CasePanel extends RoutingPanel {
@@ -32,7 +33,6 @@ public class CasePanel extends RoutingPanel {
 	private JLabel cancelIcon;
 	private JLabel addIcon;
 	private JPanel tableContainer;
-	private JPanel caseHeadingTextContainer;
 	private JPanel footer;
 	private JScrollPane tableScrollPane;
 	private JTable caseTable;
@@ -212,16 +212,14 @@ public class CasePanel extends RoutingPanel {
 
 	}
 
-	/**
-	 * @Override public void execute() { SwingUtilities.invokeLater(() ->
-	 *           this.progressBar.setValue(70)); loadAppointmentTable();
-	 *           SwingUtilities.invokeLater(() -> this.progressBar.setValue(100));
-	 *           SwingUtilities.invokeLater(() -> this.progressBar.setValue(0)); }
-	 **/
-
 	@Override
 	public void execute() {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void execute(Object... dtos) {
+		
 	}
 }

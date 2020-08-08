@@ -29,6 +29,8 @@ import javax.swing.border.LineBorder;
 import com.emr.app.swing.service.UIService;
 
 public class HomeScreen extends JFrame {
+	public HomeScreen() {
+	}
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -88,7 +90,7 @@ public class HomeScreen extends JFrame {
 					frame.setVisible(true);
 
 					// Load appointment panel
-					SwingUtilities.invokeLater(() -> frame.progressBar.setValue(100));
+					//SwingUtilities.invokeLater(() -> frame.progressBar.setValue(100));
 					Router.INSTANCE.route(AppointmentPanel.class);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -105,14 +107,13 @@ public class HomeScreen extends JFrame {
 
 		casePanel = new CasePanel(uiService, progressBar);
 		Router.INSTANCE.registerRoute(casePanel);
-		
-		addPatientPanel = new AddAppointmentPanel();
+
+		addPatientPanel = new AddAppointmentPanel(uiService, progressBar);
 		Router.INSTANCE.registerRoute(addPatientPanel);
 
-		patientPanel = new PatientPanel();
+		patientPanel = new PatientPanel(uiService, progressBar);
 		Router.INSTANCE.registerRoute(patientPanel);
-		
-		
+
 	}
 
 	private void initComponents() {

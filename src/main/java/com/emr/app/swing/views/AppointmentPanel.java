@@ -17,6 +17,7 @@ import java.util.stream.IntStream;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
@@ -211,7 +212,11 @@ public class AppointmentPanel extends RoutingPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				loadAppointmentTable();
+				try {
+					TaskWorker.invoke(progressBar, () -> loadAppointmentTable());
+				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(getParent(), "Internal error.", "Error", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 
 		});
@@ -253,30 +258,26 @@ public class AppointmentPanel extends RoutingPanel {
 	}
 
 	private void loadAppointmentTable() {
-		SwingUtilities.invokeLater(() -> {
-			SwingUtilities.invokeLater(() -> progressBar.setValue(0));
-			IntStream.range(0, uneditableTableDataModel.getRowCount())
-					.forEach(rowIndex -> uneditableTableDataModel.removeRow(0));
-			SwingUtilities.invokeLater(() -> progressBar.setValue(10));
-			List<PatientDto> patientAppointments = uiService.getAllActiveAppointments();
+		IntStream.range(0, uneditableTableDataModel.getRowCount())
+				.forEach(rowIndex -> uneditableTableDataModel.removeRow(0));
+		List<PatientDto> patientAppointments = uiService.getAllActiveAppointments();
 
-			SwingUtilities.invokeLater(() -> progressBar.setValue(50));
-
-			if (patientAppointments != null && !patientAppointments.isEmpty()) {
-				patientAppointments.stream().forEach(patient -> {
-					uneditableTableDataModel.addRow(new Object[] { uneditableTableDataModel.getRowCount() + 1,
-							patient.getName(), patient.getAge(), patient.getGender(), patient.getPatientId(),
-							patient.getAppointment().getDate() });
-				});
-			}
-			SwingUtilities.invokeLater(() -> progressBar.setValue(100));
-			SwingUtilities.invokeLater(() -> progressBar.setValue(0));
-		});
+		if (patientAppointments != null && !patientAppointments.isEmpty()) {
+			patientAppointments.stream().forEach(patient -> {
+				uneditableTableDataModel.addRow(
+						new Object[] { uneditableTableDataModel.getRowCount() + 1, patient.getName(), patient.getAge(),
+								patient.getGender(), patient.getPatientId(), patient.getAppointment().getDate() });
+			});
+		}
 	}
 
 	@Override
 	public void execute() {
-		loadAppointmentTable();
+		try {
+			TaskWorker.invoke(progressBar, () -> loadAppointmentTable());
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(getParent(), "Internal error.", "Error", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	@Override

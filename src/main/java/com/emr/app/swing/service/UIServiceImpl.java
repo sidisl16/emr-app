@@ -44,12 +44,18 @@ public class UIServiceImpl implements UIService {
 
 	@Override
 	public void createAppointment(PatientDto patientAppointment) {
-
+		
 	}
 
 	@Override
 	public List<PatientDto> searchExistingPatient(String patientId, String name, String contactNo) {
-		return null;
+		List<PatientDto> list = new ArrayList<>();
+		list.add(new PatientDto(("PAT-" + System.currentTimeMillis()), "Siddharth Kumar", 30, "9742648307",
+				"sidisl16@gmail.com", "Male", "ISM Dhanbad", null, new Appointment(new Date(), null, false)));
+		list.add(new PatientDto(("PAT-" + System.currentTimeMillis()), "Jimmy Kumar", 22, "7252834522",
+				"jimmyKumar312@gmail.com", "Male", "Binod Nagar Dhanbad", null,
+				new Appointment(new Date(), null, false)));
+		return list;
 	}
 
 }

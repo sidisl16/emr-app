@@ -5,13 +5,13 @@ import java.util.Date;
 public class Appointment {
 
 	private Date date;
-	private User assignedTo;
+	private UserDto assignedTo;
 	private boolean acknowledged;
 
 	public Appointment() {
 	}
 
-	public Appointment(Date date, User assignedTo, boolean acknowledged) {
+	public Appointment(Date date, UserDto assignedTo, boolean acknowledged) {
 		super();
 		this.date = date;
 		this.assignedTo = assignedTo;
@@ -26,11 +26,11 @@ public class Appointment {
 		this.date = date;
 	}
 
-	public User getAssignedTo() {
+	public UserDto getAssignedTo() {
 		return assignedTo;
 	}
 
-	public void setAssignedTo(User assignedTo) {
+	public void setAssignedTo(UserDto assignedTo) {
 		this.assignedTo = assignedTo;
 	}
 

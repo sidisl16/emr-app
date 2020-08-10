@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.emr.app.dtos.Appointment;
 import com.emr.app.dtos.PatientDto;
+import com.emr.app.dtos.UserDto;
 import com.emr.app.swing.views.HomeScreen;
 
 @Service
@@ -55,6 +56,14 @@ public class UIServiceImpl implements UIService {
 		list.add(new PatientDto(("PAT-" + System.currentTimeMillis()), "Jimmy Kumar", 22, "7252834522",
 				"jimmyKumar312@gmail.com", "Male", "Binod Nagar Dhanbad", null,
 				new Appointment(new Date(), null, false)));
+		return list;
+	}
+
+	@Override
+	public List<UserDto> getAllDoctors() {
+		List<UserDto> list = new ArrayList<>();
+		list.add(new UserDto("Vikash", "", ""));
+		list.add(new UserDto("Siddharth", "", ""));
 		return list;
 	}
 

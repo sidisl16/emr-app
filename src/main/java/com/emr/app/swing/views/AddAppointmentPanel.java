@@ -33,8 +33,11 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.JTableHeader;
 
+import com.emr.app.dtos.Appointment;
 import com.emr.app.dtos.PatientDto;
+import com.emr.app.dtos.UserDto;
 import com.emr.app.swing.service.UIService;
+import com.emr.app.utilities.DateUtil;
 import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.components.DateTimePicker;
 import com.google.common.base.Strings;
@@ -94,8 +97,8 @@ public class AddAppointmentPanel extends RoutingPanel {
 	private JPanel clearSearchButton;
 	private JLabel clearSearchPatientBtnLbl_;
 	private JLabel mandatoryLegendLbl;
-	private AtomicBoolean processRunning;
 	private List<PatientDto> patients;
+	private List<UserDto> doctors;
 
 	/**
 	 * Create the panel.
@@ -112,7 +115,6 @@ public class AddAppointmentPanel extends RoutingPanel {
 		setLayout(new BorderLayout(0, 0));
 		setSize(1300, 600);
 
-		processRunning = new AtomicBoolean();
 		appointmentHeadingPanel = new JPanel();
 		appointmentHeadingPanel.setBorder(new LineBorder(Color.decode("#bfbfbf")));
 		appointmentHeadingPanel.setBackground(Color.decode("#4d94ff"));
@@ -423,14 +425,17 @@ public class AddAppointmentPanel extends RoutingPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				savePanel.setEnabled(false);
 				TaskWorker.invoke(progressBar, () -> {
 					try {
 						createAppointment();
 					} catch (Exception e1) {
+						e1.printStackTrace();
 						JOptionPane.showMessageDialog(getParent(), "Internal error.", "Error",
 								JOptionPane.ERROR_MESSAGE);
 					}
 				});
+				savePanel.setEnabled(true);
 			}
 		});
 
@@ -528,12 +533,53 @@ public class AddAppointmentPanel extends RoutingPanel {
 
 	private void createAppointment() throws Exception {
 		PatientDto patientDto = new PatientDto();
-		if (uneditableTableDataModel != null && uneditableTableDataModel.getRowCount() >= 0) {
+		LocalDateTime appointmentTime = dateTimePicker.getDateTimeStrict();
+		int assignedIndex = assignDropdown.getSelectedIndex();
+
+		if (uneditableTableDataModel != null && uneditableTableDataModel.getRowCount() > 0) {
+
+			if (searchPatientTable.getSelectedRowCount() <= 0) {
+				JOptionPane.showMessageDialog(getParent(), "Please select any patient from table.", "Warning",
+						JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+
 			patientDto = patients.get(searchPatientTable.getSelectedRowCount() - 1);
 		} else {
-			throw new Exception();
+			String patientName = nameTextField.getText().trim();
+			String age = ageTextField.getText().trim();
+			int genderIndex = genderDropdown.getSelectedIndex();
+			String address = addressTextArea.getText().trim();
+			String contactNo = contactTextField.getText().trim();
+			String email = emailTextField.getText().trim();
 
+			if ((InputValidator.validateString(patientName) || InputValidator.validateAge(age)
+					|| InputValidator.validateContactNo(contactNo) || genderIndex < 0 || appointmentTime == null)
+					|| InputValidator.validateEmail(email)) {
+
+				JOptionPane.showMessageDialog(getParent(),
+						"Please fill all mandotory fields and make sure it contains proper value.", "Warning",
+						JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+
+			patientDto.setName(patientName);
+			patientDto.setAge(Integer.parseInt(age));
+			patientDto.setGender(genderDropdown.getItemAt(genderIndex));
+			patientDto.setAddress(address);
+			patientDto.setEmail(email);
+			patientDto.setContactNo(contactNo);
 		}
+		if (assignedIndex < 0) {
+			JOptionPane.showMessageDialog(getParent(), "Please select assignee.", "Warning",
+					JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+
+		patientDto.setAppointment(new Appointment(DateUtil.convertLocalDateTimeToDate(appointmentTime),
+				doctors.get(assignedIndex), false));
+		uiService.createAppointment(patientDto);
+		Router.INSTANCE.route(AppointmentPanel.class);
 	}
 
 	private void searchExistingPatient() throws Exception {
@@ -565,6 +611,13 @@ public class AddAppointmentPanel extends RoutingPanel {
 		return;
 	}
 
+	private void loadAllDoctors() {
+		assignDropdown.removeAllItems();
+		List<UserDto> doctors = uiService.getAllDoctors();
+		this.doctors = doctors;
+		doctors.stream().forEach(doctor -> assignDropdown.addItem(doctor.getTitle() + doctor.getFirstname()));
+	}
+
 	private void resetAll() {
 
 		// clear all fields
@@ -590,6 +643,8 @@ public class AddAppointmentPanel extends RoutingPanel {
 			}
 
 		}
+
+		loadAllDoctors();
 
 		for (Component component : appointmentScheduleContainer.getComponents()) {
 

@@ -1,6 +1,7 @@
 package com.emr.app.swing.views;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
@@ -8,33 +9,59 @@ import javax.swing.SwingWorker;
 public class TaskWorker extends SwingWorker<Integer, Integer> {
 
 	private JProgressBar progressBar;
-	private Runnable runnable;
+	private Executable executable;
+	private Callback callback;
 
-	private TaskWorker(JProgressBar progressBar, Runnable runnable) {
+	private TaskWorker(JProgressBar progressBar, Executable executable, Callback callback) {
 		this.progressBar = progressBar;
-		this.runnable = runnable;
+		this.executable = executable;
+		this.callback = callback;
 	}
 
 	@Override
-	public Integer doInBackground() throws Exception {
+	protected Integer doInBackground() throws Exception {
 		this.publish(50);
-		this.runnable.run();
+		try {
+			this.executable.execute();
+			if (callback != null) {
+				callback.onSucess();
+			}
+		} catch (Exception e) {
+			if (callback != null) {
+				callback.onFailure();
+			} else {
+				throw e;
+			}
+		}
 		this.publish(100);
 		return 100;
 	}
 
 	@Override
 	protected void process(List<Integer> chunks) {
-		int progress = chunks.get(chunks.size() - 1);
 		progressBar.setValue(chunks.get(chunks.size() - 1));
-		if (progress == 100) {
-			progressBar.setValue(0);
-		}
 	}
 
-	public static void invoke(JProgressBar progressBar, Runnable runnable) {
-		TaskWorker worker = new TaskWorker(progressBar, runnable);
+	@Override
+	protected void done() {
+		progressBar.setValue(0);
+	}
+
+	public static void invoke(JProgressBar progressBar, Executable executable, Callback callback) {
+		TaskWorker worker = new TaskWorker(progressBar, executable, callback);
 		worker.execute();
 	}
 
+}
+
+@FunctionalInterface
+interface Executable {
+	public void execute() throws Exception;
+}
+
+interface Callback {
+
+	public void onSucess();
+
+	public void onFailure();
 }

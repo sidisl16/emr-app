@@ -24,19 +24,23 @@ public enum Router {
 	}
 
 	public void route(Class route) {
-		layeredPane.removeAll();
-		RoutingPanel panel = routes.get(route);
-		layeredPane.add(panel);
-		layeredPane.revalidate();
-		panel.execute();
+		if (routes.containsKey(route)) {
+			layeredPane.removeAll();
+			RoutingPanel panel = routes.get(route);
+			layeredPane.add(panel);
+			layeredPane.revalidate();
+			panel.execute();
+		}
 	}
 
 	public void routeWithData(Class route, Object... dtos) {
-		layeredPane.removeAll();
-		RoutingPanel panel = routes.get(route);
-		layeredPane.add(panel);
-		layeredPane.revalidate();
-		panel.execute(dtos);
+		if (routes.containsKey(route)) {
+			layeredPane.removeAll();
+			RoutingPanel panel = routes.get(route);
+			layeredPane.add(panel);
+			layeredPane.revalidate();
+			panel.execute(dtos);
+		}
 	}
 
 }

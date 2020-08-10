@@ -212,11 +212,18 @@ public class AppointmentPanel extends RoutingPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				try {
-					TaskWorker.invoke(progressBar, () -> loadAppointmentTable());
-				} catch (Exception e1) {
-					JOptionPane.showMessageDialog(getParent(), "Internal error.", "Error", JOptionPane.ERROR_MESSAGE);
-				}
+				TaskWorker.invoke(progressBar, () -> loadAppointmentTable(), new Callback() {
+
+					@Override
+					public void onSucess() {
+					}
+
+					@Override
+					public void onFailure() {
+						JOptionPane.showMessageDialog(getParent(), "Internal error.", "Error",
+								JOptionPane.ERROR_MESSAGE);
+					}
+				});
 			}
 
 		});
@@ -273,11 +280,17 @@ public class AppointmentPanel extends RoutingPanel {
 
 	@Override
 	public void execute() {
-		try {
-			TaskWorker.invoke(progressBar, () -> loadAppointmentTable());
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(getParent(), "Internal error.", "Error", JOptionPane.ERROR_MESSAGE);
-		}
+		TaskWorker.invoke(progressBar, () -> loadAppointmentTable(), new Callback() {
+
+			@Override
+			public void onSucess() {
+			}
+
+			@Override
+			public void onFailure() {
+				JOptionPane.showMessageDialog(getParent(), "Internal error.", "Error", JOptionPane.ERROR_MESSAGE);
+			}
+		});
 	}
 
 	@Override

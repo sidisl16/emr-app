@@ -11,7 +11,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
@@ -426,16 +425,21 @@ public class AddAppointmentPanel extends RoutingPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				savePanel.setEnabled(false);
-				TaskWorker.invoke(progressBar, () -> {
-					try {
-						createAppointment();
-					} catch (Exception e1) {
-						e1.printStackTrace();
+				TaskWorker.invoke(progressBar, () -> createAppointment(), new Callback() {
+
+					@Override
+					public void onSucess() {
+						savePanel.setEnabled(true);
+						Router.INSTANCE.route(AppointmentPanel.class);
+					}
+
+					@Override
+					public void onFailure() {
+						savePanel.setEnabled(true);
 						JOptionPane.showMessageDialog(getParent(), "Internal error.", "Error",
 								JOptionPane.ERROR_MESSAGE);
 					}
 				});
-				savePanel.setEnabled(true);
 			}
 		});
 
@@ -490,10 +494,14 @@ public class AddAppointmentPanel extends RoutingPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 
-				TaskWorker.invoke(progressBar, () -> {
-					try {
-						searchExistingPatient();
-					} catch (Exception e1) {
+				TaskWorker.invoke(progressBar, () -> searchExistingPatient(), new Callback() {
+
+					@Override
+					public void onSucess() {
+					}
+
+					@Override
+					public void onFailure() {
 						JOptionPane.showMessageDialog(getParent(), "Internal error.", "Error",
 								JOptionPane.ERROR_MESSAGE);
 					}
@@ -522,7 +530,25 @@ public class AddAppointmentPanel extends RoutingPanel {
 		attendNowBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				attendNowBtn.setEnabled(false);
+				TaskWorker.invoke(progressBar, () -> {
+					dateTimePicker.setDateTimePermissive(LocalDateTime.now());
+					createAppointment();
+				}, new Callback() {
 
+					@Override
+					public void onSucess() {
+						attendNowBtn.setEnabled(true);
+						Router.INSTANCE.route(AppointmentPanel.class);
+					}
+
+					@Override
+					public void onFailure() {
+						attendNowBtn.setEnabled(true);
+						JOptionPane.showMessageDialog(getParent(), "Internal error.", "Error",
+								JOptionPane.ERROR_MESSAGE);
+					}
+				});
 			}
 		});
 	}
@@ -531,7 +557,7 @@ public class AddAppointmentPanel extends RoutingPanel {
 		component.setBackground(color);
 	}
 
-	private void createAppointment() throws Exception {
+	private boolean createAppointment() throws Exception {
 		PatientDto patientDto = new PatientDto();
 		LocalDateTime appointmentTime = dateTimePicker.getDateTimeStrict();
 		int assignedIndex = assignDropdown.getSelectedIndex();
@@ -541,7 +567,7 @@ public class AddAppointmentPanel extends RoutingPanel {
 			if (searchPatientTable.getSelectedRowCount() <= 0) {
 				JOptionPane.showMessageDialog(getParent(), "Please select any patient from table.", "Warning",
 						JOptionPane.WARNING_MESSAGE);
-				return;
+				return false;
 			}
 
 			patientDto = patients.get(searchPatientTable.getSelectedRowCount() - 1);
@@ -560,7 +586,7 @@ public class AddAppointmentPanel extends RoutingPanel {
 				JOptionPane.showMessageDialog(getParent(),
 						"Please fill all mandotory fields and make sure it contains proper value.", "Warning",
 						JOptionPane.WARNING_MESSAGE);
-				return;
+				return false;
 			}
 
 			patientDto.setName(patientName);
@@ -573,13 +599,13 @@ public class AddAppointmentPanel extends RoutingPanel {
 		if (assignedIndex < 0) {
 			JOptionPane.showMessageDialog(getParent(), "Please select assignee.", "Warning",
 					JOptionPane.WARNING_MESSAGE);
-			return;
+			return false;
 		}
 
 		patientDto.setAppointment(new Appointment(DateUtil.convertLocalDateTimeToDate(appointmentTime),
 				doctors.get(assignedIndex), false));
 		uiService.createAppointment(patientDto);
-		Router.INSTANCE.route(AppointmentPanel.class);
+		return true;
 	}
 
 	private void searchExistingPatient() throws Exception {

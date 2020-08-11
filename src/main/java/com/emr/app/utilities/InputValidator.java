@@ -31,4 +31,28 @@ public class InputValidator {
 		return Strings.isNullOrEmpty(value);
 	}
 
+	public static boolean isFloat(String value) {
+		if (Strings.isNullOrEmpty(value)) {
+			return false;
+		}
+		try {
+			Float.parseFloat(value);
+		} catch (NumberFormatException e) {
+			return false;
+		}
+		return true;
+	}
+
+	public static boolean isInteger(String value) {
+		if (Strings.isNullOrEmpty(value)) {
+			return false;
+		}
+		try {
+			Integer.parseInt(value);
+		} catch (NumberFormatException e) {
+			return false;
+		}
+		return true;
+	}
+
 }

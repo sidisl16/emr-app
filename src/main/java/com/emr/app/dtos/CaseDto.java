@@ -9,7 +9,7 @@ public class CaseDto {
 	private List<String> chiefComplaints;
 	private String diagnosis;
 	private Vitals vitals;
-	private List<MedicineAdvice> medicineAdvices;
+	private List<MedicineAdviceDto> medicineAdvices;
 	private List<String> examinationAdvices;
 	private Date createdAt;
 	private Date lastModified;
@@ -20,7 +20,7 @@ public class CaseDto {
 	}
 
 	public CaseDto(String caseId, List<String> chiefComplaints, String diagnosis, Vitals vitals,
-			List<MedicineAdvice> medicineAdvices, List<String> examinationAdvices, Date createdAt, Date lastModified,
+			List<MedicineAdviceDto> medicineAdvices, List<String> examinationAdvices, Date createdAt, Date lastModified,
 			Status status) {
 		
 		this.caseId = caseId;
@@ -66,11 +66,11 @@ public class CaseDto {
 		this.vitals = vitals;
 	}
 
-	public List<MedicineAdvice> getMedicineAdvices() {
+	public List<MedicineAdviceDto> getMedicineAdvices() {
 		return medicineAdvices;
 	}
 
-	public void setMedicineAdvices(List<MedicineAdvice> medicineAdvices) {
+	public void setMedicineAdvices(List<MedicineAdviceDto> medicineAdvices) {
 		this.medicineAdvices = medicineAdvices;
 	}
 

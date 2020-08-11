@@ -76,4 +76,8 @@ public class UIServiceImpl implements UIService {
 		return list;
 	}
 
+	@Override
+	public void createCaseData(PatientDto patientDto, CaseDto caseDto) {
+	}
+
 }

@@ -9,6 +9,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.IntStream;
 
 import javax.swing.ImageIcon;
@@ -28,6 +30,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
 import com.emr.app.dtos.CaseDto;
+import com.emr.app.dtos.MedicineAdviceDto;
 import com.emr.app.dtos.PatientDto;
 import com.emr.app.dtos.Vitals;
 import com.emr.app.swing.service.UIService;
@@ -120,6 +123,7 @@ public class PatientPanel extends RoutingPanel {
 	private JProgressBar progressBar;
 	private UIService uiService;
 	private PatientDto patientDto;
+	private CaseDto caseDto;
 
 	public PatientPanel(UIService uiService, JProgressBar progressBar) {
 		initComponents();
@@ -629,6 +633,29 @@ public class PatientPanel extends RoutingPanel {
 			public void mouseExited(MouseEvent e) {
 				changeColor(Color.decode("#4d94ff"), savePanel);
 			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				TaskWorker.invoke(progressBar, () -> {
+					saveCaseForPatient();
+					return null;
+				}, new Callback() {
+
+					@Override
+					public void onSucess(Object response) {
+						if (response instanceof Boolean && ((Boolean) response)) {
+							JOptionPane.showMessageDialog(getParent(), "Data saved successfully.", "Info",
+									JOptionPane.INFORMATION_MESSAGE);
+						}
+					}
+
+					@Override
+					public void onFailure() {
+						JOptionPane.showMessageDialog(getParent(), "Internal Error", "Error",
+								JOptionPane.ERROR_MESSAGE);
+					}
+				});
+			}
 		});
 
 		downloadPanel.addMouseListener(new MouseAdapter() {
@@ -762,6 +789,110 @@ public class PatientPanel extends RoutingPanel {
 		});
 	}
 
+	private boolean saveCaseForPatient() {
+
+		String patientName = patientNameTextField.getText().trim();
+		String age = ageTextField.getText().trim();
+		int genderIndex = genderComboBox.getSelectedIndex();
+		String address = addressTextArea.getText().trim();
+		String contactNo = contactTextField.getText().trim();
+		String email = emailTextField.getText().trim();
+		List<String> cc = new ArrayList<>();
+		List<MedicineAdviceDto> medicineAdvices = new ArrayList<>();
+		List<String> examinations = new ArrayList<>();
+
+		if ((InputValidator.validateString(patientName) || InputValidator.validateAge(age)
+				|| InputValidator.validateContactNo(contactNo) || genderIndex < 0)
+				|| InputValidator.validateEmail(email)) {
+
+			JOptionPane.showMessageDialog(getParent(),
+					"Please fill all mandotory fields and make sure it contains proper value.", "Warning",
+					JOptionPane.WARNING_MESSAGE);
+			return false;
+		}
+
+		for (Component component : vitalsPanel.getComponents()) {
+
+			if (component instanceof JTextField) {
+				String value = ((JTextField) component).getText();
+
+				if (!InputValidator.isFloat(value)) {
+					JOptionPane.showMessageDialog(getParent(), "Please fill vitals data correctly, e.g. 23.56 or 23",
+							"Warning", JOptionPane.WARNING_MESSAGE);
+					return false;
+				}
+			}
+		}
+
+		if (medicineTableDataModel.getRowCount() > 0) {
+			for (int i = 0; i < medicineTableDataModel.getRowCount(); i++) {
+				if (Strings.isNullOrEmpty(medicineTableDataModel.getValueAt(i, 1).toString())
+						|| Strings.isNullOrEmpty(medicineTableDataModel.getValueAt(i, 2).toString())
+						|| !InputValidator.isInteger(medicineTableDataModel.getValueAt(i, 2).toString())
+						|| Strings.isNullOrEmpty(medicineTableDataModel.getValueAt(i, 3).toString())
+						|| !InputValidator.isInteger(medicineTableDataModel.getValueAt(i, 3).toString())
+						|| BinaryDecimalUtil
+								.binaryToDec(new boolean[] { (boolean) medicineTableDataModel.getValueAt(i, 4),
+										(boolean) medicineTableDataModel.getValueAt(i, 5),
+										(boolean) medicineTableDataModel.getValueAt(i, 6),
+										(boolean) medicineTableDataModel.getValueAt(i, 7),
+										(boolean) medicineTableDataModel.getValueAt(i, 8),
+										(boolean) medicineTableDataModel.getValueAt(i, 9),
+										(boolean) medicineTableDataModel.getValueAt(i, 10) }) == 0) {
+					JOptionPane.showMessageDialog(getParent(), "Please fill medicine advice correctly.", "Warning",
+							JOptionPane.WARNING_MESSAGE);
+					return false;
+				}
+
+				medicineAdvices.add(new MedicineAdviceDto(medicineTableDataModel.getValueAt(i, 1).toString(),
+						Integer.parseInt(medicineTableDataModel.getValueAt(i, 2).toString()),
+						Integer.parseInt(medicineTableDataModel.getValueAt(i, 3).toString()),
+						BinaryDecimalUtil.binaryToDec(new boolean[] { (boolean) medicineTableDataModel.getValueAt(i, 4),
+								(boolean) medicineTableDataModel.getValueAt(i, 5),
+								(boolean) medicineTableDataModel.getValueAt(i, 6),
+								(boolean) medicineTableDataModel.getValueAt(i, 7),
+								(boolean) medicineTableDataModel.getValueAt(i, 8),
+								(boolean) medicineTableDataModel.getValueAt(i, 9),
+								(boolean) medicineTableDataModel.getValueAt(i, 10) })));
+			}
+
+		}
+
+		patientDto.setName(patientName);
+		patientDto.setAge(Integer.parseInt(age));
+		patientDto.setGender(genderComboBox.getItemAt(genderIndex));
+		patientDto.setAddress(address);
+		patientDto.setEmail(email);
+		patientDto.setContactNo(contactNo);
+
+		caseDto.setMedicineAdvices(medicineAdvices);
+
+		if (ccTableDataModel.getRowCount() > 0) {
+			for (int i = 0; i < ccTableDataModel.getRowCount(); i++) {
+				if (!Strings.isNullOrEmpty(ccTableDataModel.getValueAt(i, 1).toString())) {
+					cc.add(ccTableDataModel.getValueAt(i, 1).toString());
+				}
+			}
+		}
+
+		caseDto.setChiefComplaints(cc);
+
+		if (examinationTableModel.getRowCount() > 0) {
+			for (int i = 0; i < examinationTableModel.getRowCount(); i++) {
+				if (!Strings.isNullOrEmpty(examinationTableModel.getValueAt(i, 1).toString())) {
+					examinations.add(examinationTableModel.getValueAt(i, 1).toString());
+				}
+			}
+		}
+
+		caseDto.setExaminationAdvices(examinations);
+		caseDto.setDiagnosis(diagnosisTextArea.getText());
+
+		uiService.createCaseData(patientDto, caseDto);
+
+		return true;
+	}
+
 	private void changeColor(Color color, Component component) {
 		component.setBackground(color);
 	}
@@ -799,6 +930,8 @@ public class PatientPanel extends RoutingPanel {
 	}
 
 	private void loadCaseData(CaseDto caseDto) {
+
+		this.caseDto = caseDto;
 
 		if (caseDto.getChiefComplaints() != null && !caseDto.getChiefComplaints().isEmpty()) {
 			caseDto.getChiefComplaints().stream()

@@ -1,7 +1,6 @@
 package com.emr.app.swing.views;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
@@ -22,9 +21,9 @@ public class TaskWorker extends SwingWorker<Integer, Integer> {
 	protected Integer doInBackground() throws Exception {
 		this.publish(50);
 		try {
-			this.executable.execute();
+			Object response = this.executable.execute();
 			if (callback != null) {
-				callback.onSucess();
+				callback.onSucess(response);
 			}
 		} catch (Exception e) {
 			if (callback != null) {
@@ -56,12 +55,12 @@ public class TaskWorker extends SwingWorker<Integer, Integer> {
 
 @FunctionalInterface
 interface Executable {
-	public void execute() throws Exception;
+	public Object execute() throws Exception;
 }
 
 interface Callback {
 
-	public void onSucess();
+	public void onSucess(Object response);
 
 	public void onFailure();
 }

@@ -212,10 +212,13 @@ public class AppointmentPanel extends RoutingPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				TaskWorker.invoke(progressBar, () -> loadAppointmentTable(), new Callback() {
+				TaskWorker.invoke(progressBar, () -> {
+					loadAppointmentTable();
+					return null;
+				}, new Callback() {
 
 					@Override
-					public void onSucess() {
+					public void onSucess(Object response) {
 					}
 
 					@Override
@@ -280,10 +283,13 @@ public class AppointmentPanel extends RoutingPanel {
 
 	@Override
 	public void execute() {
-		TaskWorker.invoke(progressBar, () -> loadAppointmentTable(), new Callback() {
+		TaskWorker.invoke(progressBar, () -> {
+			loadAppointmentTable();
+			return null;
+		}, new Callback() {
 
 			@Override
-			public void onSucess() {
+			public void onSucess(Object response) {
 			}
 
 			@Override

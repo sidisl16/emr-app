@@ -428,9 +428,12 @@ public class AddAppointmentPanel extends RoutingPanel {
 				TaskWorker.invoke(progressBar, () -> createAppointment(), new Callback() {
 
 					@Override
-					public void onSucess() {
+					public void onSucess(Object response) {
 						savePanel.setEnabled(true);
-						Router.INSTANCE.route(AppointmentPanel.class);
+						// Is routing required
+						if ((response instanceof Boolean) && ((Boolean) response)) {
+							Router.INSTANCE.route(AppointmentPanel.class);
+						}
 					}
 
 					@Override
@@ -461,24 +464,6 @@ public class AddAppointmentPanel extends RoutingPanel {
 			}
 		});
 
-		attendNowBtn.addMouseListener(new MouseAdapter() {
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				changeColor(Color.decode("#99c2ff"), attendNowBtn);
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				changeColor(Color.decode("#4d94ff"), attendNowBtn);
-			}
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				Router.INSTANCE.route(CasePanel.class);
-			}
-		});
-
 		searchButton.addMouseListener(new MouseAdapter() {
 
 			@Override
@@ -494,10 +479,13 @@ public class AddAppointmentPanel extends RoutingPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 
-				TaskWorker.invoke(progressBar, () -> searchExistingPatient(), new Callback() {
+				TaskWorker.invoke(progressBar, () -> {
+					searchExistingPatient();
+					return null;
+				}, new Callback() {
 
 					@Override
-					public void onSucess() {
+					public void onSucess(Object response) {
 					}
 
 					@Override
@@ -528,18 +516,32 @@ public class AddAppointmentPanel extends RoutingPanel {
 		});
 
 		attendNowBtn.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				changeColor(Color.decode("#99c2ff"), attendNowBtn);
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				changeColor(Color.decode("#4d94ff"), attendNowBtn);
+			}
+
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				attendNowBtn.setEnabled(false);
 				TaskWorker.invoke(progressBar, () -> {
 					dateTimePicker.setDateTimePermissive(LocalDateTime.now());
-					createAppointment();
+					return createAppointment();
 				}, new Callback() {
 
 					@Override
-					public void onSucess() {
+					public void onSucess(Object response) {
 						attendNowBtn.setEnabled(true);
-						Router.INSTANCE.route(AppointmentPanel.class);
+						// Is routing required
+						if ((response instanceof Boolean) && ((Boolean) response)) {
+							Router.INSTANCE.route(CasePanel.class);
+						}
 					}
 
 					@Override
@@ -557,7 +559,7 @@ public class AddAppointmentPanel extends RoutingPanel {
 		component.setBackground(color);
 	}
 
-	private boolean createAppointment() throws Exception {
+	private Boolean createAppointment() throws Exception {
 		PatientDto patientDto = new PatientDto();
 		LocalDateTime appointmentTime = dateTimePicker.getDateTimeStrict();
 		int assignedIndex = assignDropdown.getSelectedIndex();
@@ -671,6 +673,8 @@ public class AddAppointmentPanel extends RoutingPanel {
 		}
 
 		loadAllDoctors();
+
+		clearSearch();
 
 		for (Component component : appointmentScheduleContainer.getComponents()) {
 

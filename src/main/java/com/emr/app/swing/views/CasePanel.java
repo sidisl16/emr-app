@@ -144,8 +144,7 @@ public class CasePanel extends RoutingPanel {
 		caseTable.setGridColor(Color.decode("#737373"));
 		caseTable.setFont(new Font("Open Sans", Font.PLAIN, 16));
 		caseTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		uneditableTableDataModel = new UneditableTableDataModel(
-				new Object[][] { null, null, null, null, null, null, null },
+		uneditableTableDataModel = new UneditableTableDataModel(new Object[][] {},
 				new String[] { "Sl. No.", "Case Created on", "Status" });
 		caseTable.setModel(uneditableTableDataModel);
 		tableHeader = caseTable.getTableHeader();
@@ -195,8 +194,6 @@ public class CasePanel extends RoutingPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
-					SwingUtilities.invokeLater(() -> progressBar.setValue(50));
-					SwingUtilities.invokeLater(() -> progressBar.setValue(100));
 					Router.INSTANCE.route(PatientPanel.class);
 				}
 
@@ -214,12 +211,10 @@ public class CasePanel extends RoutingPanel {
 
 	@Override
 	public void execute() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void execute(Object... dtos) {
-		
+
 	}
 }

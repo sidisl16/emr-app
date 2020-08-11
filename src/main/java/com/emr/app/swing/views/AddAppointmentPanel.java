@@ -431,7 +431,7 @@ public class AddAppointmentPanel extends RoutingPanel {
 					public void onSucess(Object response) {
 						savePanel.setEnabled(true);
 						// Is routing required
-						if ((response instanceof Boolean) && ((Boolean) response)) {
+						if (response != null) {
 							Router.INSTANCE.route(AppointmentPanel.class);
 						}
 					}
@@ -539,8 +539,8 @@ public class AddAppointmentPanel extends RoutingPanel {
 					public void onSucess(Object response) {
 						attendNowBtn.setEnabled(true);
 						// Is routing required
-						if ((response instanceof Boolean) && ((Boolean) response)) {
-							Router.INSTANCE.route(CasePanel.class);
+						if (response != null && (response instanceof PatientDto)) {
+							Router.INSTANCE.routeWithData(CasePanel.class, (PatientDto) response);
 						}
 					}
 
@@ -559,20 +559,20 @@ public class AddAppointmentPanel extends RoutingPanel {
 		component.setBackground(color);
 	}
 
-	private Boolean createAppointment() throws Exception {
+	private PatientDto createAppointment() throws Exception {
 		PatientDto patientDto = new PatientDto();
 		LocalDateTime appointmentTime = dateTimePicker.getDateTimeStrict();
 		int assignedIndex = assignDropdown.getSelectedIndex();
 
 		if (uneditableTableDataModel != null && uneditableTableDataModel.getRowCount() > 0) {
 
-			if (searchPatientTable.getSelectedRowCount() <= 0) {
+			if (searchPatientTable.getSelectedRow() < 0) {
 				JOptionPane.showMessageDialog(getParent(), "Please select any patient from table.", "Warning",
 						JOptionPane.WARNING_MESSAGE);
-				return false;
+				return null;
 			}
 
-			patientDto = patients.get(searchPatientTable.getSelectedRowCount() - 1);
+			patientDto = patients.get(searchPatientTable.getSelectedRow());
 		} else {
 			String patientName = nameTextField.getText().trim();
 			String age = ageTextField.getText().trim();
@@ -588,7 +588,7 @@ public class AddAppointmentPanel extends RoutingPanel {
 				JOptionPane.showMessageDialog(getParent(),
 						"Please fill all mandotory fields and make sure it contains proper value.", "Warning",
 						JOptionPane.WARNING_MESSAGE);
-				return false;
+				return null;
 			}
 
 			patientDto.setName(patientName);
@@ -601,20 +601,21 @@ public class AddAppointmentPanel extends RoutingPanel {
 		if (assignedIndex < 0) {
 			JOptionPane.showMessageDialog(getParent(), "Please select assignee.", "Warning",
 					JOptionPane.WARNING_MESSAGE);
-			return false;
+			return null;
 		}
 
 		patientDto.setAppointment(new Appointment(DateUtil.convertLocalDateTimeToDate(appointmentTime),
 				doctors.get(assignedIndex), false));
-		uiService.createAppointment(patientDto);
-		return true;
+		patientDto = uiService.createAppointment(patientDto);
+		return patientDto;
 	}
 
 	private void searchExistingPatient() throws Exception {
 
-		IntStream.range(0, uneditableTableDataModel.getRowCount())
-				.forEach(rowIndex -> uneditableTableDataModel.removeRow(0));
-
+		if (uneditableTableDataModel.getRowCount() > 0) {
+			IntStream.range(0, uneditableTableDataModel.getRowCount())
+					.forEach(rowIndex -> uneditableTableDataModel.removeRow(0));
+		}
 		String name = patientNameSearchTextField.getText();
 		String patientId = patientNoSearchTextField.getText();
 		String contactNo = contactNoSearchTextField.getText();

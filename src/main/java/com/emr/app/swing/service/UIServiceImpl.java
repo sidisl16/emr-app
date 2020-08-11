@@ -9,7 +9,9 @@ import java.util.logging.Logger;
 import org.springframework.stereotype.Service;
 
 import com.emr.app.dtos.Appointment;
+import com.emr.app.dtos.Case;
 import com.emr.app.dtos.PatientDto;
+import com.emr.app.dtos.Status;
 import com.emr.app.dtos.UserDto;
 import com.emr.app.swing.views.HomeScreen;
 
@@ -44,8 +46,8 @@ public class UIServiceImpl implements UIService {
 	}
 
 	@Override
-	public void createAppointment(PatientDto patientAppointment) {
-		
+	public PatientDto createAppointment(PatientDto patientAppointment) {
+		return patientAppointment;
 	}
 
 	@Override
@@ -64,6 +66,13 @@ public class UIServiceImpl implements UIService {
 		List<UserDto> list = new ArrayList<>();
 		list.add(new UserDto("Vikash", "", ""));
 		list.add(new UserDto("Siddharth", "", ""));
+		return list;
+	}
+
+	@Override
+	public List<Case> getAllCasesForPatient(PatientDto patientDto) {
+		List<Case> list = new ArrayList<>();
+		list.add(new Case(null, null, null, null, null, null, new Date(), new Date(), Status.ACTIVE));
 		return list;
 	}
 

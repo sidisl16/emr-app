@@ -36,6 +36,7 @@ import javax.swing.text.JTextComponent;
 
 import com.emr.app.dtos.PatientDto;
 import com.emr.app.swing.service.UIService;
+import com.emr.app.utilities.DateUtil;
 
 public class AppointmentPanel extends RoutingPanel {
 
@@ -62,6 +63,7 @@ public class AppointmentPanel extends RoutingPanel {
 	private JProgressBar progressBar;
 	private UIService uiService;
 	private UneditableTableDataModel uneditableTableDataModel;
+	private List<PatientDto> patientAppointments;
 
 	public AppointmentPanel(UIService uiService, JProgressBar progressBar) {
 		this.uiService = uiService;
@@ -253,10 +255,8 @@ public class AppointmentPanel extends RoutingPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
-					SwingUtilities.invokeLater(() -> progressBar.setValue(50));
-					SwingUtilities.invokeLater(() -> progressBar.setValue(70));
-					SwingUtilities.invokeLater(() -> progressBar.setValue(100));
-					Router.INSTANCE.route(CasePanel.class);
+					PatientDto patientDto = patientAppointments.get(appointmentTable.getSelectedRow());
+					Router.INSTANCE.routeWithData(CasePanel.class, patientDto);
 				}
 
 			}
@@ -268,15 +268,19 @@ public class AppointmentPanel extends RoutingPanel {
 	}
 
 	private void loadAppointmentTable() {
-		IntStream.range(0, uneditableTableDataModel.getRowCount())
-				.forEach(rowIndex -> uneditableTableDataModel.removeRow(0));
-		List<PatientDto> patientAppointments = uiService.getAllActiveAppointments();
+
+		if (uneditableTableDataModel.getRowCount() > 0) {
+			IntStream.range(0, uneditableTableDataModel.getRowCount())
+					.forEach(rowIndex -> uneditableTableDataModel.removeRow(0));
+		}
+
+		patientAppointments = uiService.getAllActiveAppointments();
 
 		if (patientAppointments != null && !patientAppointments.isEmpty()) {
 			patientAppointments.stream().forEach(patient -> {
-				uneditableTableDataModel.addRow(
-						new Object[] { uneditableTableDataModel.getRowCount() + 1, patient.getName(), patient.getAge(),
-								patient.getGender(), patient.getPatientId(), patient.getAppointment().getDate() });
+				uneditableTableDataModel.addRow(new Object[] { uneditableTableDataModel.getRowCount() + 1,
+						patient.getName(), patient.getAge(), patient.getGender(), patient.getPatientId(),
+						DateUtil.formatDate(patient.getAppointment().getDate()) });
 			});
 		}
 	}

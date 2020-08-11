@@ -7,21 +7,25 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
+import java.util.stream.IntStream;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import javax.swing.table.JTableHeader;
 
+import com.emr.app.dtos.Case;
 import com.emr.app.dtos.PatientDto;
 import com.emr.app.swing.service.UIService;
+import com.emr.app.utilities.DateUtil;
 
 public class CasePanel extends RoutingPanel {
 
@@ -44,6 +48,7 @@ public class CasePanel extends RoutingPanel {
 	private JPanel patientProfilePanel;
 	private JLabel patientLogoIcon;
 	private JLabel patientProfileText;
+	private List<Case> cases;
 
 	public CasePanel(UIService uiService, JProgressBar progressBar) {
 		this.uiService = uiService;
@@ -65,11 +70,11 @@ public class CasePanel extends RoutingPanel {
 
 		patientProfilePanel = new JPanel();
 		patientProfilePanel.setOpaque(false);
-		patientProfilePanel.setPreferredSize(new Dimension(470, 10));
+		patientProfilePanel.setPreferredSize(new Dimension(650, 10));
 		patientProfilePanel.setLayout(null);
 		caseHeadingPanel.add(patientProfilePanel, BorderLayout.WEST);
 
-		patientLogoIcon = new JLabel("S");
+		patientLogoIcon = new JLabel();
 		patientLogoIcon.setForeground(Color.decode("#262626"));
 		patientLogoIcon.setHorizontalTextPosition(SwingConstants.CENTER);
 		patientLogoIcon.setHorizontalAlignment(SwingConstants.CENTER);
@@ -79,12 +84,11 @@ public class CasePanel extends RoutingPanel {
 		patientProfilePanel.add(patientLogoIcon);
 
 		patientProfileText = new JLabel();
-		patientProfileText.setText("PAT-32345  |  Siddharth Kumar   |  30 Male  | Cases");
-		patientProfileText.setHorizontalTextPosition(SwingConstants.CENTER);
-		patientProfileText.setHorizontalAlignment(SwingConstants.CENTER);
+		patientProfileText.setHorizontalTextPosition(SwingConstants.LEFT);
+		patientProfileText.setHorizontalAlignment(SwingConstants.LEFT);
 		patientProfileText.setForeground(Color.decode("#ffffff"));
 		patientProfileText.setFont(new Font("Open Sans", Font.BOLD, 14));
-		patientProfileText.setBounds(85, 12, 373, 47);
+		patientProfileText.setBounds(112, 12, 513, 47);
 		patientProfilePanel.add(patientProfileText);
 
 		addRefreshCaseContainer = new JPanel();
@@ -113,7 +117,7 @@ public class CasePanel extends RoutingPanel {
 		addRefreshCaseContainer.add(addPanel);
 		addPanel.setLayout(new BorderLayout(0, 0));
 
-		addIcon = new JLabel("");
+		addIcon = new JLabel();
 		addIcon.setIcon(new ImageIcon(HomeScreen.class.getResource("/icons/add-32.png")));
 		addIcon.setHorizontalTextPosition(SwingConstants.CENTER);
 		addIcon.setHorizontalAlignment(SwingConstants.CENTER);
@@ -142,7 +146,7 @@ public class CasePanel extends RoutingPanel {
 
 		caseTable = new JTable();
 		caseTable.setGridColor(Color.decode("#737373"));
-		caseTable.setFont(new Font("Open Sans", Font.PLAIN, 16));
+		caseTable.setFont(new Font("Open Sans", Font.PLAIN, 12));
 		caseTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		uneditableTableDataModel = new UneditableTableDataModel(new Object[][] {},
 				new String[] { "Sl. No.", "Case Created on", "Status" });
@@ -205,8 +209,28 @@ public class CasePanel extends RoutingPanel {
 		component.setBackground(color);
 	}
 
-	private void loadAppointmentTable() {
+	private void loadCaseTableForPatient(PatientDto patientDto) {
+		if (uneditableTableDataModel.getRowCount() > 0) {
+			IntStream.range(0, uneditableTableDataModel.getRowCount())
+					.forEach(rowIndex -> uneditableTableDataModel.removeRow(0));
+		}
+		cases = uiService.getAllCasesForPatient(patientDto);
+		cases.stream().forEach(patientCase -> {
+			uneditableTableDataModel.addRow(new Object[] { uneditableTableDataModel.getRowCount() + 1,
+					DateUtil.formatDate(patientCase.getCreatedAt()), patientCase.getStatus() });
+		});
+	}
 
+	private void displayPatientProfile(PatientDto patientDto) {
+		String patientName = patientDto.getName();
+		String patientId = patientDto.getPatientId();
+		int patientAge = patientDto.getAge();
+		String patientGender = patientDto.getGender();
+
+		String initial = patientName.substring(0, 1).toUpperCase();
+		patientLogoIcon.setText(initial);
+		patientProfileText
+				.setText(patientId + "  |  " + patientName + "   |  " + patientAge + " " + patientGender + "  | Cases");
 	}
 
 	@Override
@@ -215,6 +239,23 @@ public class CasePanel extends RoutingPanel {
 
 	@Override
 	public void execute(Object... dtos) {
+		if (dtos != null && dtos[0] instanceof PatientDto) {
+			TaskWorker.invoke(progressBar, () -> {
+				PatientDto patientDto = (PatientDto) dtos[0];
+				displayPatientProfile(patientDto);
+				loadCaseTableForPatient(patientDto);
+				return null;
+			}, new Callback() {
 
+				@Override
+				public void onSucess(Object response) {
+				}
+
+				@Override
+				public void onFailure() {
+					JOptionPane.showMessageDialog(getParent(), "Internal error.", "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			});
+		}
 	}
 }

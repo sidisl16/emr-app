@@ -26,6 +26,7 @@ public class TaskWorker extends SwingWorker<Integer, Integer> {
 				callback.onSucess(response);
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			if (callback != null) {
 				callback.onFailure();
 			} else {

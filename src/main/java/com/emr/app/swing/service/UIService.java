@@ -2,6 +2,7 @@ package com.emr.app.swing.service;
 
 import java.util.List;
 
+import com.emr.app.dtos.Case;
 import com.emr.app.dtos.PatientDto;
 import com.emr.app.dtos.UserDto;
 
@@ -13,9 +14,11 @@ public interface UIService {
 
 	public PatientDto getAllCasesByPatientId(String patientId);
 
-	public void createAppointment(PatientDto patientAppointment);
+	public PatientDto createAppointment(PatientDto patientAppointment);
 
 	public List<PatientDto> searchExistingPatient(String patientId, String name, String contactNo);
 
 	public List<UserDto> getAllDoctors();
+
+	public List<Case> getAllCasesForPatient(PatientDto patientDto);
 }

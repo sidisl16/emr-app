@@ -2,7 +2,7 @@ package com.emr.app.swing.service;
 
 import java.util.List;
 
-import com.emr.app.dtos.Case;
+import com.emr.app.dtos.CaseDto;
 import com.emr.app.dtos.PatientDto;
 import com.emr.app.dtos.UserDto;
 
@@ -20,5 +20,5 @@ public interface UIService {
 
 	public List<UserDto> getAllDoctors();
 
-	public List<Case> getAllCasesForPatient(PatientDto patientDto);
+	public List<CaseDto> getAllCasesForPatient(PatientDto patientDto);
 }

@@ -3,7 +3,7 @@ package com.emr.app.dtos;
 import java.util.Date;
 import java.util.List;
 
-public class Case {
+public class CaseDto {
 
 	private String caseId;
 	private List<String> chiefComplaints;
@@ -15,11 +15,11 @@ public class Case {
 	private Date lastModified;
 	private Status status;
 
-	public Case() {
+	public CaseDto() {
 
 	}
 
-	public Case(String caseId, List<String> chiefComplaints, String diagnosis, Vitals vitals,
+	public CaseDto(String caseId, List<String> chiefComplaints, String diagnosis, Vitals vitals,
 			List<MedicineAdvice> medicineAdvices, List<String> examinationAdvices, Date createdAt, Date lastModified,
 			Status status) {
 		

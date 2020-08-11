@@ -22,7 +22,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.table.JTableHeader;
 
-import com.emr.app.dtos.Case;
+import com.emr.app.dtos.CaseDto;
 import com.emr.app.dtos.PatientDto;
 import com.emr.app.swing.service.UIService;
 import com.emr.app.utilities.DateUtil;
@@ -48,7 +48,8 @@ public class CasePanel extends RoutingPanel {
 	private JPanel patientProfilePanel;
 	private JLabel patientLogoIcon;
 	private JLabel patientProfileText;
-	private List<Case> cases;
+	private List<CaseDto> cases;
+	private PatientDto patientDto;
 
 	public CasePanel(UIService uiService, JProgressBar progressBar) {
 		this.uiService = uiService;
@@ -190,7 +191,7 @@ public class CasePanel extends RoutingPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Router.INSTANCE.route(PatientPanel.class);
+				Router.INSTANCE.routeWithData(PatientPanel.class, patientDto, new CaseDto());
 			}
 		});
 
@@ -198,9 +199,9 @@ public class CasePanel extends RoutingPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
-					Router.INSTANCE.route(PatientPanel.class);
+					Router.INSTANCE.routeWithData(PatientPanel.class, patientDto,
+							cases.get(caseTable.getSelectedRow()));
 				}
-
 			}
 		});
 	}
@@ -210,6 +211,7 @@ public class CasePanel extends RoutingPanel {
 	}
 
 	private void loadCaseTableForPatient(PatientDto patientDto) {
+		this.patientDto = patientDto;
 		if (uneditableTableDataModel.getRowCount() > 0) {
 			IntStream.range(0, uneditableTableDataModel.getRowCount())
 					.forEach(rowIndex -> uneditableTableDataModel.removeRow(0));

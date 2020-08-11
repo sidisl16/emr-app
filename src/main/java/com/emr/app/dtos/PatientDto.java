@@ -11,14 +11,14 @@ public class PatientDto {
 	private String email;
 	private String gender;
 	private String address;
-	private List<Case> prescriptionList;
+	private List<CaseDto> prescriptionList;
 	private Appointment appointment;
 
 	public PatientDto() {
 	}
 
 	public PatientDto(String patientId, String name, int age, String contactNo, String email, String gender,
-			String address, List<Case> prescriptionList, Appointment appointment) {
+			String address, List<CaseDto> prescriptionList, Appointment appointment) {
 		super();
 		this.patientId = patientId;
 		this.name = name;
@@ -87,11 +87,11 @@ public class PatientDto {
 		this.address = address;
 	}
 
-	public List<Case> getPrescriptionList() {
+	public List<CaseDto> getPrescriptionList() {
 		return prescriptionList;
 	}
 
-	public void setPrescriptionList(List<Case> prescriptionList) {
+	public void setPrescriptionList(List<CaseDto> prescriptionList) {
 		this.prescriptionList = prescriptionList;
 	}
 

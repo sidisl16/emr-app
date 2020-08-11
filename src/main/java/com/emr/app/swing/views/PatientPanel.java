@@ -14,6 +14,7 @@ import java.util.stream.IntStream;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
@@ -22,11 +23,11 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
+import com.emr.app.dtos.CaseDto;
 import com.emr.app.dtos.PatientDto;
 import com.emr.app.swing.service.UIService;
 import com.google.common.base.Strings;
@@ -115,6 +116,7 @@ public class PatientPanel extends RoutingPanel {
 	private AutoSuggestionComponent examinationAutoSuggestion;
 	private JProgressBar progressBar;
 	private UIService uiService;
+	private PatientDto patientDto;
 
 	public PatientPanel(UIService uiService, JProgressBar progressBar) {
 		initComponents();
@@ -126,6 +128,7 @@ public class PatientPanel extends RoutingPanel {
 	private void initComponents() {
 		setBackground(Color.decode("#ffffff"));
 		setLayout(new BorderLayout(0, 0));
+		setSize(1200, 800);
 
 		patientHeadingPanel = new JPanel();
 		patientHeadingPanel.setBorder(new LineBorder(Color.decode("#bfbfbf")));
@@ -137,11 +140,11 @@ public class PatientPanel extends RoutingPanel {
 
 		patientProfilePanel = new JPanel();
 		patientProfilePanel.setOpaque(false);
-		patientProfilePanel.setPreferredSize(new Dimension(450, 10));
+		patientProfilePanel.setPreferredSize(new Dimension(650, 10));
 		patientHeadingPanel.add(patientProfilePanel, BorderLayout.WEST);
 		patientProfilePanel.setLayout(null);
 
-		patientLogoIcon = new JLabel("S");
+		patientLogoIcon = new JLabel();
 		patientLogoIcon.setForeground(Color.decode("#262626"));
 		patientLogoIcon.setHorizontalTextPosition(SwingConstants.CENTER);
 		patientLogoIcon.setHorizontalAlignment(SwingConstants.CENTER);
@@ -151,12 +154,11 @@ public class PatientPanel extends RoutingPanel {
 		patientProfilePanel.add(patientLogoIcon);
 
 		patientProfileText = new JLabel();
-		patientProfileText.setText("PAT-32345  |  Siddharth Kumar   |  30 Male");
-		patientProfileText.setHorizontalTextPosition(SwingConstants.CENTER);
-		patientProfileText.setHorizontalAlignment(SwingConstants.CENTER);
+		patientProfileText.setHorizontalTextPosition(SwingConstants.LEFT);
+		patientProfileText.setHorizontalAlignment(SwingConstants.LEFT);
 		patientProfileText.setForeground(Color.decode("#ffffff"));
 		patientProfileText.setFont(new Font("Open Sans", Font.BOLD, 14));
-		patientProfileText.setBounds(85, 12, 353, 47);
+		patientProfileText.setBounds(98, 12, 540, 47);
 		patientProfilePanel.add(patientProfileText);
 
 		sideMenuPanel = new JPanel();
@@ -602,7 +604,12 @@ public class PatientPanel extends RoutingPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Router.INSTANCE.route(CasePanel.class);
+				int option = JOptionPane.showConfirmDialog(getParent(),
+						"Make sure you save your changes else it will be lost.", "Confirmation",
+						JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+				if (option == 0) {
+					Router.INSTANCE.route(CasePanel.class);
+				}
 			}
 		});
 
@@ -754,14 +761,46 @@ public class PatientPanel extends RoutingPanel {
 		component.setBackground(color);
 	}
 
+	private void displayPatientProfile(PatientDto patientDto) {
+
+		String patientName = patientDto.getName();
+		String patientId = patientDto.getPatientId();
+		int patientAge = patientDto.getAge();
+		String patientGender = patientDto.getGender();
+
+		String initial = patientName.substring(0, 1).toUpperCase();
+		patientLogoIcon.setText(initial);
+		patientProfileText.setText(patientId + "  |  " + patientName + "   |  " + patientAge + " " + patientGender);
+
+	}
+
+	private void loadCaseData(PatientDto patientDto, CaseDto caseDto) {
+		this.patientDto = patientDto;
+	}
+
 	@Override
 	public void execute() {
-		SwingUtilities.invokeLater(() -> progressBar.setValue(0));
 	}
 
 	@Override
 	public void execute(Object... dtos) {
-		
+		TaskWorker.invoke(progressBar, () -> {
+			if (dtos != null && dtos[0] instanceof PatientDto && dtos[1] instanceof CaseDto) {
+				displayPatientProfile((PatientDto) dtos[0]);
+				loadCaseData((PatientDto) dtos[0], (CaseDto) dtos[1]);
+			}
+			return null;
+		}, new Callback() {
+
+			@Override
+			public void onSucess(Object response) {
+			}
+
+			@Override
+			public void onFailure() {
+				JOptionPane.showMessageDialog(getParent(), "Internal error.", "Error", JOptionPane.ERROR_MESSAGE);
+			}
+		});
 	}
 
 }

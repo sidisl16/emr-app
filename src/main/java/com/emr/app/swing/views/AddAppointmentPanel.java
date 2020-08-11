@@ -37,6 +37,7 @@ import com.emr.app.dtos.PatientDto;
 import com.emr.app.dtos.UserDto;
 import com.emr.app.swing.service.UIService;
 import com.emr.app.utilities.DateUtil;
+import com.emr.app.utilities.InputValidator;
 import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.components.DateTimePicker;
 import com.google.common.base.Strings;
@@ -310,7 +311,7 @@ public class AddAppointmentPanel extends RoutingPanel {
 		genderDropdown = new JComboBox<>();
 		genderDropdown.addItem("Male");
 		genderDropdown.addItem("Female");
-		genderDropdown.addItem("Others");
+		genderDropdown.addItem("Other");
 
 		genderDropdown.setFont(new Font("Open Sans", Font.BOLD, 12));
 		genderDropdown.setBorder(new LineBorder(Color.decode("#262626")));
@@ -689,9 +690,10 @@ public class AddAppointmentPanel extends RoutingPanel {
 			patients.removeAll(patients);
 		}
 
-		IntStream.range(0, uneditableTableDataModel.getRowCount())
-				.forEach(rowIndex -> uneditableTableDataModel.removeRow(0));
-
+		if (uneditableTableDataModel.getRowCount() > 0) {
+			IntStream.range(0, uneditableTableDataModel.getRowCount())
+					.forEach(rowIndex -> uneditableTableDataModel.removeRow(0));
+		}
 		dateTimePicker.setDateTimePermissive(LocalDateTime.now());
 
 	}

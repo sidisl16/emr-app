@@ -29,7 +29,10 @@ import javax.swing.table.DefaultTableModel;
 
 import com.emr.app.dtos.CaseDto;
 import com.emr.app.dtos.PatientDto;
+import com.emr.app.dtos.Vitals;
 import com.emr.app.swing.service.UIService;
+import com.emr.app.utilities.BinaryDecimalUtil;
+import com.emr.app.utilities.InputValidator;
 import com.google.common.base.Strings;
 
 public class PatientPanel extends RoutingPanel {
@@ -339,6 +342,9 @@ public class PatientPanel extends RoutingPanel {
 		genderComboBox = new JComboBox<>();
 		genderComboBox.setBorder(new LineBorder(Color.decode("#262626")));
 		genderComboBox.setBounds(74, 91, 191, 26);
+		genderComboBox.addItem("Male");
+		genderComboBox.addItem("Female");
+		genderComboBox.addItem("Other");
 		patientDetailsPanel.add(genderComboBox);
 
 		chiefComplaintsPanel = new JPanel();
@@ -385,7 +391,6 @@ public class PatientPanel extends RoutingPanel {
 
 		ccTable = new JTable();
 		ccTable.setRowHeight(25);
-		// ccTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		ccTableDataModel = (DefaultTableModel) ccTable.getModel();
 		ccTableDataModel.addColumn("Sl No.");
 		ccTableDataModel.addColumn("Chief Complaints");
@@ -520,9 +525,9 @@ public class PatientPanel extends RoutingPanel {
 		patientAdvicePanel.setLayout(null);
 
 		medicineAdvicePanel = new JPanel();
-		medicineAdvicePanel.setBorder(new TitledBorder(new LineBorder(new Color(64, 64, 64)), "Medicine Advice",
+		medicineAdvicePanel.setBorder(new TitledBorder(new LineBorder(Color.decode("#262626")), "Medicine Advice",
 				TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		medicineAdvicePanel.setBackground(Color.WHITE);
+		medicineAdvicePanel.setBackground(Color.decode("#ffffff"));
 		medicineAdvicePanel.setBounds(43, 12, 1199, 279);
 		patientAdvicePanel.add(medicineAdvicePanel);
 		medicineAdvicePanel.setLayout(null);
@@ -605,10 +610,10 @@ public class PatientPanel extends RoutingPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int option = JOptionPane.showConfirmDialog(getParent(),
-						"Make sure you save your changes else it will be lost.", "Confirmation",
+						"Make sure to save your changes else it will be lost.", "Confirmation",
 						JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 				if (option == 0) {
-					Router.INSTANCE.route(CasePanel.class);
+					Router.INSTANCE.routeWithData(CasePanel.class, patientDto);
 				}
 			}
 		});
@@ -763,6 +768,8 @@ public class PatientPanel extends RoutingPanel {
 
 	private void displayPatientProfile(PatientDto patientDto) {
 
+		this.patientDto = patientDto;
+
 		String patientName = patientDto.getName();
 		String patientId = patientDto.getPatientId();
 		int patientAge = patientDto.getAge();
@@ -772,10 +779,130 @@ public class PatientPanel extends RoutingPanel {
 		patientLogoIcon.setText(initial);
 		patientProfileText.setText(patientId + "  |  " + patientName + "   |  " + patientAge + " " + patientGender);
 
+		patientNameTextField.setText(patientName);
+		ageTextField.setText(String.valueOf(patientAge));
+		genderComboBox.setSelectedIndex(getIndexOfItem(genderComboBox, patientGender));
+		contactTextField.setText(patientDto.getContactNo());
+
+		if (Strings.isNullOrEmpty(patientDto.getAddress())) {
+			addressTextArea.setText("");
+		} else {
+			addressTextArea.setText(patientDto.getAddress());
+		}
+
+		if (Strings.isNullOrEmpty(patientDto.getEmail())) {
+			emailTextField.setText("");
+		} else {
+			emailTextField.setText(patientDto.getEmail());
+		}
+
 	}
 
-	private void loadCaseData(PatientDto patientDto, CaseDto caseDto) {
-		this.patientDto = patientDto;
+	private void loadCaseData(CaseDto caseDto) {
+
+		if (caseDto.getChiefComplaints() != null && !caseDto.getChiefComplaints().isEmpty()) {
+			caseDto.getChiefComplaints().stream()
+					.forEach(cc -> ccTableDataModel.addRow(new Object[] { ccTableDataModel.getRowCount(), cc }));
+		}
+
+		if (!InputValidator.validateString(caseDto.getDiagnosis())) {
+			diagnosisTextArea.setText(caseDto.getDiagnosis());
+		}
+
+		if (caseDto.getVitals() != null) {
+			Vitals vitals = caseDto.getVitals();
+
+			if (vitals.getBmi() != null) {
+				bmiTextField.setText(String.valueOf(vitals.getBmi()));
+			}
+
+			if (vitals.getBpDistolic() != null) {
+				bpDiasTextField.setText(String.valueOf(vitals.getBpDistolic()));
+			}
+
+			if (vitals.getBpSystolic() != null) {
+				bpSysTextField.setText(String.valueOf(vitals.getBpSystolic()));
+			}
+
+			if (vitals.getHeight() != null) {
+				heightTextField.setText(String.valueOf(vitals.getHeight()));
+			}
+
+			if (vitals.getPulserate() != null) {
+				pulseRatetextField.setText(String.valueOf(vitals.getPulserate()));
+			}
+
+			if (vitals.getTemp() != null) {
+				tempTextField.setText(String.valueOf(vitals.getTemp()));
+			}
+
+			if (vitals.getWeight() != null) {
+				weightTextField.setText(String.valueOf(vitals.getWeight()));
+			}
+		}
+
+		if (caseDto.getExaminationAdvices() != null && !caseDto.getExaminationAdvices().isEmpty()) {
+			caseDto.getExaminationAdvices().stream().forEach(examination -> examinationTableModel
+					.addRow(new Object[] { examinationTableModel.getRowCount() + 1, examination }));
+		}
+
+		if (caseDto.getMedicineAdvices() != null && !caseDto.getMedicineAdvices().isEmpty()) {
+			caseDto.getMedicineAdvices().stream().forEach(medicineAdvice -> {
+				boolean[] binary = BinaryDecimalUtil.decToBinary(medicineAdvice.getDosage());
+				medicineTableDataModel.addRow(new Object[] { medicineTableDataModel.getRowCount() + 1,
+						medicineAdvice.getName(), medicineAdvice.getDays(), medicineAdvice.getFrequency(), binary[0],
+						binary[1], binary[2], binary[3], binary[4], binary[5], binary[6] });
+			});
+		}
+	}
+
+	private void resetAll() {
+		// clear all fields
+		for (Component component : patientDetailsPanel.getComponents()) {
+
+			if (component instanceof JTextField) {
+				((JTextField) component).setText("");
+			}
+
+			if (component instanceof JTextArea) {
+				((JTextArea) component).setText("");
+			}
+
+			if (component instanceof JComboBox) {
+				((JComboBox) component).setSelectedIndex(-1);
+			}
+		}
+
+		if (ccTableDataModel.getRowCount() > 0) {
+			IntStream.range(0, ccTable.getRowCount()).forEach(rowIndex -> ccTableDataModel.removeRow(0));
+		}
+
+		diagnosisTextArea.setText("");
+
+		for (Component component : vitalsPanel.getComponents()) {
+
+			if (component instanceof JTextField) {
+				((JTextField) component).setText("");
+			}
+		}
+
+		if (medicineTableDataModel.getRowCount() > 0) {
+			IntStream.range(0, ccTable.getRowCount()).forEach(rowIndex -> medicineTableDataModel.removeRow(0));
+		}
+
+		if (examinationTableModel.getRowCount() > 0) {
+			IntStream.range(0, ccTable.getRowCount()).forEach(rowIndex -> examinationTableModel.removeRow(0));
+		}
+
+	}
+
+	private int getIndexOfItem(JComboBox<String> combobox, String item) {
+		for (int i = 0; i < combobox.getItemCount(); i++) {
+			if (combobox.getItemAt(i).equals(item)) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	@Override
@@ -786,8 +913,9 @@ public class PatientPanel extends RoutingPanel {
 	public void execute(Object... dtos) {
 		TaskWorker.invoke(progressBar, () -> {
 			if (dtos != null && dtos[0] instanceof PatientDto && dtos[1] instanceof CaseDto) {
+				resetAll();
 				displayPatientProfile((PatientDto) dtos[0]);
-				loadCaseData((PatientDto) dtos[0], (CaseDto) dtos[1]);
+				loadCaseData((CaseDto) dtos[1]);
 			}
 			return null;
 		}, new Callback() {

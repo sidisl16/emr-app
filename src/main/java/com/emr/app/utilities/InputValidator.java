@@ -7,8 +7,8 @@ import com.google.common.base.Strings;
 public class InputValidator {
 
 	private static final String CONTACT_REGEX = "^\\d{10}$";
-	private static final String AGE_REGEX = "^\\d{10}$";
-	private static final String EMAIL_REGEX = "^\\d{10}$";
+	private static final String AGE_REGEX = "^\\d*$";
+	private static final String EMAIL_REGEX = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$";
 
 	private static Pattern pattern;
 
@@ -33,7 +33,7 @@ public class InputValidator {
 
 	public static boolean isFloat(String value) {
 		if (Strings.isNullOrEmpty(value)) {
-			return false;
+			return true;
 		}
 		try {
 			Float.parseFloat(value);

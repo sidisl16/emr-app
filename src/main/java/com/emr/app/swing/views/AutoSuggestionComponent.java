@@ -25,9 +25,6 @@ import com.google.common.base.Strings;
 
 public class AutoSuggestionComponent extends JPanel {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JTextField textField;
 	private JLabel searchTextLbl;
@@ -43,7 +40,7 @@ public class AutoSuggestionComponent extends JPanel {
 
 		searchTextLbl = new JLabel("Search");
 		searchTextLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
-		searchTextLbl.setBounds(12, 18, 114, 28);
+		searchTextLbl.setBounds(12, 18, 50, 28);
 		add(searchTextLbl);
 
 		textField = new JTextField();
@@ -91,7 +88,13 @@ public class AutoSuggestionComponent extends JPanel {
 
 				int key = e.getKeyCode();
 				if (key == KeyEvent.VK_ENTER && !Strings.isNullOrEmpty(str) && defaultTableModel != null) {
-					defaultTableModel.addRow(new Object[] { defaultTableModel.getRowCount() + 1, str });
+					if (defaultTableModel.getColumnCount() > 2) {
+						defaultTableModel.addRow(new Object[] { defaultTableModel.getRowCount() + 1, str, "0", "0",
+								false, false, false, false, false, false, false });
+					} else {
+						defaultTableModel.addRow(new Object[] { defaultTableModel.getRowCount() + 1, str });
+					}
+
 				}
 
 			}

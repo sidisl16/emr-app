@@ -29,6 +29,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import com.emr.app.dtos.CaseDto;
 import com.emr.app.dtos.MedicineAdviceDto;
 import com.emr.app.dtos.PatientDto;
@@ -117,7 +119,7 @@ public class PatientPanel extends RoutingPanel {
 	private JLabel ageLbl;
 	private JLabel contactLbl;
 	private JLabel genderLbl;
-	private JPanel patientProfilePanel2;
+	private JPanel patientCasePanel;
 	private AutoSuggestionComponent medicineAutoSuggestion;
 	private AutoSuggestionComponent examinationAutoSuggestion;
 	private JProgressBar progressBar;
@@ -274,10 +276,10 @@ public class PatientPanel extends RoutingPanel {
 		patientTabbedPane.setBackground(Color.decode("#ffffff"));
 		patientTabbedPane.setFont(new Font("Open Sans", Font.BOLD, 12));
 
-		patientProfilePanel2 = new JPanel();
-		patientProfilePanel2.setBackground(Color.decode("#ffffff"));
-		patientTabbedPane.addTab("Patient Profile", patientProfilePanel2);
-		patientProfilePanel2.setLayout(null);
+		patientCasePanel = new JPanel();
+		patientCasePanel.setBackground(Color.decode("#ffffff"));
+		patientTabbedPane.addTab("Patient Profile", patientCasePanel);
+		patientCasePanel.setLayout(null);
 
 		patientDetailsPanel = new JPanel();
 		patientDetailsPanel.setFont(new Font("Open Sans", Font.PLAIN, 12));
@@ -285,25 +287,25 @@ public class PatientPanel extends RoutingPanel {
 				TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		patientDetailsPanel.setOpaque(false);
 		patientDetailsPanel.setBounds(12, 12, 600, 250);
-		patientProfilePanel2.add(patientDetailsPanel);
+		patientCasePanel.add(patientDetailsPanel);
 		patientDetailsPanel.setLayout(null);
 
-		patientNameLbl = new JLabel("Name");
-		patientNameLbl.setBounds(12, 37, 61, 23);
+		patientNameLbl = new JLabel("Name(*)");
+		patientNameLbl.setBounds(12, 43, 61, 23);
 		patientDetailsPanel.add(patientNameLbl);
 
 		patientNameTextField = new JTextField();
 		patientNameTextField.setBorder(new LineBorder(Color.decode("#262626")));
 		patientNameTextField.setFont(new Font("Open Sans", Font.PLAIN, 12));
-		patientNameTextField.setBounds(74, 35, 191, 27);
+		patientNameTextField.setBounds(74, 41, 191, 27);
 		patientDetailsPanel.add(patientNameTextField);
 		patientNameTextField.setColumns(10);
 
-		genderLbl = new JLabel("Gender");
+		genderLbl = new JLabel("Gender(*)");
 		genderLbl.setBounds(12, 93, 61, 23);
 		patientDetailsPanel.add(genderLbl);
 
-		contactLbl = new JLabel("Contact No.");
+		contactLbl = new JLabel("Contact No.(*)");
 		contactLbl.setBounds(316, 91, 74, 23);
 		patientDetailsPanel.add(contactLbl);
 
@@ -313,15 +315,15 @@ public class PatientPanel extends RoutingPanel {
 		contactTextField.setBounds(391, 89, 191, 27);
 		patientDetailsPanel.add(contactTextField);
 
-		ageLbl = new JLabel("Age");
-		ageLbl.setBounds(316, 37, 61, 23);
+		ageLbl = new JLabel("Age(*)");
+		ageLbl.setBounds(316, 43, 61, 23);
 		patientDetailsPanel.add(ageLbl);
 
 		ageTextField = new JTextField();
 		ageTextField.setBorder(new LineBorder(Color.decode("#262626")));
 		ageTextField.setFont(new Font("Open Sans", Font.PLAIN, 12));
 		ageTextField.setColumns(10);
-		ageTextField.setBounds(391, 33, 191, 27);
+		ageTextField.setBounds(391, 39, 191, 27);
 		patientDetailsPanel.add(ageTextField);
 
 		addressLbl = new JLabel("Address");
@@ -351,12 +353,17 @@ public class PatientPanel extends RoutingPanel {
 		genderComboBox.addItem("Other");
 		patientDetailsPanel.add(genderComboBox);
 
+		JLabel mandatoryLegend = new JLabel("(*) - Mandatory fields");
+		mandatoryLegend.setFont(new Font("Dialog", Font.PLAIN, 9));
+		mandatoryLegend.setBounds(12, 18, 102, 13);
+		patientDetailsPanel.add(mandatoryLegend);
+
 		chiefComplaintsPanel = new JPanel();
 		chiefComplaintsPanel.setBorder(new TitledBorder(new LineBorder(Color.decode("#262626")), "Chief Complaints",
 				TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		chiefComplaintsPanel.setBackground(Color.decode("#ffffff"));
 		chiefComplaintsPanel.setBounds(12, 289, 600, 250);
-		patientProfilePanel2.add(chiefComplaintsPanel);
+		patientCasePanel.add(chiefComplaintsPanel);
 		chiefComplaintsPanel.setLayout(new BorderLayout(0, 0));
 
 		ccTextPanel = new JPanel();
@@ -372,6 +379,7 @@ public class PatientPanel extends RoutingPanel {
 		ccTextPanel.add(ccTextLbl);
 
 		ccTextTextField = new JTextField();
+		ccTextTextField.setPreferredSize(new Dimension(5, 30));
 		ccTextTextField.setColumns(10);
 		ccTextTextField.setBorder(new LineBorder(Color.decode("#262626")));
 		ccTextTextField.setBounds(165, 0, 300, 30);
@@ -405,7 +413,7 @@ public class PatientPanel extends RoutingPanel {
 				TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		diagnosisPanel.setBackground(Color.decode("#ffffff"));
 		diagnosisPanel.setBounds(650, 289, 600, 250);
-		patientProfilePanel2.add(diagnosisPanel);
+		patientCasePanel.add(diagnosisPanel);
 		diagnosisPanel.setLayout(null);
 
 		diagnosisTextArea = new JTextArea();
@@ -419,7 +427,7 @@ public class PatientPanel extends RoutingPanel {
 		vitalsPanel.setBorder(new TitledBorder(new LineBorder(Color.decode("#262626")), "Vitals", TitledBorder.LEADING,
 				TitledBorder.TOP, null, null));
 		vitalsPanel.setBounds(650, 12, 600, 250);
-		patientProfilePanel2.add(vitalsPanel);
+		patientCasePanel.add(vitalsPanel);
 		vitalsPanel.setLayout(null);
 
 		pulseRateLbl = new JLabel("Pulse rate");
@@ -554,6 +562,7 @@ public class PatientPanel extends RoutingPanel {
 		medicineTableDataModel.addColumn("AD");
 
 		medicinetable = new JTable(medicineTableDataModel);
+		medicinetable.setVerifyInputWhenFocusTarget(false);
 		medicinetable.setRowHeight(25);
 		medicineTableScrollPane.setViewportView(medicinetable);
 
@@ -637,8 +646,11 @@ public class PatientPanel extends RoutingPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				TaskWorker.invoke(progressBar, () -> {
-					saveCaseForPatient();
-					return null;
+					boolean isRoutingRequired = saveCaseForPatient();
+					if (isRoutingRequired) {
+						displayPatientProfile(patientDto);
+					}
+					return isRoutingRequired;
 				}, new Callback() {
 
 					@Override
@@ -722,8 +734,10 @@ public class PatientPanel extends RoutingPanel {
 					}
 
 					int rows = ccTableDataModel.getRowCount();
-					for (int i = 0; i < rows; i++) {
-						ccTableDataModel.setValueAt(i + 1, i, 0);
+					if (rows > 0) {
+						for (int i = 0; i < rows; i++) {
+							ccTableDataModel.setValueAt(i + 1, i, 0);
+						}
 					}
 
 				}
@@ -760,8 +774,10 @@ public class PatientPanel extends RoutingPanel {
 					}
 
 					int rows = medicineTableDataModel.getRowCount();
-					for (int i = 0; i < rows; i++) {
-						medicineTableDataModel.setValueAt(i + 1, i, 0);
+					if (rows > 0) {
+						for (int i = 0; i < rows; i++) {
+							medicineTableDataModel.setValueAt(i + 1, i, 0);
+						}
 					}
 
 				}
@@ -800,6 +816,7 @@ public class PatientPanel extends RoutingPanel {
 		List<String> cc = new ArrayList<>();
 		List<MedicineAdviceDto> medicineAdvices = new ArrayList<>();
 		List<String> examinations = new ArrayList<>();
+		Vitals vitals = new Vitals();
 
 		if ((InputValidator.validateString(patientName) || InputValidator.validateAge(age)
 				|| InputValidator.validateContactNo(contactNo) || genderIndex < 0)
@@ -825,11 +842,14 @@ public class PatientPanel extends RoutingPanel {
 		}
 
 		if (medicineTableDataModel.getRowCount() > 0) {
+			if (medicinetable.isEditing()) {
+				medicinetable.getCellEditor().stopCellEditing();
+			}
 			for (int i = 0; i < medicineTableDataModel.getRowCount(); i++) {
-				if (Strings.isNullOrEmpty(medicineTableDataModel.getValueAt(i, 1).toString())
-						|| Strings.isNullOrEmpty(medicineTableDataModel.getValueAt(i, 2).toString())
+				if (Strings.isNullOrEmpty((@Nullable String) medicineTableDataModel.getValueAt(i, 1))
+						|| Strings.isNullOrEmpty((@Nullable String) medicineTableDataModel.getValueAt(i, 2))
 						|| !InputValidator.isInteger(medicineTableDataModel.getValueAt(i, 2).toString())
-						|| Strings.isNullOrEmpty(medicineTableDataModel.getValueAt(i, 3).toString())
+						|| Strings.isNullOrEmpty((@Nullable String) medicineTableDataModel.getValueAt(i, 3).toString())
 						|| !InputValidator.isInteger(medicineTableDataModel.getValueAt(i, 3).toString())
 						|| BinaryDecimalUtil
 								.binaryToDec(new boolean[] { (boolean) medicineTableDataModel.getValueAt(i, 4),
@@ -868,6 +888,9 @@ public class PatientPanel extends RoutingPanel {
 		caseDto.setMedicineAdvices(medicineAdvices);
 
 		if (ccTableDataModel.getRowCount() > 0) {
+			if (ccTable.isEditing()) {
+				ccTable.getCellEditor().stopCellEditing();
+			}
 			for (int i = 0; i < ccTableDataModel.getRowCount(); i++) {
 				if (!Strings.isNullOrEmpty(ccTableDataModel.getValueAt(i, 1).toString())) {
 					cc.add(ccTableDataModel.getValueAt(i, 1).toString());
@@ -875,9 +898,41 @@ public class PatientPanel extends RoutingPanel {
 			}
 		}
 
+		if (!Strings.isNullOrEmpty(bmiTextField.getText())) {
+			vitals.setBmi(Float.parseFloat(bmiTextField.getText()));
+		}
+
+		if (!Strings.isNullOrEmpty(bpDiasTextField.getText())) {
+			vitals.setBpDistolic(Float.parseFloat(bpDiasTextField.getText()));
+		}
+
+		if (!Strings.isNullOrEmpty(bpSysTextField.getText())) {
+			vitals.setBpSystolic(Float.parseFloat(bpSysTextField.getText()));
+		}
+
+		if (!Strings.isNullOrEmpty(heightTextField.getText())) {
+			vitals.setHeight(Float.parseFloat(heightTextField.getText()));
+		}
+
+		if (!Strings.isNullOrEmpty(pulseRatetextField.getText())) {
+			vitals.setPulserate(Float.parseFloat(pulseRatetextField.getText()));
+		}
+
+		if (!Strings.isNullOrEmpty(tempTextField.getText())) {
+			vitals.setTemp(Float.parseFloat(tempTextField.getText()));
+		}
+
+		if (!Strings.isNullOrEmpty(weightTextField.getText())) {
+			vitals.setWeight(Float.parseFloat(weightTextField.getText()));
+		}
+
 		caseDto.setChiefComplaints(cc);
+		caseDto.setVitals(vitals);
 
 		if (examinationTableModel.getRowCount() > 0) {
+			if (examinationTable.isEditing()) {
+				examinationTable.getCellEditor().stopCellEditing();
+			}
 			for (int i = 0; i < examinationTableModel.getRowCount(); i++) {
 				if (!Strings.isNullOrEmpty(examinationTableModel.getValueAt(i, 1).toString())) {
 					examinations.add(examinationTableModel.getValueAt(i, 1).toString());
@@ -888,7 +943,7 @@ public class PatientPanel extends RoutingPanel {
 		caseDto.setExaminationAdvices(examinations);
 		caseDto.setDiagnosis(diagnosisTextArea.getText());
 
-		uiService.createCaseData(patientDto, caseDto);
+		patientDto = uiService.createCaseData(patientDto, caseDto);
 
 		return true;
 	}
@@ -1020,11 +1075,11 @@ public class PatientPanel extends RoutingPanel {
 		}
 
 		if (medicineTableDataModel.getRowCount() > 0) {
-			IntStream.range(0, ccTable.getRowCount()).forEach(rowIndex -> medicineTableDataModel.removeRow(0));
+			IntStream.range(0, medicinetable.getRowCount()).forEach(rowIndex -> medicineTableDataModel.removeRow(0));
 		}
 
 		if (examinationTableModel.getRowCount() > 0) {
-			IntStream.range(0, ccTable.getRowCount()).forEach(rowIndex -> examinationTableModel.removeRow(0));
+			IntStream.range(0, medicinetable.getRowCount()).forEach(rowIndex -> examinationTableModel.removeRow(0));
 		}
 
 	}
@@ -1063,5 +1118,4 @@ public class PatientPanel extends RoutingPanel {
 			}
 		});
 	}
-
 }

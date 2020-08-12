@@ -22,5 +22,5 @@ public interface UIService {
 
 	public List<CaseDto> getAllCasesForPatient(PatientDto patientDto);
 
-	public void createCaseData(PatientDto patientDto, CaseDto caseDto);
+	public PatientDto createCaseData(PatientDto patientDto, CaseDto caseDto);
 }

@@ -6,8 +6,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
@@ -21,6 +20,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
+import com.emr.app.swing.service.UIService;
 import com.google.common.base.Strings;
 
 public class AutoSuggestionComponent extends JPanel {
@@ -32,12 +32,14 @@ public class AutoSuggestionComponent extends JPanel {
 	private JList<String> list;
 	private JScrollPane scrollPane;
 	private DefaultTableModel defaultTableModel;
+	private UIService uiService;
+	private boolean isMedicineAdvice;
 
-	public AutoSuggestionComponent() {
+	public AutoSuggestionComponent(UIService uiService) {
+		this.uiService = uiService;
 		setBorder(new LineBorder(Color.DARK_GRAY));
 
 		setLayout(null);
-
 		searchTextLbl = new JLabel("Search");
 		searchTextLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
 		searchTextLbl.setBounds(12, 18, 50, 28);
@@ -64,6 +66,7 @@ public class AutoSuggestionComponent extends JPanel {
 	}
 
 	public void setTable(DefaultTableModel defaultTableModel) {
+		isMedicineAdvice = defaultTableModel.getColumnCount() > 2;
 		this.defaultTableModel = defaultTableModel;
 	}
 
@@ -76,23 +79,29 @@ public class AutoSuggestionComponent extends JPanel {
 			@Override
 			public void keyReleased(KeyEvent e) {
 
-				String str = textField.getText();
-				if (Strings.isNullOrEmpty(str)) {
+				String prefix = textField.getText();
+				if (Strings.isNullOrEmpty(prefix)) {
 					listModel.clear();
 					scrollPane.setVisible(false);
 				} else {
 					listModel.clear();
-					setTextList(null);
-					scrollPane.setVisible(true);
+					if (isMedicineAdvice) {
+						setTextList(uiService.searchMedicineByPrefix(prefix));
+					} else {
+						setTextList(uiService.searchExaminationByPrefix(prefix));
+					}
+					if (!listModel.isEmpty()) {
+						scrollPane.setVisible(true);
+					}
 				}
 
 				int key = e.getKeyCode();
-				if (key == KeyEvent.VK_ENTER && !Strings.isNullOrEmpty(str) && defaultTableModel != null) {
-					if (defaultTableModel.getColumnCount() > 2) {
-						defaultTableModel.addRow(new Object[] { defaultTableModel.getRowCount() + 1, str, "0", "0",
+				if (key == KeyEvent.VK_ENTER && !Strings.isNullOrEmpty(prefix) && defaultTableModel != null) {
+					if (isMedicineAdvice) {
+						defaultTableModel.addRow(new Object[] { defaultTableModel.getRowCount() + 1, prefix, "0", "0",
 								false, false, false, false, false, false, false });
 					} else {
-						defaultTableModel.addRow(new Object[] { defaultTableModel.getRowCount() + 1, str });
+						defaultTableModel.addRow(new Object[] { defaultTableModel.getRowCount() + 1, prefix });
 					}
 
 				}
@@ -115,7 +124,12 @@ public class AutoSuggestionComponent extends JPanel {
 				String selectedText = list.getSelectedValue();
 				if (e.getKeyCode() == KeyEvent.VK_ENTER && !Strings.isNullOrEmpty(selectedText)
 						&& defaultTableModel != null) {
-					defaultTableModel.addRow(new Object[] { defaultTableModel.getRowCount() + 1, selectedText });
+					if (isMedicineAdvice) {
+						defaultTableModel.addRow(new Object[] { defaultTableModel.getRowCount() + 1, selectedText, "0",
+								"0", false, false, false, false, false, false, false });
+					} else {
+						defaultTableModel.addRow(new Object[] { defaultTableModel.getRowCount() + 1, selectedText });
+					}
 				}
 			}
 		});
@@ -124,26 +138,20 @@ public class AutoSuggestionComponent extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				String selectedText = list.getSelectedValue();
-				if (e.getClickCount() == 2 && !Strings.isNullOrEmpty(selectedText) && defaultTableModel != null) {
-					defaultTableModel.addRow(new Object[] { defaultTableModel.getRowCount() + 1, selectedText });
+				if (e.getClickCount() == 2) {
+					if (isMedicineAdvice) {
+						defaultTableModel.addRow(new Object[] { defaultTableModel.getRowCount() + 1, selectedText, "0",
+								"0", false, false, false, false, false, false, false });
+					} else {
+						defaultTableModel.addRow(new Object[] { defaultTableModel.getRowCount() + 1, selectedText });
+					}
 				}
 			}
 		});
 
 	}
 
-	public void setTextList(List<String> strlist) {
-		List<String> list = new ArrayList<>();
-		list.add("C");
-		list.add("ABC");
-		list.add("DEF");
-		list.add("PQR");
-		list.add("SDFGR");
-		list.add("NBMKL");
-		list.add("HJKFFG");
-		list.add("POST");
-		list.add("GETJ");
-		list.add("GETJjkj");
-		list.stream().forEach(string -> listModel.addElement(string));
+	private void setTextList(Set<String> strlist) {
+		strlist.stream().forEach(string -> listModel.addElement(string));
 	}
 }

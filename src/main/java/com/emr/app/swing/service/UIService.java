@@ -1,8 +1,10 @@
 package com.emr.app.swing.service;
 
 import java.util.List;
+import java.util.Set;
 
 import com.emr.app.dtos.CaseDto;
+import com.emr.app.dtos.MedicineInventoryDto;
 import com.emr.app.dtos.PatientDto;
 import com.emr.app.dtos.UserDto;
 
@@ -23,4 +25,10 @@ public interface UIService {
 	public List<CaseDto> getAllCasesForPatient(PatientDto patientDto);
 
 	public PatientDto createCaseData(PatientDto patientDto, CaseDto caseDto);
+	
+	public Set<String> searchMedicineByPrefix(String prefix);
+	
+	public Set<String> searchExaminationByPrefix(String prefix);
+	
+	public void loadAllMedicineAndExaminationDataInMemory();
 }

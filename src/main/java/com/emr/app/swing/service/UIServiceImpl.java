@@ -2,10 +2,13 @@ package com.emr.app.swing.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.emr.app.dtos.Appointment;
@@ -13,12 +16,16 @@ import com.emr.app.dtos.CaseDto;
 import com.emr.app.dtos.PatientDto;
 import com.emr.app.dtos.Status;
 import com.emr.app.dtos.UserDto;
+import com.emr.app.service.AutoSuggestionService;
 import com.emr.app.swing.views.HomeScreen;
 
 @Service
 public class UIServiceImpl implements UIService {
 
 	private static final Logger logger = Logger.getLogger(UIServiceImpl.class.getName());
+
+	@Autowired
+	private AutoSuggestionService autoSuggestionService;
 
 	@Override
 	public void startUIComponents() {
@@ -81,4 +88,20 @@ public class UIServiceImpl implements UIService {
 		return patientDto;
 	}
 
+	@Override
+	public Set<String> searchMedicineByPrefix(String prefix) {
+		Set<String> medicines = new HashSet<>();
+		autoSuggestionService.searchMedicineByPrefix(prefix).forEach(medicine -> medicines.add(medicine.toString()));
+		return medicines;
+	}
+
+	@Override
+	public Set<String> searchExaminationByPrefix(String prefix) {
+		return autoSuggestionService.searchExaminationByPrefix(prefix);
+	}
+
+	@Override
+	public void loadAllMedicineAndExaminationDataInMemory() {
+		autoSuggestionService.loadAllMedicineAndExaminationDataInMemory();
+	}
 }

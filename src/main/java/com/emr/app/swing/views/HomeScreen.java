@@ -20,10 +20,10 @@ import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
 import com.emr.app.swing.service.UIService;
@@ -79,20 +79,23 @@ public class HomeScreen extends JFrame {
 
 	public static void startUIComponent(UIService uiService) {
 		EventQueue.invokeLater(new Runnable() {
+			HomeScreen frame = new HomeScreen();
+
 			public void run() {
 				try {
 					// Maintain initialization order
-					HomeScreen frame = new HomeScreen();
 					frame.uiService = uiService;
+					frame.uiService.loadAllMedicineAndExaminationDataInMemory();
 					frame.initComponents();
 					frame.initEvents();
 					frame.initRouters();
 					frame.setVisible(true);
 
 					// Load appointment panel
-					//SwingUtilities.invokeLater(() -> frame.progressBar.setValue(100));
+					// SwingUtilities.invokeLater(() -> frame.progressBar.setValue(100));
 					Router.INSTANCE.route(AppointmentPanel.class);
 				} catch (Exception e) {
+					JOptionPane.showMessageDialog(frame, "Internal error.", "Error", JOptionPane.ERROR_MESSAGE);
 					e.printStackTrace();
 				}
 			}

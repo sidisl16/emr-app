@@ -9,12 +9,14 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -126,12 +128,13 @@ public class PatientPanel extends RoutingPanel {
 	private UIService uiService;
 	private PatientDto patientDto;
 	private CaseDto caseDto;
+	private JFileChooser fileChooser;
 
 	public PatientPanel(UIService uiService, JProgressBar progressBar) {
-		initComponents();
-		initEvents();
 		this.uiService = uiService;
 		this.progressBar = progressBar;
+		initComponents();
+		initEvents();
 	}
 
 	private void initComponents() {
@@ -139,6 +142,8 @@ public class PatientPanel extends RoutingPanel {
 		setLayout(new BorderLayout(0, 0));
 		setSize(1200, 800);
 
+		fileChooser = new JFileChooser();
+		fileChooser.setDialogTitle("Save Prescription");
 		patientHeadingPanel = new JPanel();
 		patientHeadingPanel.setBorder(new LineBorder(Color.decode("#bfbfbf")));
 		patientHeadingPanel.setBackground(Color.decode("#4d94ff"));
@@ -306,7 +311,7 @@ public class PatientPanel extends RoutingPanel {
 		patientDetailsPanel.add(genderLbl);
 
 		contactLbl = new JLabel("Contact No.(*)");
-		contactLbl.setBounds(316, 91, 74, 23);
+		contactLbl.setBounds(301, 91, 87, 23);
 		patientDetailsPanel.add(contactLbl);
 
 		contactTextField = new JTextField();
@@ -316,7 +321,7 @@ public class PatientPanel extends RoutingPanel {
 		patientDetailsPanel.add(contactTextField);
 
 		ageLbl = new JLabel("Age(*)");
-		ageLbl.setBounds(316, 43, 61, 23);
+		ageLbl.setBounds(301, 43, 61, 23);
 		patientDetailsPanel.add(ageLbl);
 
 		ageTextField = new JTextField();
@@ -336,7 +341,7 @@ public class PatientPanel extends RoutingPanel {
 		patientDetailsPanel.add(addressTextArea);
 
 		emailLbl = new JLabel("Email");
-		emailLbl.setBounds(316, 147, 74, 23);
+		emailLbl.setBounds(301, 145, 74, 23);
 		patientDetailsPanel.add(emailLbl);
 
 		emailTextField = new JTextField();
@@ -573,7 +578,7 @@ public class PatientPanel extends RoutingPanel {
 		legendLbl.setBounds(472, 250, 727, 17);
 		medicineAdvicePanel.add(legendLbl);
 
-		medicineAutoSuggestion = new AutoSuggestionComponent();
+		medicineAutoSuggestion = new AutoSuggestionComponent(uiService);
 		medicineAutoSuggestion.setTable(medicineTableDataModel);
 		medicineAutoSuggestion.setBounds(12, 25, 495, 219);
 
@@ -599,7 +604,7 @@ public class PatientPanel extends RoutingPanel {
 
 		examinationTableScrollPane.setViewportView(examinationTable);
 
-		examinationAutoSuggestion = new AutoSuggestionComponent();
+		examinationAutoSuggestion = new AutoSuggestionComponent(uiService);
 		examinationAutoSuggestion.setBounds(10, 22, 495, 219);
 		examinationAutoSuggestion.setTable(examinationTableModel);
 		testAdvicepanel.add(examinationAutoSuggestion);
@@ -681,6 +686,16 @@ public class PatientPanel extends RoutingPanel {
 			public void mouseExited(MouseEvent e) {
 				changeColor(Color.decode("#4d94ff"), downloadPanel);
 			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int userSelection = fileChooser.showSaveDialog(getParent());
+				if (userSelection == JFileChooser.APPROVE_OPTION) {
+				    File fileToSave = fileChooser.getSelectedFile();
+				    System.out.println("Save as file: " + fileToSave.getAbsolutePath());
+				}
+			}
+			
 		});
 
 		viewPanel.addMouseListener(new MouseAdapter() {
@@ -705,6 +720,11 @@ public class PatientPanel extends RoutingPanel {
 
 			@Override
 			public void mouseExited(MouseEvent e) {
+				changeColor(Color.decode("#4d94ff"), closeCasePanel);
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
 				changeColor(Color.decode("#4d94ff"), closeCasePanel);
 			}
 		});

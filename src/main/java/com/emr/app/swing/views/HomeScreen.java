@@ -90,13 +90,11 @@ public class HomeScreen extends JFrame {
 					frame.initEvents();
 					frame.initRouters();
 					frame.setVisible(true);
-
-					// Load appointment panel
-					// SwingUtilities.invokeLater(() -> frame.progressBar.setValue(100));
 					Router.INSTANCE.route(AppointmentPanel.class);
 				} catch (Exception e) {
-					JOptionPane.showMessageDialog(frame, "Internal error.", "Error", JOptionPane.ERROR_MESSAGE);
-					e.printStackTrace();
+					JOptionPane.showMessageDialog(frame, "Error while starting the application.\n" + e.getMessage(),
+							"Error", JOptionPane.ERROR_MESSAGE);
+					System.exit(ABORT);
 				}
 			}
 		});

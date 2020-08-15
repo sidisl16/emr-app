@@ -11,12 +11,13 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.emr.app.dtos.Appointment;
+import com.emr.app.dtos.AppointmentDto;
 import com.emr.app.dtos.CaseDto;
 import com.emr.app.dtos.PatientDto;
 import com.emr.app.dtos.Status;
 import com.emr.app.dtos.UserDto;
 import com.emr.app.service.AutoSuggestionService;
+import com.emr.app.service.PatientService;
 import com.emr.app.swing.views.HomeScreen;
 
 @Service
@@ -26,6 +27,9 @@ public class UIServiceImpl implements UIService {
 
 	@Autowired
 	private AutoSuggestionService autoSuggestionService;
+
+	@Autowired
+	private PatientService patientService;
 
 	@Override
 	public void startUIComponents() {
@@ -37,10 +41,10 @@ public class UIServiceImpl implements UIService {
 		logger.log(Level.INFO, "get all appointments");
 		List<PatientDto> list = new ArrayList<>();
 		list.add(new PatientDto(("PAT-" + System.currentTimeMillis()), "Siddharth Kumar", 30, "9742648307",
-				"sidisl16@gmail.com", "Male", "ISM Dhanbad", null, new Appointment(new Date(), null, false)));
+				"sidisl16@gmail.com", "Male", "ISM Dhanbad", null, new AppointmentDto(new Date(), null, false)));
 		list.add(new PatientDto(("PAT-" + System.currentTimeMillis()), "Jimmy Kumar", 22, "7252834522",
 				"jimmyKumar312@gmail.com", "Male", "Binod Nagar Dhanbad", null,
-				new Appointment(new Date(), null, false)));
+				new AppointmentDto(new Date(), null, false)));
 		return list;
 	}
 
@@ -49,11 +53,12 @@ public class UIServiceImpl implements UIService {
 
 		return new PatientDto(("PAT-" + System.currentTimeMillis()), "Jimmy Kumar", 22, "7252834522",
 				"jimmyKumar312@gmail.com", "Male", "Binod Nagar Dhanbad", null,
-				new Appointment(new Date(), null, false));
+				new AppointmentDto(new Date(), null, false));
 	}
 
 	@Override
-	public PatientDto createAppointment(PatientDto patientAppointment) {
+	public PatientDto createAppointment(PatientDto patientAppointment) throws Exception {
+		patientAppointment = patientService.storeAppointmentForPatient(patientAppointment);
 		return patientAppointment;
 	}
 
@@ -61,10 +66,10 @@ public class UIServiceImpl implements UIService {
 	public List<PatientDto> searchExistingPatient(String patientId, String name, String contactNo) {
 		List<PatientDto> list = new ArrayList<>();
 		list.add(new PatientDto(("PAT-" + System.currentTimeMillis()), "Siddharth Kumar", 30, "9742648307",
-				"sidisl16@gmail.com", "Male", "ISM Dhanbad", null, new Appointment(new Date(), null, false)));
+				"sidisl16@gmail.com", "Male", "ISM Dhanbad", null, new AppointmentDto(new Date(), null, false)));
 		list.add(new PatientDto(("PAT-" + System.currentTimeMillis()), "Jimmy Kumar", 22, "7252834522",
 				"jimmyKumar312@gmail.com", "Male", "Binod Nagar Dhanbad", null,
-				new Appointment(new Date(), null, false)));
+				new AppointmentDto(new Date(), null, false)));
 		return list;
 	}
 

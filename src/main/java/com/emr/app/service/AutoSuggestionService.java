@@ -11,4 +11,8 @@ public interface AutoSuggestionService {
 	public Set<MedicineInventoryDto> searchMedicineByPrefix(String prefix);
 
 	public Set<String> searchExaminationByPrefix(String prefix);
+
+	void addMedicineToTrie(MedicineInventoryDto medicineInventoryDto);
+
+	void addExaminationToTrie(String examination);
 }

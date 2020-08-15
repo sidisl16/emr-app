@@ -49,11 +49,7 @@ public class AppointmentPanel extends RoutingPanel {
 	private JPanel tableContainer;
 	private JPanel appointmentHeadingTextContainer;
 	private JLabel appointmentTextLbl;
-	private JPanel searchContainer;
-	private JPanel searchPanel;
 	private JTextField searchTextField;
-	private JLabel searchIcon;
-	private JPanel searchBorder;
 	private JPanel footer;
 	private JScrollPane tableScrollPane;
 	private JTable appointmentTable;
@@ -127,18 +123,6 @@ public class AppointmentPanel extends RoutingPanel {
 		appointmentTextLbl.setFont(new Font("Open Sans", Font.BOLD, 16));
 		appointmentHeadingTextContainer.add(appointmentTextLbl, BorderLayout.CENTER);
 
-		searchContainer = new JPanel();
-		searchContainer.setBackground(Color.decode("#4d94ff"));
-		appointmentHeadingPanel.add(searchContainer, BorderLayout.CENTER);
-		searchContainer.setLayout(new BorderLayout(0, 0));
-
-		searchPanel = new JPanel();
-		searchPanel.setBorder(null);
-		searchPanel.setPreferredSize(new Dimension(280, 10));
-		searchPanel.setBackground(Color.decode("#4d94ff"));
-		searchContainer.add(searchPanel, BorderLayout.EAST);
-		searchPanel.setLayout(null);
-
 		searchTextField = new JTextField();
 		searchTextField.setVerifyInputWhenFocusTarget(false);
 		searchTextField.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
@@ -150,19 +134,6 @@ public class AppointmentPanel extends RoutingPanel {
 		searchTextField.setBounds(12, 8, 210, 32);
 		searchTextField.setBorder(BorderFactory.createCompoundBorder(searchTextField.getBorder(),
 				BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-		new TextPrompt("Search patient", searchTextField);
-		searchPanel.add(searchTextField);
-
-		searchIcon = new JLabel("");
-		searchIcon.setIcon(new ImageIcon(HomeScreen.class.getResource("/icons/search-32.png")));
-		searchIcon.setBounds(221, 8, 39, 32);
-		searchPanel.add(searchIcon);
-
-		searchBorder = new JPanel();
-		searchBorder.setBorder(new LineBorder(Color.decode("#005ce6")));
-		searchBorder.setOpaque(false);
-		searchBorder.setBounds(10, 6, 248, 36);
-		searchPanel.add(searchBorder);
 
 		tableContainer = new JPanel();
 		tableContainer.setBackground(Color.decode("#ffffff"));
@@ -279,7 +250,7 @@ public class AppointmentPanel extends RoutingPanel {
 			patientAppointments.stream().forEach(patient -> {
 				uneditableTableDataModel.addRow(new Object[] { uneditableTableDataModel.getRowCount() + 1,
 						patient.getName(), patient.getAge(), patient.getGender(), patient.getPatientId(),
-						DateUtil.formatDate(patient.getAppointment().getDate()) });
+						DateUtil.formatDate(patient.getAppointmentDto().getDate()) });
 			});
 		}
 	}

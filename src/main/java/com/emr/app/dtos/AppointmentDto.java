@@ -2,20 +2,29 @@ package com.emr.app.dtos;
 
 import java.util.Date;
 
-public class Appointment {
+public class AppointmentDto {
 
+	private String appointmentId;
 	private Date date;
 	private UserDto assignedTo;
 	private boolean acknowledged;
 
-	public Appointment() {
+	public AppointmentDto() {
 	}
 
-	public Appointment(Date date, UserDto assignedTo, boolean acknowledged) {
+	public AppointmentDto(Date date, UserDto assignedTo, boolean acknowledged) {
 		super();
 		this.date = date;
 		this.assignedTo = assignedTo;
 		this.acknowledged = acknowledged;
+	}
+
+	public String getAppointmentId() {
+		return appointmentId;
+	}
+
+	public void setAppointmentId(String appointmentId) {
+		this.appointmentId = appointmentId;
 	}
 
 	public Date getDate() {

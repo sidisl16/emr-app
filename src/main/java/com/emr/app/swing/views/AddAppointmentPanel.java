@@ -32,7 +32,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.JTableHeader;
 
-import com.emr.app.dtos.Appointment;
+import com.emr.app.dtos.AppointmentDto;
 import com.emr.app.dtos.PatientDto;
 import com.emr.app.dtos.UserDto;
 import com.emr.app.swing.service.UIService;
@@ -605,7 +605,7 @@ public class AddAppointmentPanel extends RoutingPanel {
 			return null;
 		}
 
-		patientDto.setAppointment(new Appointment(DateUtil.convertLocalDateTimeToDate(appointmentTime),
+		patientDto.setAppointmentDto(new AppointmentDto(DateUtil.convertLocalDateTimeToDate(appointmentTime),
 				doctors.get(assignedIndex), false));
 		patientDto = uiService.createAppointment(patientDto);
 		return patientDto;

@@ -1,9 +1,17 @@
-package com.emr.app.dtos;
+package com.emr.app.mongo.entities;
 
-import java.util.List;
+import java.util.Date;
 
-public class PatientDto {
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document(value = "patient")
+public class Patient {
+
+	@Id
+	private ObjectId id;
+	
 	private String patientId;
 	private String name;
 	private int age;
@@ -11,24 +19,18 @@ public class PatientDto {
 	private String email;
 	private String gender;
 	private String address;
-	private List<CaseDto> prescriptionList;
-	private AppointmentDto appointment;
+	private Date createdOn;
+	private Date lastModified;
 
-	public PatientDto() {
+	public Patient() {
 	}
 
-	public PatientDto(String patientId, String name, int age, String contactNo, String email, String gender,
-			String address, List<CaseDto> prescriptionList, AppointmentDto appointment) {
-		super();
-		this.patientId = patientId;
-		this.name = name;
-		this.age = age;
-		this.contactNo = contactNo;
-		this.email = email;
-		this.gender = gender;
-		this.address = address;
-		this.prescriptionList = prescriptionList;
-		this.appointment = appointment;
+	public ObjectId getId() {
+		return id;
+	}
+
+	public void setId(ObjectId id) {
+		this.id = id;
 	}
 
 	public String getPatientId() {
@@ -87,19 +89,19 @@ public class PatientDto {
 		this.address = address;
 	}
 
-	public List<CaseDto> getPrescriptionList() {
-		return prescriptionList;
+	public Date getCreatedOn() {
+		return createdOn;
 	}
 
-	public void setPrescriptionList(List<CaseDto> prescriptionList) {
-		this.prescriptionList = prescriptionList;
+	public void setCreatedOn(Date createdOn) {
+		this.createdOn = createdOn;
 	}
 
-	public AppointmentDto getAppointmentDto() {
-		return appointment;
+	public Date getLastModified() {
+		return lastModified;
 	}
 
-	public void setAppointmentDto(AppointmentDto appointment) {
-		this.appointment = appointment;
+	public void setLastModified(Date lastModified) {
+		this.lastModified = lastModified;
 	}
 }

@@ -16,7 +16,7 @@ public interface UIService {
 
 	public PatientDto getAllCasesByPatientId(String patientId);
 
-	public PatientDto createAppointment(PatientDto patientAppointment);
+	public PatientDto createAppointment(PatientDto patientAppointment) throws Exception;
 
 	public List<PatientDto> searchExistingPatient(String patientId, String name, String contactNo);
 

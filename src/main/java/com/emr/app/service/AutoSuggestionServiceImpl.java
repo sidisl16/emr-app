@@ -60,4 +60,18 @@ public class AutoSuggestionServiceImpl implements AutoSuggestionService {
 		return response;
 	}
 
+	@Override
+	public void addMedicineToTrie(MedicineInventoryDto medicineInventoryDto) {
+		if (medicineTrie.containsKey(medicineInventoryDto.getName())) {
+			medicineTrie.get(medicineInventoryDto.getName()).add(medicineInventoryDto);
+		} else {
+			Set<MedicineInventoryDto> medicineSet = new HashSet<>();
+			medicineTrie.put(medicineInventoryDto.getName(), medicineSet);
+		}
+	}
+
+	@Override
+	public void addExaminationToTrie(String examination) {
+		examinationTrie.put(examination, examination);
+	}
 }

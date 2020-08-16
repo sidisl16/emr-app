@@ -1,7 +1,5 @@
 package com.emr.app.dtos;
 
-import java.util.List;
-
 public class PatientDto {
 
 	private String patientId;
@@ -11,24 +9,10 @@ public class PatientDto {
 	private String email;
 	private String gender;
 	private String address;
-	private List<CaseDto> prescriptionList;
-	private AppointmentDto appointment;
+	private CaseDto caseDto;
+	private AppointmentDto appointmentDto;
 
 	public PatientDto() {
-	}
-
-	public PatientDto(String patientId, String name, int age, String contactNo, String email, String gender,
-			String address, List<CaseDto> prescriptionList, AppointmentDto appointment) {
-		super();
-		this.patientId = patientId;
-		this.name = name;
-		this.age = age;
-		this.contactNo = contactNo;
-		this.email = email;
-		this.gender = gender;
-		this.address = address;
-		this.prescriptionList = prescriptionList;
-		this.appointment = appointment;
 	}
 
 	public String getPatientId() {
@@ -87,19 +71,19 @@ public class PatientDto {
 		this.address = address;
 	}
 
-	public List<CaseDto> getPrescriptionList() {
-		return prescriptionList;
+	public CaseDto getCaseDto() {
+		return caseDto;
 	}
 
-	public void setPrescriptionList(List<CaseDto> prescriptionList) {
-		this.prescriptionList = prescriptionList;
+	public void setCaseDto(CaseDto caseDto) {
+		this.caseDto = caseDto;
 	}
 
 	public AppointmentDto getAppointmentDto() {
-		return appointment;
+		return appointmentDto;
 	}
 
 	public void setAppointmentDto(AppointmentDto appointment) {
-		this.appointment = appointment;
+		this.appointmentDto = appointment;
 	}
 }

@@ -9,4 +9,6 @@ public interface CaseService {
 
 	List<CaseDto> getAllCasesByPatient(PatientDto patientDto);
 
+	PatientDto storeCaseData(PatientDto patientDto, CaseDto caseDto) throws Exception;
+
 }

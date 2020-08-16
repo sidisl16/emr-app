@@ -1,7 +1,6 @@
 package com.emr.app.swing.service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,7 +10,6 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.emr.app.dtos.AppointmentDto;
 import com.emr.app.dtos.CaseDto;
 import com.emr.app.dtos.PatientDto;
 import com.emr.app.dtos.UserDto;
@@ -46,14 +44,6 @@ public class UIServiceImpl implements UIService {
 	}
 
 	@Override
-	public PatientDto getAllCasesByPatientId(String patientId) {
-
-		return new PatientDto(("PAT-" + System.currentTimeMillis()), "Jimmy Kumar", 22, "7252834522",
-				"jimmyKumar312@gmail.com", "Male", "Binod Nagar Dhanbad", null,
-				new AppointmentDto(new Date(), null, false));
-	}
-
-	@Override
 	public PatientDto createAppointment(PatientDto patientAppointment) throws Exception {
 		patientAppointment = patientService.storeAppointmentForPatient(patientAppointment);
 		return patientAppointment;
@@ -79,8 +69,8 @@ public class UIServiceImpl implements UIService {
 	}
 
 	@Override
-	public PatientDto createCaseData(PatientDto patientDto, CaseDto caseDto) {
-		return patientDto;
+	public PatientDto createCaseData(PatientDto patientDto, CaseDto caseDto) throws Exception {
+		return caseService.storeCaseData(patientDto, caseDto);
 	}
 
 	@Override

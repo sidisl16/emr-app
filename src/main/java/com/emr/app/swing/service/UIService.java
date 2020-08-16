@@ -13,8 +13,6 @@ public interface UIService {
 
 	public List<PatientDto> getAllActiveAppointments();
 
-	public PatientDto getAllCasesByPatientId(String patientId);
-
 	public PatientDto createAppointment(PatientDto patientAppointment) throws Exception;
 
 	public List<PatientDto> searchExistingPatient(String patientId, String name, String contactNo);
@@ -23,7 +21,7 @@ public interface UIService {
 
 	public List<CaseDto> getAllCasesForPatient(PatientDto patientDto);
 
-	public PatientDto createCaseData(PatientDto patientDto, CaseDto caseDto);
+	public PatientDto createCaseData(PatientDto patientDto, CaseDto caseDto) throws Exception;
 	
 	public Set<String> searchMedicineByPrefix(String prefix);
 	

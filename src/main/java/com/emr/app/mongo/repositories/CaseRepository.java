@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 
 import com.emr.app.mongo.entities.Case;
 
 public interface CaseRepository extends MongoRepository<Case, ObjectId> {
-	List<Case> findByPatientOrderByCreatedAtDesc(String patientId);
+	@Query(value = "{ 'patient.$id' : ?0 }")
+	List<Case> findByPatientId(ObjectId id);
 }

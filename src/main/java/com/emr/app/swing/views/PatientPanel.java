@@ -686,16 +686,16 @@ public class PatientPanel extends RoutingPanel {
 			public void mouseExited(MouseEvent e) {
 				changeColor(Color.decode("#4d94ff"), downloadPanel);
 			}
-			
+
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int userSelection = fileChooser.showSaveDialog(getParent());
 				if (userSelection == JFileChooser.APPROVE_OPTION) {
-				    File fileToSave = fileChooser.getSelectedFile();
-				    System.out.println("Save as file: " + fileToSave.getAbsolutePath());
+					File fileToSave = fileChooser.getSelectedFile();
+					System.out.println("Save as file: " + fileToSave.getAbsolutePath());
 				}
 			}
-			
+
 		});
 
 		viewPanel.addMouseListener(new MouseAdapter() {
@@ -722,7 +722,7 @@ public class PatientPanel extends RoutingPanel {
 			public void mouseExited(MouseEvent e) {
 				changeColor(Color.decode("#4d94ff"), closeCasePanel);
 			}
-			
+
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				changeColor(Color.decode("#4d94ff"), closeCasePanel);
@@ -825,7 +825,7 @@ public class PatientPanel extends RoutingPanel {
 		});
 	}
 
-	private boolean saveCaseForPatient() {
+	private boolean saveCaseForPatient() throws Exception {
 
 		String patientName = patientNameTextField.getText().trim();
 		String age = ageTextField.getText().trim();
@@ -964,7 +964,7 @@ public class PatientPanel extends RoutingPanel {
 		caseDto.setDiagnosis(diagnosisTextArea.getText());
 
 		patientDto = uiService.createCaseData(patientDto, caseDto);
-
+		caseDto = patientDto.getCaseDto();
 		return true;
 	}
 
@@ -1010,7 +1010,7 @@ public class PatientPanel extends RoutingPanel {
 
 		if (caseDto.getChiefComplaints() != null && !caseDto.getChiefComplaints().isEmpty()) {
 			caseDto.getChiefComplaints().stream()
-					.forEach(cc -> ccTableDataModel.addRow(new Object[] { ccTableDataModel.getRowCount(), cc }));
+					.forEach(cc -> ccTableDataModel.addRow(new Object[] { ccTableDataModel.getRowCount() + 1, cc }));
 		}
 
 		if (!InputValidator.validateString(caseDto.getDiagnosis())) {
@@ -1057,9 +1057,10 @@ public class PatientPanel extends RoutingPanel {
 		if (caseDto.getMedicineAdvices() != null && !caseDto.getMedicineAdvices().isEmpty()) {
 			caseDto.getMedicineAdvices().stream().forEach(medicineAdvice -> {
 				boolean[] binary = BinaryDecimalUtil.decToBinary(medicineAdvice.getDosage());
-				medicineTableDataModel.addRow(new Object[] { medicineTableDataModel.getRowCount() + 1,
-						medicineAdvice.getName(), medicineAdvice.getDays(), medicineAdvice.getFrequency(), binary[0],
-						binary[1], binary[2], binary[3], binary[4], binary[5], binary[6] });
+				medicineTableDataModel
+						.addRow(new Object[] { medicineTableDataModel.getRowCount() + 1, medicineAdvice.getName(),
+								String.valueOf(medicineAdvice.getDays()), String.valueOf(medicineAdvice.getFrequency()),
+								binary[0], binary[1], binary[2], binary[3], binary[4], binary[5], binary[6] });
 			});
 		}
 	}

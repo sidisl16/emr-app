@@ -14,9 +14,9 @@ import org.springframework.stereotype.Service;
 import com.emr.app.dtos.AppointmentDto;
 import com.emr.app.dtos.CaseDto;
 import com.emr.app.dtos.PatientDto;
-import com.emr.app.dtos.Status;
 import com.emr.app.dtos.UserDto;
 import com.emr.app.service.AutoSuggestionService;
+import com.emr.app.service.CaseService;
 import com.emr.app.service.PatientService;
 import com.emr.app.swing.views.HomeScreen;
 
@@ -31,6 +31,9 @@ public class UIServiceImpl implements UIService {
 	@Autowired
 	private PatientService patientService;
 
+	@Autowired
+	private CaseService caseService;
+
 	@Override
 	public void startUIComponents() {
 		HomeScreen.startUIComponent(this);
@@ -39,13 +42,7 @@ public class UIServiceImpl implements UIService {
 	@Override
 	public List<PatientDto> getAllActiveAppointments() {
 		logger.log(Level.INFO, "get all appointments");
-		List<PatientDto> list = new ArrayList<>();
-		list.add(new PatientDto(("PAT-" + System.currentTimeMillis()), "Siddharth Kumar", 30, "9742648307",
-				"sidisl16@gmail.com", "Male", "ISM Dhanbad", null, new AppointmentDto(new Date(), null, false)));
-		list.add(new PatientDto(("PAT-" + System.currentTimeMillis()), "Jimmy Kumar", 22, "7252834522",
-				"jimmyKumar312@gmail.com", "Male", "Binod Nagar Dhanbad", null,
-				new AppointmentDto(new Date(), null, false)));
-		return list;
+		return patientService.getAllActiveAppointmentsForUser();
 	}
 
 	@Override
@@ -64,13 +61,8 @@ public class UIServiceImpl implements UIService {
 
 	@Override
 	public List<PatientDto> searchExistingPatient(String patientId, String name, String contactNo) {
-		List<PatientDto> list = new ArrayList<>();
-		list.add(new PatientDto(("PAT-" + System.currentTimeMillis()), "Siddharth Kumar", 30, "9742648307",
-				"sidisl16@gmail.com", "Male", "ISM Dhanbad", null, new AppointmentDto(new Date(), null, false)));
-		list.add(new PatientDto(("PAT-" + System.currentTimeMillis()), "Jimmy Kumar", 22, "7252834522",
-				"jimmyKumar312@gmail.com", "Male", "Binod Nagar Dhanbad", null,
-				new AppointmentDto(new Date(), null, false)));
-		return list;
+		logger.log(Level.INFO, "Searching patient - " + patientId + " " + name + " " + contactNo);
+		return patientService.searchExistingCustomer(patientId, name, contactNo);
 	}
 
 	@Override
@@ -83,9 +75,7 @@ public class UIServiceImpl implements UIService {
 
 	@Override
 	public List<CaseDto> getAllCasesForPatient(PatientDto patientDto) {
-		List<CaseDto> list = new ArrayList<>();
-		list.add(new CaseDto(null, null, null, null, null, null, new Date(), new Date(), Status.ACTIVE));
-		return list;
+		return caseService.getAllCasesByPatient(patientDto);
 	}
 
 	@Override

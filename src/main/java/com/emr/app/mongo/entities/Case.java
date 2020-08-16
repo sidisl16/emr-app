@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(value = "case")
@@ -12,6 +13,9 @@ public class Case {
 
 	@Id
 	private ObjectId id;
+
+	@DBRef
+	private Patient patient;
 	private List<String> chiefComplaints;
 	private String diagnosis;
 	private Vitals vitals;
@@ -31,6 +35,14 @@ public class Case {
 
 	public void setId(ObjectId id) {
 		this.id = id;
+	}
+
+	public Patient getPatient() {
+		return patient;
+	}
+
+	public void setPatient(Patient patient) {
+		this.patient = patient;
 	}
 
 	public List<String> getChiefComplaints() {

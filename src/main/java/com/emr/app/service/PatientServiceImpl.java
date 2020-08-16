@@ -1,5 +1,7 @@
 package com.emr.app.service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +28,8 @@ public class PatientServiceImpl implements PatientService {
 	@Autowired
 	private AppointmentRepository appointmentRepository;
 
+	private static final String PATIENT_NO_PREFIX = "PAT-";
+
 	// need users data while creating appointment
 	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	@Override
@@ -37,8 +41,13 @@ public class PatientServiceImpl implements PatientService {
 			Optional<Patient> optionalPatient = patientRepository.findByPatientId(patientDto.getPatientId());
 			if (optionalPatient.isPresent()) {
 				patient = optionalPatient.get();
+				patient.setLastModified(new Date());
 			}
+		} else {
+			patient.setCreatedOn(new Date());
+			patient.setLastModified(new Date());
 		}
+		patient.setPatientId(PATIENT_NO_PREFIX + System.currentTimeMillis());
 		patient = patientRepository.save(patient);
 		AppointmentDto appointmentDto = patientDto.getAppointmentDto();
 		Appointment appointment = new Appointment();
@@ -50,10 +59,39 @@ public class PatientServiceImpl implements PatientService {
 		patientDto.setAppointmentDto(appointmentDto);
 		return patientDto;
 	}
-	
+
+	@Override
 	public List<PatientDto> getAllActiveAppointmentsForUser() {
-		
-		return null;
+		List<PatientDto> patientAppointments = new ArrayList<>();
+		List<Appointment> appointments = appointmentRepository.findByAcknowledgedOrderByDateAsc(false);
+		appointments.stream().forEach(appointment -> {
+			PatientDto patientDto = EntityAndDtoConversionUtil.convert(appointment.getPatient(), PatientDto.class);
+			AppointmentDto appointmentDto = EntityAndDtoConversionUtil.convert(appointment, AppointmentDto.class);
+			appointmentDto.setAppointmentId(appointment.getId().toString());
+			patientDto.setAppointmentDto(appointmentDto);
+			patientAppointments.add(patientDto);
+		});
+		return patientAppointments;
+	}
+
+	@Override
+	public List<PatientDto> searchExistingCustomer(String patientId, String name, String contactNo) {
+		List<PatientDto> patients = new ArrayList<>();
+		if (!Strings.isNullOrEmpty(patientId)) {
+			Optional<Patient> optionalPatient = patientRepository.findByPatientId(patientId);
+			if (optionalPatient.isPresent()) {
+				patients.add(EntityAndDtoConversionUtil.convert(optionalPatient.get(), PatientDto.class));
+				return patients;
+			}
+		}
+
+		if (!Strings.isNullOrEmpty(name) || !Strings.isNullOrEmpty(contactNo)) {
+			List<Patient> patientsFromDb = patientRepository
+					.findByNameOrContactNoOrderByName(Strings.isNullOrEmpty(name) ? "" : name, contactNo);
+			patientsFromDb.stream()
+					.forEach(patient -> patients.add(EntityAndDtoConversionUtil.convert(patient, PatientDto.class)));
+		}
+		return patients;
 	}
 
 }

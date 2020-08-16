@@ -13,12 +13,12 @@ public class Appointment {
 	@Id
 	private ObjectId id;
 
-	@DBRef(lazy = true)
+	@DBRef
 	private Patient patient;
 
 	private Date date;
 
-	@DBRef(lazy = true)
+	@DBRef
 	private User assignedTo;
 
 	private boolean acknowledged;

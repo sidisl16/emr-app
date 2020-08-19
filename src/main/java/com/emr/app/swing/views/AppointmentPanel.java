@@ -12,7 +12,6 @@ import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
-import java.util.stream.IntStream;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -59,7 +58,6 @@ public class AppointmentPanel extends RoutingPanel {
 	private UIService uiService;
 	private UneditableTableDataModel uneditableTableDataModel;
 	private List<PatientDto> patientAppointments;
-	private Object mutex = new Object();
 
 	public AppointmentPanel(UIService uiService, JProgressBar progressBar) {
 		this.uiService = uiService;
@@ -239,21 +237,19 @@ public class AppointmentPanel extends RoutingPanel {
 	}
 
 	private void loadAppointmentTable() {
-
-		synchronized (mutex) {
-			if (uneditableTableDataModel.getRowCount() > 0) {
-				IntStream.range(0, uneditableTableDataModel.getRowCount())
-						.forEach(rowIndex -> uneditableTableDataModel.removeRow(0));
-			}
-			patientAppointments = uiService.getAllActiveAppointments();
-			if (patientAppointments != null && !patientAppointments.isEmpty()) {
-				patientAppointments.stream().forEach(patient -> {
-					uneditableTableDataModel.addRow(new Object[] { uneditableTableDataModel.getRowCount() + 1,
-							patient.getName(), patient.getAge(), patient.getGender(), patient.getPatientId(),
-							DateUtil.formatDate(patient.getAppointmentDto().getDate()) });
-				});
-			}
+		if (uneditableTableDataModel.getRowCount() > 0) {
+			uneditableTableDataModel.setRowCount(0);
 		}
+		uneditableTableDataModel.fireTableDataChanged();
+		patientAppointments = uiService.getAllActiveAppointments();
+		if (patientAppointments != null && !patientAppointments.isEmpty()) {
+			patientAppointments.stream().forEach(patient -> {
+				uneditableTableDataModel.addRow(new Object[] { uneditableTableDataModel.getRowCount() + 1,
+						patient.getName(), patient.getAge(), patient.getGender(), patient.getPatientId(),
+						DateUtil.formatDate(patient.getAppointmentDto().getDate()) });
+			});
+		}
+		uneditableTableDataModel.fireTableDataChanged();
 	}
 
 	@Override
@@ -325,5 +321,4 @@ class TextPrompt extends JLabel implements FocusListener, DocumentListener {
 
 	public void changedUpdate(DocumentEvent e) {
 	}
-
 }

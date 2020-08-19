@@ -36,6 +36,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import com.emr.app.dtos.CaseDto;
 import com.emr.app.dtos.MedicineAdviceDto;
 import com.emr.app.dtos.PatientDto;
+import com.emr.app.dtos.Status;
 import com.emr.app.dtos.Vitals;
 import com.emr.app.swing.service.UIService;
 import com.emr.app.utilities.BinaryDecimalUtil;
@@ -725,7 +726,28 @@ public class PatientPanel extends RoutingPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				changeColor(Color.decode("#4d94ff"), closeCasePanel);
+				int option = JOptionPane.showConfirmDialog(getParent(), "Are you sure want to close this case?",
+						"Confirmation", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
+				if (option == 0) {
+					TaskWorker.invoke(progressBar, () -> {
+						caseDto.setStatus(Status.CLOSED);
+						return saveCaseForPatient();
+					}, new Callback() {
+
+						@Override
+						public void onSucess(Object response) {
+							Router.INSTANCE.route(AppointmentPanel.class);
+						}
+
+						@Override
+						public void onFailure() {
+							JOptionPane.showMessageDialog(getParent(), "Internal Error", "Error",
+									JOptionPane.ERROR_MESSAGE);
+						}
+					});
+
+					Router.INSTANCE.route(AppointmentPanel.class);
+				}
 			}
 		});
 
@@ -959,7 +981,6 @@ public class PatientPanel extends RoutingPanel {
 				}
 			}
 		}
-
 		caseDto.setExaminationAdvices(examinations);
 		caseDto.setDiagnosis(diagnosisTextArea.getText());
 
@@ -1008,9 +1029,11 @@ public class PatientPanel extends RoutingPanel {
 
 		this.caseDto = caseDto;
 
-		if (caseDto.getChiefComplaints() != null && !caseDto.getChiefComplaints().isEmpty()) {
-			caseDto.getChiefComplaints().stream()
-					.forEach(cc -> ccTableDataModel.addRow(new Object[] { ccTableDataModel.getRowCount() + 1, cc }));
+		if (caseDto.getStatus() == Status.CLOSED) {
+			patientProfileText.setText(patientProfileText.getText() + " | " + Status.CLOSED);
+			closeCasePanel.setVisible(false);
+		} else {
+			patientProfileText.setText(patientProfileText.getText() + " | " + Status.ACTIVE);
 		}
 
 		if (!InputValidator.validateString(caseDto.getDiagnosis())) {
@@ -1049,6 +1072,11 @@ public class PatientPanel extends RoutingPanel {
 			}
 		}
 
+		if (caseDto.getChiefComplaints() != null && !caseDto.getChiefComplaints().isEmpty()) {
+			caseDto.getChiefComplaints().stream()
+					.forEach(cc -> ccTableDataModel.addRow(new Object[] { ccTableDataModel.getRowCount() + 1, cc }));
+		}
+
 		if (caseDto.getExaminationAdvices() != null && !caseDto.getExaminationAdvices().isEmpty()) {
 			caseDto.getExaminationAdvices().stream().forEach(examination -> examinationTableModel
 					.addRow(new Object[] { examinationTableModel.getRowCount() + 1, examination }));
@@ -1063,6 +1091,7 @@ public class PatientPanel extends RoutingPanel {
 								binary[0], binary[1], binary[2], binary[3], binary[4], binary[5], binary[6] });
 			});
 		}
+
 	}
 
 	private void resetAll() {
@@ -1100,7 +1129,8 @@ public class PatientPanel extends RoutingPanel {
 		}
 
 		if (examinationTableModel.getRowCount() > 0) {
-			IntStream.range(0, medicinetable.getRowCount()).forEach(rowIndex -> examinationTableModel.removeRow(0));
+			IntStream.range(0, examinationTableModel.getRowCount())
+					.forEach(rowIndex -> examinationTableModel.removeRow(0));
 		}
 
 	}

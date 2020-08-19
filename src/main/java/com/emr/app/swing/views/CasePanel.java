@@ -8,7 +8,6 @@ import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
-import java.util.stream.IntStream;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -213,14 +212,15 @@ public class CasePanel extends RoutingPanel {
 	private void loadCaseTableForPatient(PatientDto patientDto) {
 		this.patientDto = patientDto;
 		if (uneditableTableDataModel.getRowCount() > 0) {
-			IntStream.range(0, uneditableTableDataModel.getRowCount())
-					.forEach(rowIndex -> uneditableTableDataModel.removeRow(0));
+			uneditableTableDataModel.setRowCount(0);
 		}
+		uneditableTableDataModel.fireTableDataChanged();
 		cases = uiService.getAllCasesForPatient(patientDto);
 		cases.stream().forEach(patientCase -> {
 			uneditableTableDataModel.addRow(new Object[] { uneditableTableDataModel.getRowCount() + 1,
 					DateUtil.formatDate(patientCase.getCreatedAt()), patientCase.getStatus() });
 		});
+		uneditableTableDataModel.fireTableDataChanged();
 	}
 
 	private void displayPatientProfile(PatientDto patientDto) {

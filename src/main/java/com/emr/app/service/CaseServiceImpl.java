@@ -46,8 +46,8 @@ public class CaseServiceImpl implements CaseService {
 		return cases;
 	}
 
-	@Transactional(rollbackFor = Exception.class)
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public PatientDto storeCaseData(PatientDto patientDto, CaseDto caseDto) throws Exception {
 		Optional<Patient> optionalPatient = patientRepository.findByPatientId(patientDto.getPatientId());
 		if (optionalPatient.isPresent()) {
@@ -69,12 +69,16 @@ public class CaseServiceImpl implements CaseService {
 			caseToPersist.setLastModified(new Date());
 			if (caseToPersist.getCreatedAt() == null) {
 				caseToPersist.setCreatedAt(new Date());
+			}
+			if (caseDto.getStatus() == com.emr.app.dtos.Status.CLOSED) {
+				caseToPersist.setStatus(Status.CLOSED);
+			} else {
 				caseToPersist.setStatus(Status.ACTIVE);
 			}
 			caseToPersist = caseRepository.save(caseToPersist);
 			EntityAndDtoConversionUtil.copy(patient, patientDto);
 			EntityAndDtoConversionUtil.copy(caseToPersist, caseDto);
-			caseDto.setCaseId(caseToPersist.toString());
+			caseDto.setCaseId(caseToPersist.getId().toString());
 			patientDto.setCaseDto(caseDto);
 		} else {
 			throw new Exception("Patient not found");

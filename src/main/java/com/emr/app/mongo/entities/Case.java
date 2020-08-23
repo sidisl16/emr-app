@@ -23,6 +23,7 @@ public class Case {
 	private List<String> examinationAdvices;
 	private Date createdAt;
 	private Date lastModified;
+	@DBRef
 	private User caseHandledBy;
 	private Status status;
 

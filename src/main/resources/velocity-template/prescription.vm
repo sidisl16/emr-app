@@ -62,19 +62,19 @@ th {
       </tr>
       <tr>
          <td>
-            $patno
+            #if ($patno) $patno #end 
          </td>
          <td>
-           $patname
+           #if ($patname) $patname #end 
          </td>
          <td>
-            $patage
+           #if ($patage) $patage #end 
          </td>
          <td>
-            $patgender
+            #if ($patgender) $patgender #end 
          </td>
          <td>
-         	$patcontact
+         	#if ($patcontact) $patcontact #end
          </td>
       </tr>
    </tbody>
@@ -112,25 +112,25 @@ th {
       </tr>
       <tr>
          <td>
-            $pulserate
+            #if ($pulserate) $pulserate #end
          </td>
          <td>
-           $bpsys
+           #if ($bpsys) $bpsys #end
          </td>
          <td>
-            $bpdias
+           #if ($bpdias) $bpdias #end 
          </td>
          <td>
-            $temp
+           #if ($temp) $temp #end
          </td>
          <td>
-         	$height
+           #if ($height) $height #end 
          </td>
          <td>
-         	$weight
+           #if ($weight) $weight #end
          </td>
          <td>
-         	$bmi
+           #if ($bmi) $bmi #end
          </td>
       </tr>
    </tbody>
@@ -188,28 +188,34 @@ th {
             Days
          </td>
          <td>
-            Frequency
+            Dosage Direction
          </td>
          <td>
           	Dosage Timing
          </td>
       </tr>
-      #if($chiefcomplaints)
+      #if($medicineadvice)
+      #set( $count = 1 )
+      #foreach( $ma in $medicineadvice )
       <tr>
          <td>
-            $slno
+            $count
          </td>
          <td>
-            $medicine
+            $ma.name
          </td>
          <td>
-            $days
+            $ma.days
          </td>
          <td>
-            $freq
+            $ma.dosageDirection
          </td>
-         <td></td>
+         <td>
+         	
+         </td>
       </tr>
+      #set( $count = $count + 1 )
+      #end
       <tr>
 	      <td colspan="5" style="font-size: 8px;">
 	             <STRONG>Dosage Timings:</STRONG> SOS - if necessary, BF - Before breakfast, AF - After breakfast, BL - Before lunch, AL - After lunch, EV - Evening, BD - Before dinner, AD - After dinner

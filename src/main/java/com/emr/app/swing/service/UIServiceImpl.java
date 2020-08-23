@@ -33,7 +33,7 @@ public class UIServiceImpl implements UIService {
 
 	@Autowired
 	private CaseService caseService;
-	
+
 	@Autowired
 	private PrescriptionService prescriptionService;
 
@@ -102,6 +102,6 @@ public class UIServiceImpl implements UIService {
 
 	@Override
 	public boolean storePrescriptionPDF(PatientDto patientDto, UserDto userDto, CaseDto caseDto, File location) {
-		return true;
+		return prescriptionService.storePrescriptionPDF(patientDto, userDto, caseDto, location);
 	}
 }

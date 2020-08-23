@@ -99,7 +99,7 @@ public class AutoSuggestionComponent extends JPanel {
 				if (key == KeyEvent.VK_ENTER && !Strings.isNullOrEmpty(prefix) && defaultTableModel != null) {
 					if (isMedicineAdvice) {
 						defaultTableModel.addRow(new Object[] { defaultTableModel.getRowCount() + 1, prefix, "0", "",
-								true, false, false, false, false, false, false, false});
+								false, false, false, false, false, false, false, false });
 					} else {
 						defaultTableModel.addRow(new Object[] { defaultTableModel.getRowCount() + 1, prefix });
 					}
@@ -126,7 +126,7 @@ public class AutoSuggestionComponent extends JPanel {
 						&& defaultTableModel != null) {
 					if (isMedicineAdvice) {
 						defaultTableModel.addRow(new Object[] { defaultTableModel.getRowCount() + 1, selectedText, "0",
-								"0", false, false, false, false, false, false, false });
+								"", false, false, false, false, false, false, false, false });
 					} else {
 						defaultTableModel.addRow(new Object[] { defaultTableModel.getRowCount() + 1, selectedText });
 					}
@@ -141,7 +141,7 @@ public class AutoSuggestionComponent extends JPanel {
 				if (e.getClickCount() == 2) {
 					if (isMedicineAdvice) {
 						defaultTableModel.addRow(new Object[] { defaultTableModel.getRowCount() + 1, selectedText, "0",
-								"0", false, false, false, false, false, false, false });
+								"", false, false, false, false, false, false, false, false });
 					} else {
 						defaultTableModel.addRow(new Object[] { defaultTableModel.getRowCount() + 1, selectedText });
 					}

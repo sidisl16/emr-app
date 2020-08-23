@@ -4,7 +4,7 @@ public class BinaryDecimalUtil {
 
 	public static boolean[] decToBinary(int dec) {
 		boolean[] binary = new boolean[8];
-		int i = 6;
+		int i = binary.length - 1;
 		while (dec != 0) {
 			if (dec % 2 == 1) {
 				binary[i] = true;

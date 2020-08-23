@@ -679,6 +679,8 @@ public class PatientPanel extends RoutingPanel {
 
 		downloadPanel.addMouseListener(new MouseAdapter() {
 
+			private File fileToSave;
+
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				changeColor(Color.decode("#99c2ff"), downloadPanel);
@@ -691,13 +693,40 @@ public class PatientPanel extends RoutingPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+				fileToSave = new File(patientDto.getPatientId() + ".pdf");
+				fileChooser.setSelectedFile(fileToSave);
 				int userSelection = fileChooser.showSaveDialog(getParent());
 				if (userSelection == JFileChooser.APPROVE_OPTION) {
-					File fileToSave = fileChooser.getSelectedFile();
-					System.out.println("Save as file: " + fileToSave.getAbsolutePath());
+					fileToSave = fileChooser.getSelectedFile();
+					TaskWorker.invoke(progressBar, () -> {
+						boolean isRoutingRequired = saveCaseForPatient()
+								& uiService.storePrescriptionPDF(patientDto, null, caseDto, fileToSave);
+						if (isRoutingRequired)
+							displayPatientProfile(patientDto);
+						return isRoutingRequired;
+					}, new Callback() {
+
+						@Override
+						public void onSucess(Object response) {
+							if (response instanceof Boolean && ((Boolean) response)) {
+								JOptionPane.showMessageDialog(getParent(),
+										"PDF successfully saved at " + fileToSave.getAbsolutePath(), "Info",
+										JOptionPane.INFORMATION_MESSAGE);
+							} else {
+								JOptionPane.showMessageDialog(getParent(), "Internal Error", "Error",
+										JOptionPane.ERROR_MESSAGE);
+							}
+						}
+
+						@Override
+						public void onFailure() {
+							JOptionPane.showMessageDialog(getParent(), "Internal Error", "Error",
+									JOptionPane.ERROR_MESSAGE);
+						}
+					});
 				}
 			}
-
 		});
 
 		viewPanel.addMouseListener(new MouseAdapter() {
@@ -711,7 +740,7 @@ public class PatientPanel extends RoutingPanel {
 			public void mouseExited(MouseEvent e) {
 				changeColor(Color.decode("#4d94ff"), viewPanel);
 			}
-			
+
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				uiService.viewPrescription(patientDto, null, caseDto);
@@ -897,8 +926,6 @@ public class PatientPanel extends RoutingPanel {
 				if (Strings.isNullOrEmpty((@Nullable String) medicineTableDataModel.getValueAt(i, 1))
 						|| Strings.isNullOrEmpty((@Nullable String) medicineTableDataModel.getValueAt(i, 2))
 						|| !InputValidator.isInteger(medicineTableDataModel.getValueAt(i, 2).toString())
-						|| Strings.isNullOrEmpty((@Nullable String) medicineTableDataModel.getValueAt(i, 3).toString())
-						|| !InputValidator.isInteger(medicineTableDataModel.getValueAt(i, 3).toString())
 						|| BinaryDecimalUtil
 								.binaryToDec(new boolean[] { (boolean) medicineTableDataModel.getValueAt(i, 4),
 										(boolean) medicineTableDataModel.getValueAt(i, 5),
@@ -907,7 +934,7 @@ public class PatientPanel extends RoutingPanel {
 										(boolean) medicineTableDataModel.getValueAt(i, 8),
 										(boolean) medicineTableDataModel.getValueAt(i, 9),
 										(boolean) medicineTableDataModel.getValueAt(i, 10),
-										(boolean) medicineTableDataModel.getValueAt(i, 11)}) == 0) {
+										(boolean) medicineTableDataModel.getValueAt(i, 11) }) == 0) {
 					JOptionPane.showMessageDialog(getParent(), "Please fill medicine advice correctly.", "Warning",
 							JOptionPane.WARNING_MESSAGE);
 					return false;
@@ -923,7 +950,7 @@ public class PatientPanel extends RoutingPanel {
 								(boolean) medicineTableDataModel.getValueAt(i, 8),
 								(boolean) medicineTableDataModel.getValueAt(i, 9),
 								(boolean) medicineTableDataModel.getValueAt(i, 10),
-								(boolean) medicineTableDataModel.getValueAt(i, 11)})));
+								(boolean) medicineTableDataModel.getValueAt(i, 11) })));
 			}
 
 		}
@@ -1096,7 +1123,7 @@ public class PatientPanel extends RoutingPanel {
 				medicineTableDataModel
 						.addRow(new Object[] { medicineTableDataModel.getRowCount() + 1, medicineAdvice.getName(),
 								String.valueOf(medicineAdvice.getDays()), medicineAdvice.getDosageDirection(),
-								binary[0], binary[1], binary[2], binary[3], binary[4], binary[5], binary[6] });
+								binary[0], binary[1], binary[2], binary[3], binary[4], binary[5], binary[6], binary[7]});
 			});
 		}
 

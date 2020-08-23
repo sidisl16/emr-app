@@ -1,7 +1,10 @@
 package com.emr.app.swing.views;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.Toolkit;
 
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
@@ -31,8 +34,13 @@ public class PrescriptionView extends JFrame {
 	}
 
 	public void viewPrescription(String html) {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 1000, 2480);
+		setVisible(true);
+		setTitle("View Prescription");
+		setFont(new Font("Open Sans", Font.BOLD, 12));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(HomeScreen.class.getResource("/icons/breakfast-30.png")));
+		setBackground(Color.decode("#ffffff"));
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -52,6 +60,5 @@ public class PrescriptionView extends JFrame {
 			editorPane.setContentType("text/html");
 			editorPane.setText("<html>Page not found.</html>");
 		}
-		setVisible(true);
 	}
 }

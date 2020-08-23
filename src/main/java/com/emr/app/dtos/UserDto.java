@@ -6,6 +6,7 @@ public class UserDto {
 	private String lastname;
 	private String email;
 	private String title = "Dr. ";
+	private String qualification;
 
 	public UserDto() {
 	}
@@ -47,5 +48,13 @@ public class UserDto {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public String getQualification() {
+		return qualification;
+	}
+
+	public void setQualification(String qualification) {
+		this.qualification = qualification;
 	}
 }

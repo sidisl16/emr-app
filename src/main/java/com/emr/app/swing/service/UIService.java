@@ -1,5 +1,6 @@
 package com.emr.app.swing.service;
 
+import java.io.File;
 import java.util.List;
 import java.util.Set;
 
@@ -28,4 +29,8 @@ public interface UIService {
 	public Set<String> searchExaminationByPrefix(String prefix);
 	
 	public void loadAllMedicineAndExaminationDataInMemory();
+
+	public void viewPrescription(PatientDto patientDto, UserDto userDto, CaseDto caseDto);
+
+	public boolean storePrescriptionPDF(PatientDto patientDto, UserDto userDto, CaseDto caseDto, File location);
 }

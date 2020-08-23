@@ -13,25 +13,11 @@ public class CaseDto {
 	private List<String> examinationAdvices;
 	private Date createdAt;
 	private Date lastModified;
+	private UserDto caseHandledBy;
 	private Status status;
 
 	public CaseDto() {
 
-	}
-
-	public CaseDto(String caseId, List<String> chiefComplaints, String diagnosis, Vitals vitals,
-			List<MedicineAdviceDto> medicineAdvices, List<String> examinationAdvices, Date createdAt, Date lastModified,
-			Status status) {
-		
-		this.caseId = caseId;
-		this.chiefComplaints = chiefComplaints;
-		this.diagnosis = diagnosis;
-		this.vitals = vitals;
-		this.medicineAdvices = medicineAdvices;
-		this.examinationAdvices = examinationAdvices;
-		this.createdAt = createdAt;
-		this.lastModified = lastModified;
-		this.status = status;
 	}
 
 	public String getCaseId() {
@@ -104,5 +90,13 @@ public class CaseDto {
 
 	public void setLastModified(Date lastModified) {
 		this.lastModified = lastModified;
+	}
+
+	public UserDto getCaseHandledBy() {
+		return caseHandledBy;
+	}
+
+	public void setCaseHandledBy(UserDto caseHandledBy) {
+		this.caseHandledBy = caseHandledBy;
 	}
 }

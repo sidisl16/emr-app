@@ -23,6 +23,7 @@ public class Case {
 	private List<String> examinationAdvices;
 	private Date createdAt;
 	private Date lastModified;
+	private User caseHandledBy;
 	private Status status;
 
 	public Case() {
@@ -107,5 +108,13 @@ public class Case {
 
 	public void setLastModified(Date lastModified) {
 		this.lastModified = lastModified;
+	}
+
+	public User getCaseHandledBy() {
+		return caseHandledBy;
+	}
+
+	public void setCaseHandledBy(User caseHandledBy) {
+		this.caseHandledBy = caseHandledBy;
 	}
 }

@@ -1,5 +1,6 @@
 package com.emr.app.swing.service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +17,7 @@ import com.emr.app.dtos.UserDto;
 import com.emr.app.service.AutoSuggestionService;
 import com.emr.app.service.CaseService;
 import com.emr.app.service.PatientService;
+import com.emr.app.service.PrescriptionService;
 import com.emr.app.swing.views.HomeScreen;
 
 @Service
@@ -31,6 +33,9 @@ public class UIServiceImpl implements UIService {
 
 	@Autowired
 	private CaseService caseService;
+	
+	@Autowired
+	private PrescriptionService prescriptionService;
 
 	@Override
 	public void startUIComponents() {
@@ -88,5 +93,15 @@ public class UIServiceImpl implements UIService {
 	@Override
 	public void loadAllMedicineAndExaminationDataInMemory() {
 		autoSuggestionService.loadAllMedicineAndExaminationDataInMemory();
+	}
+
+	@Override
+	public void viewPrescription(PatientDto patientDto, UserDto userDto, CaseDto caseDto) {
+		prescriptionService.viewPrescription(patientDto, userDto, caseDto);
+	}
+
+	@Override
+	public boolean storePrescriptionPDF(PatientDto patientDto, UserDto userDto, CaseDto caseDto, File location) {
+		return true;
 	}
 }

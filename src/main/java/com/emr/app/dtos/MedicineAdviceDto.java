@@ -4,18 +4,18 @@ public class MedicineAdviceDto {
 
 	private String name;
 	private int days;
-	private int frequency;
+	private String dosageDirection;
 	private int dosage;
 
 	public MedicineAdviceDto() {
 
 	}
 
-	public MedicineAdviceDto(String name, int days, int frequency, int dosage) {
+	public MedicineAdviceDto(String name, int days, String  dosageDirection, int dosage) {
 		super();
 		this.name = name;
 		this.days = days;
-		this.frequency = frequency;
+		this.dosageDirection = dosageDirection;
 		this.dosage = dosage;
 	}
 
@@ -35,12 +35,12 @@ public class MedicineAdviceDto {
 		this.days = days;
 	}
 
-	public int getFrequency() {
-		return frequency;
+	public String getDosageDirection() {
+		return dosageDirection;
 	}
 
-	public void setFrequency(int frequency) {
-		this.frequency = frequency;
+	public void setDosageDirection(String dosageDirection) {
+		this.dosageDirection = dosageDirection;
 	}
 
 	public int getDosage() {

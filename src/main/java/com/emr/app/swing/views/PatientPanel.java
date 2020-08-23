@@ -558,7 +558,8 @@ public class PatientPanel extends RoutingPanel {
 		medicineTableDataModel.addColumn("Sl No.");
 		medicineTableDataModel.addColumn("Medicine");
 		medicineTableDataModel.addColumn("Days");
-		medicineTableDataModel.addColumn("Frequency");
+		medicineTableDataModel.addColumn("Dosage Direction");
+		medicineTableDataModel.addColumn("SOS");
 		medicineTableDataModel.addColumn("BF");
 		medicineTableDataModel.addColumn("AF");
 		medicineTableDataModel.addColumn("BL");
@@ -573,7 +574,7 @@ public class PatientPanel extends RoutingPanel {
 		medicineTableScrollPane.setViewportView(medicinetable);
 
 		legendLbl = new JLabel(
-				"BF - Before breakfast, AF - After breakfast, BL - Before lunch, AL - After lunch, EV - Evening, BD - Before dinner, AD - After dinner");
+				"SOS - if necessary, BF - Before breakfast, AF - After breakfast, BL - Before lunch, AL - After lunch, EV - Evening, BD - Before dinner, AD - After dinner");
 		legendLbl.setHorizontalAlignment(SwingConstants.CENTER);
 		legendLbl.setFont(new Font("Open Sans", Font.PLAIN, 12));
 		legendLbl.setBounds(472, 250, 727, 17);
@@ -709,6 +710,11 @@ public class PatientPanel extends RoutingPanel {
 			@Override
 			public void mouseExited(MouseEvent e) {
 				changeColor(Color.decode("#4d94ff"), viewPanel);
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				uiService.viewPrescription(patientDto, null, caseDto);
 			}
 		});
 
@@ -900,7 +906,8 @@ public class PatientPanel extends RoutingPanel {
 										(boolean) medicineTableDataModel.getValueAt(i, 7),
 										(boolean) medicineTableDataModel.getValueAt(i, 8),
 										(boolean) medicineTableDataModel.getValueAt(i, 9),
-										(boolean) medicineTableDataModel.getValueAt(i, 10) }) == 0) {
+										(boolean) medicineTableDataModel.getValueAt(i, 10),
+										(boolean) medicineTableDataModel.getValueAt(i, 11)}) == 0) {
 					JOptionPane.showMessageDialog(getParent(), "Please fill medicine advice correctly.", "Warning",
 							JOptionPane.WARNING_MESSAGE);
 					return false;
@@ -908,14 +915,15 @@ public class PatientPanel extends RoutingPanel {
 
 				medicineAdvices.add(new MedicineAdviceDto(medicineTableDataModel.getValueAt(i, 1).toString(),
 						Integer.parseInt(medicineTableDataModel.getValueAt(i, 2).toString()),
-						Integer.parseInt(medicineTableDataModel.getValueAt(i, 3).toString()),
+						medicineTableDataModel.getValueAt(i, 3).toString(),
 						BinaryDecimalUtil.binaryToDec(new boolean[] { (boolean) medicineTableDataModel.getValueAt(i, 4),
 								(boolean) medicineTableDataModel.getValueAt(i, 5),
 								(boolean) medicineTableDataModel.getValueAt(i, 6),
 								(boolean) medicineTableDataModel.getValueAt(i, 7),
 								(boolean) medicineTableDataModel.getValueAt(i, 8),
 								(boolean) medicineTableDataModel.getValueAt(i, 9),
-								(boolean) medicineTableDataModel.getValueAt(i, 10) })));
+								(boolean) medicineTableDataModel.getValueAt(i, 10),
+								(boolean) medicineTableDataModel.getValueAt(i, 11)})));
 			}
 
 		}
@@ -1087,7 +1095,7 @@ public class PatientPanel extends RoutingPanel {
 				boolean[] binary = BinaryDecimalUtil.decToBinary(medicineAdvice.getDosage());
 				medicineTableDataModel
 						.addRow(new Object[] { medicineTableDataModel.getRowCount() + 1, medicineAdvice.getName(),
-								String.valueOf(medicineAdvice.getDays()), String.valueOf(medicineAdvice.getFrequency()),
+								String.valueOf(medicineAdvice.getDays()), medicineAdvice.getDosageDirection(),
 								binary[0], binary[1], binary[2], binary[3], binary[4], binary[5], binary[6] });
 			});
 		}

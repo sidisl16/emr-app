@@ -3,7 +3,7 @@ package com.emr.app.utilities;
 public class BinaryDecimalUtil {
 
 	public static boolean[] decToBinary(int dec) {
-		boolean[] binary = new boolean[7];
+		boolean[] binary = new boolean[8];
 		int i = 6;
 		while (dec != 0) {
 			if (dec % 2 == 1) {

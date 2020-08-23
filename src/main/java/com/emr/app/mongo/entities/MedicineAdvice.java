@@ -4,7 +4,7 @@ public class MedicineAdvice {
 
 	private String name;
 	private int days;
-	private int frequency;
+	private String dosageDirection;
 	private int dosage;
 
 	public MedicineAdvice() {
@@ -27,12 +27,12 @@ public class MedicineAdvice {
 		this.days = days;
 	}
 
-	public int getFrequency() {
-		return frequency;
+	public String getDosageDirection() {
+		return dosageDirection;
 	}
 
-	public void setFrequency(int frequency) {
-		this.frequency = frequency;
+	public void setDosageDirection(String dosageDirection) {
+		this.dosageDirection = dosageDirection;
 	}
 
 	public int getDosage() {

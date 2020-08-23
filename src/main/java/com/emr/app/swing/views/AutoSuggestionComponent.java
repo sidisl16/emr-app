@@ -98,8 +98,8 @@ public class AutoSuggestionComponent extends JPanel {
 				int key = e.getKeyCode();
 				if (key == KeyEvent.VK_ENTER && !Strings.isNullOrEmpty(prefix) && defaultTableModel != null) {
 					if (isMedicineAdvice) {
-						defaultTableModel.addRow(new Object[] { defaultTableModel.getRowCount() + 1, prefix, "0", "0",
-								false, false, false, false, false, false, false });
+						defaultTableModel.addRow(new Object[] { defaultTableModel.getRowCount() + 1, prefix, "0", "",
+								true, false, false, false, false, false, false, false});
 					} else {
 						defaultTableModel.addRow(new Object[] { defaultTableModel.getRowCount() + 1, prefix });
 					}

@@ -9,6 +9,7 @@ import org.apache.velocity.app.VelocityEngine;
 import com.emr.app.dtos.CaseDto;
 import com.emr.app.dtos.PatientDto;
 import com.emr.app.dtos.UserDto;
+import com.emr.app.dtos.Vitals;
 
 public class VelocityUtil {
 
@@ -49,6 +50,7 @@ public class VelocityUtil {
 			Template t = velocityEngine.getTemplate("src/main/resources/velocity-template/prescription.vm", "UTF-8");
 			t.merge(getVelocityContext(patientDto, userDto, caseDto), writer);
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return writer.toString();
 	}
@@ -63,13 +65,18 @@ public class VelocityUtil {
 		context.put(PATIENT_AGE, patientDto.getAge());
 		context.put(PATIENT_GENDER, patientDto.getGender());
 		// context.put(PATIENT_CONTACT, value);
-		context.put(PULSE_RATE, caseDto.getVitals().getPulserate());
-		context.put(BP_SYSTOLIC, caseDto.getVitals().getBpSystolic());
-		context.put(BP_DIASTOLIC, caseDto.getVitals().getBpDistolic());
-		context.put(TEMPERATURE, caseDto.getVitals().getTemp());
-		context.put(HEIGHT, caseDto.getVitals().getHeight());
-		context.put(WEIGHT, caseDto.getVitals().getWeight());
-		context.put(BMI, caseDto.getVitals().getBmi());
+
+		Vitals vitals = caseDto.getVitals();
+
+		if (vitals != null) {
+			context.put(PULSE_RATE, vitals.getPulserate());
+			context.put(BP_SYSTOLIC, vitals.getBpSystolic());
+			context.put(BP_DIASTOLIC, vitals.getBpDistolic());
+			context.put(TEMPERATURE, vitals.getTemp());
+			context.put(HEIGHT, vitals.getHeight());
+			context.put(WEIGHT, vitals.getWeight());
+			context.put(BMI, vitals.getBmi());
+		}
 		context.put(CHIEF_COMPLAINTS,
 				caseDto.getChiefComplaints() == null || caseDto.getChiefComplaints().isEmpty() ? null
 						: caseDto.getChiefComplaints());

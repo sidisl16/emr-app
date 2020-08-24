@@ -191,7 +191,7 @@ public class CasePanel extends RoutingPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Router.INSTANCE.routeWithData(PatientPanel.class, patientDto, new CaseDto());
+				Router.INSTANCE.routeWithData(PatientPanel.class, patientDto, new CaseDto(), callingClass);
 			}
 		});
 
@@ -199,8 +199,8 @@ public class CasePanel extends RoutingPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
-					Router.INSTANCE.routeWithData(PatientPanel.class, patientDto,
-							cases.get(caseTable.getSelectedRow()));
+					Router.INSTANCE.routeWithData(PatientPanel.class, patientDto, cases.get(caseTable.getSelectedRow()),
+							callingClass);
 				}
 			}
 		});

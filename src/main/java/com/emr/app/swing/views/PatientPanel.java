@@ -130,6 +130,7 @@ public class PatientPanel extends RoutingPanel {
 	private PatientDto patientDto;
 	private CaseDto caseDto;
 	private JFileChooser fileChooser;
+	private Class callingClass;
 
 	public PatientPanel(UIService uiService, JProgressBar progressBar) {
 		this.uiService = uiService;
@@ -633,7 +634,7 @@ public class PatientPanel extends RoutingPanel {
 						"Make sure to save your changes else it will be lost.", "Confirmation",
 						JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 				if (option == 0) {
-					Router.INSTANCE.routeWithData(CasePanel.class, patientDto);
+					Router.INSTANCE.routeWithData(CasePanel.class, patientDto, callingClass);
 				}
 			}
 		});
@@ -1120,10 +1121,10 @@ public class PatientPanel extends RoutingPanel {
 		if (caseDto.getMedicineAdvices() != null && !caseDto.getMedicineAdvices().isEmpty()) {
 			caseDto.getMedicineAdvices().stream().forEach(medicineAdvice -> {
 				boolean[] binary = BinaryDecimalUtil.decToBinary(medicineAdvice.getDosage());
-				medicineTableDataModel
-						.addRow(new Object[] { medicineTableDataModel.getRowCount() + 1, medicineAdvice.getName(),
-								String.valueOf(medicineAdvice.getDays()), medicineAdvice.getDosageDirection(),
-								binary[0], binary[1], binary[2], binary[3], binary[4], binary[5], binary[6], binary[7]});
+				medicineTableDataModel.addRow(new Object[] { medicineTableDataModel.getRowCount() + 1,
+						medicineAdvice.getName(), String.valueOf(medicineAdvice.getDays()),
+						medicineAdvice.getDosageDirection(), binary[0], binary[1], binary[2], binary[3], binary[4],
+						binary[5], binary[6], binary[7] });
 			});
 		}
 
@@ -1186,10 +1187,12 @@ public class PatientPanel extends RoutingPanel {
 	@Override
 	public void execute(Object... dtos) {
 		TaskWorker.invoke(progressBar, () -> {
-			if (dtos != null && dtos[0] instanceof PatientDto && dtos[1] instanceof CaseDto) {
+			if (dtos != null && dtos[0] instanceof PatientDto && dtos[1] instanceof CaseDto
+					&& dtos[2] instanceof Class) {
 				resetAll();
 				displayPatientProfile((PatientDto) dtos[0]);
 				loadCaseData((CaseDto) dtos[1]);
+				callingClass = (Class) dtos[2];
 			}
 			return null;
 		}, new Callback() {

@@ -131,6 +131,7 @@ public class PatientPanel extends RoutingPanel {
 	private CaseDto caseDto;
 	private JFileChooser fileChooser;
 	private Class callingClass;
+	private JLabel mandatoryLegend;
 
 	public PatientPanel(UIService uiService, JProgressBar progressBar) {
 		this.uiService = uiService;
@@ -360,7 +361,7 @@ public class PatientPanel extends RoutingPanel {
 		genderComboBox.addItem("Other");
 		patientDetailsPanel.add(genderComboBox);
 
-		JLabel mandatoryLegend = new JLabel("(*) - Mandatory fields");
+		mandatoryLegend = new JLabel("(*) - Mandatory fields");
 		mandatoryLegend.setFont(new Font("Dialog", Font.PLAIN, 9));
 		mandatoryLegend.setBounds(12, 18, 102, 13);
 		patientDetailsPanel.add(mandatoryLegend);
@@ -772,7 +773,7 @@ public class PatientPanel extends RoutingPanel {
 
 						@Override
 						public void onSucess(Object response) {
-							Router.INSTANCE.route(AppointmentPanel.class);
+							Router.INSTANCE.routeWithData(CasePanel.class, patientDto, callingClass);
 						}
 
 						@Override
@@ -781,8 +782,6 @@ public class PatientPanel extends RoutingPanel {
 									JOptionPane.ERROR_MESSAGE);
 						}
 					});
-
-					Router.INSTANCE.route(AppointmentPanel.class);
 				}
 			}
 		});
@@ -1069,6 +1068,7 @@ public class PatientPanel extends RoutingPanel {
 			patientProfileText.setText(patientProfileText.getText() + " | " + Status.CLOSED);
 			closeCasePanel.setVisible(false);
 		} else {
+			closeCasePanel.setVisible(true);
 			patientProfileText.setText(patientProfileText.getText() + " | " + Status.ACTIVE);
 		}
 

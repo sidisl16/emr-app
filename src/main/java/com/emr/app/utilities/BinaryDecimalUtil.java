@@ -2,6 +2,19 @@ package com.emr.app.utilities;
 
 public class BinaryDecimalUtil {
 
+	public static final String[] dosageTimings = { "SOS", "BF", "AF", "BL", "AL", "EV", "BD", "AD" };
+
+	public static String getDosageTimingsFromDec(int dec) {
+		boolean[] binary = decToBinary(dec);
+		String res = "";
+		for (int i = 0; i < binary.length; i++) {
+			if (binary[i]) {
+				res += dosageTimings[i] + ", ";
+			}
+		}
+		return res;
+	}
+
 	public static boolean[] decToBinary(int dec) {
 		boolean[] binary = new boolean[8];
 		int i = binary.length - 1;

@@ -17,14 +17,14 @@ public class PrescriptionServiceImpl implements PrescriptionService {
 	@Override
 	public void viewPrescription(PatientDto patientDto, UserDto userDto, CaseDto caseDto) {
 		PrescriptionView view = new PrescriptionView();
-		view.viewPrescription(VelocityUtil.mapVelocityTemplate(patientDto, userDto, caseDto));
+		view.viewPrescription(VelocityUtil.mapVelocityPatientTemplate(patientDto, userDto, caseDto));
 	}
 
 	@Override
 	public boolean storePrescriptionPDF(PatientDto patientDto, UserDto userDto, CaseDto caseDto, File location) {
 		boolean isSuccess = false;
 		try {
-			PDFUtil.convertHtmlToPDF(VelocityUtil.mapVelocityTemplate(patientDto, userDto, caseDto), location);
+			PDFUtil.convertHtmlToPDF(VelocityUtil.mapVelocityPatientTemplate(patientDto, userDto, caseDto), location);
 			isSuccess = true;
 		} catch (Exception e) {
 		}

@@ -16,6 +16,8 @@ public class VelocityUtil {
 	public static final String CLINIC_NAME = "clinicname";
 	public static final String PRESCRIPTION_DATE = "date";
 	public static final String CLINIC_CONTACT = "cliniccontact";
+	public static final String DOCTOR_NAME = "doctorname";
+	public static final String DOCTOR_QUALIFICATION = "qualification";
 
 	// Variables to display patient details
 	public static final String PATIENT_NO = "patno";
@@ -38,7 +40,9 @@ public class VelocityUtil {
 	public static final String MEDICINE_ADVICE = "medicineadvice";
 	public static final String EXAMINATIONS = "examinations";
 
-	public static String mapVelocityTemplate(PatientDto patientDto, UserDto userDto, CaseDto caseDto) {
+	public static final String BIN_TO_DEC_UTILITY = "binDecUtil";
+
+	public static String mapVelocityPatientTemplate(PatientDto patientDto, UserDto userDto, CaseDto caseDto) {
 		StringWriter writer = new StringWriter();
 		try {
 			VelocityEngine velocityEngine = new VelocityEngine();
@@ -75,6 +79,7 @@ public class VelocityUtil {
 		context.put(EXAMINATIONS,
 				caseDto.getExaminationAdvices() == null || caseDto.getExaminationAdvices().isEmpty() ? null
 						: caseDto.getExaminationAdvices());
+		context.put(BIN_TO_DEC_UTILITY, new BinaryDecimalUtil());
 		return context;
 	}
 }

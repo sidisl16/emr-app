@@ -94,4 +94,13 @@ public class PatientServiceImpl implements PatientService {
 		return patients;
 	}
 
+	@Override
+	public List<PatientDto> getAllPatient() {
+		List<PatientDto> patients = new ArrayList<>();
+		patientRepository.findAllOrderByName().forEach(patient -> {
+			patients.add(EntityAndDtoConversionUtil.convert(patient, PatientDto.class));
+		});
+		return patients;
+	}
+
 }

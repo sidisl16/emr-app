@@ -33,4 +33,6 @@ public interface UIService {
 	public void viewPrescription(PatientDto patientDto, UserDto userDto, CaseDto caseDto);
 
 	public boolean storePrescriptionPDF(PatientDto patientDto, UserDto userDto, CaseDto caseDto, File location);
+
+	List<PatientDto> getAllPatient();
 }

@@ -7,8 +7,6 @@ import java.awt.ComponentOrientation;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
@@ -24,13 +22,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.table.JTableHeader;
-import javax.swing.text.Document;
-import javax.swing.text.JTextComponent;
 
 import com.emr.app.dtos.PatientDto;
 import com.emr.app.swing.service.UIService;
@@ -225,7 +218,7 @@ public class AppointmentPanel extends RoutingPanel {
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
 					PatientDto patientDto = patientAppointments.get(appointmentTable.getSelectedRow());
-					Router.INSTANCE.routeWithData(CasePanel.class, patientDto);
+					Router.INSTANCE.routeWithData(CasePanel.class, patientDto, AppointmentPanel.class);
 				}
 
 			}
@@ -272,53 +265,5 @@ public class AppointmentPanel extends RoutingPanel {
 
 	@Override
 	public void execute(Object... dtos) {
-	}
-}
-
-class TextPrompt extends JLabel implements FocusListener, DocumentListener {
-
-	private static final long serialVersionUID = 1L;
-	JTextComponent component;
-	Document document;
-
-	public TextPrompt(String text, JTextComponent component) {
-		this.component = component;
-		document = component.getDocument();
-
-		setText(text);
-		setFont(new Font("Open Sans", Font.ITALIC, 12));
-		setForeground(Color.decode("#4d94ff"));
-		setBorder(new EmptyBorder(component.getInsets()));
-
-		component.addFocusListener(this);
-		document.addDocumentListener(this);
-
-		component.add(this);
-	}
-
-	public void checkForPrompt() {
-		if (document.getLength() == 0)
-			setSize(component.getSize());
-		else
-			setSize(0, 0);
-	}
-
-	public void focusGained(FocusEvent e) {
-		checkForPrompt();
-	}
-
-	public void focusLost(FocusEvent e) {
-		setSize(0, 0);
-	}
-
-	public void insertUpdate(DocumentEvent e) {
-		checkForPrompt();
-	}
-
-	public void removeUpdate(DocumentEvent e) {
-		checkForPrompt();
-	}
-
-	public void changedUpdate(DocumentEvent e) {
 	}
 }

@@ -11,4 +11,6 @@ public interface PatientService {
 	List<PatientDto> getAllActiveAppointmentsForUser();
 
 	List<PatientDto> searchExistingCustomer(String patientId, String name, String contactNo);
+
+	List<PatientDto> getAllPatient();
 }

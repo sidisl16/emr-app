@@ -49,6 +49,7 @@ public class CasePanel extends RoutingPanel {
 	private JLabel patientProfileText;
 	private List<CaseDto> cases;
 	private PatientDto patientDto;
+	private Class callingClass;
 
 	public CasePanel(UIService uiService, JProgressBar progressBar) {
 		this.uiService = uiService;
@@ -172,7 +173,7 @@ public class CasePanel extends RoutingPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Router.INSTANCE.route(AppointmentPanel.class);
+				Router.INSTANCE.route(callingClass);
 			}
 		});
 
@@ -241,9 +242,10 @@ public class CasePanel extends RoutingPanel {
 
 	@Override
 	public void execute(Object... dtos) {
-		if (dtos != null && dtos[0] instanceof PatientDto) {
+		if (dtos != null && dtos[0] instanceof PatientDto && dtos[1] instanceof Class) {
 			TaskWorker.invoke(progressBar, () -> {
 				PatientDto patientDto = (PatientDto) dtos[0];
+				callingClass = (Class) dtos[1];
 				displayPatientProfile(patientDto);
 				loadCaseTableForPatient(patientDto);
 				return null;

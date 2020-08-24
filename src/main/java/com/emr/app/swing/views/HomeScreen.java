@@ -77,6 +77,7 @@ public class HomeScreen extends JFrame {
 	private CasePanel casePanel;
 	private Map<String, JPanel> btnGroup;
 	private String btnSelected = "";
+	private RoutingPanel historyPanel;
 
 	public static void startUIComponent(UIService uiService) {
 		EventQueue.invokeLater(new Runnable() {
@@ -94,6 +95,7 @@ public class HomeScreen extends JFrame {
 					frame.markActive("home");
 					Router.INSTANCE.route(AppointmentPanel.class);
 				} catch (Exception e) {
+					e.printStackTrace();
 					JOptionPane.showMessageDialog(frame, "Error while starting the application.\n" + e.getMessage(),
 							"Error", JOptionPane.ERROR_MESSAGE);
 					System.exit(ABORT);
@@ -116,6 +118,9 @@ public class HomeScreen extends JFrame {
 
 		patientPanel = new PatientPanel(uiService, progressBar);
 		Router.INSTANCE.registerRoute(patientPanel);
+
+		historyPanel = new HistoryPanel(uiService, progressBar);
+		Router.INSTANCE.registerRoute(historyPanel);
 
 	}
 
@@ -497,6 +502,7 @@ public class HomeScreen extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				markActive("history");
+				Router.INSTANCE.route(HistoryPanel.class);
 			}
 		});
 

@@ -104,4 +104,9 @@ public class UIServiceImpl implements UIService {
 	public boolean storePrescriptionPDF(PatientDto patientDto, UserDto userDto, CaseDto caseDto, File location) {
 		return prescriptionService.storePrescriptionPDF(patientDto, userDto, caseDto, location);
 	}
+	
+	@Override
+	public List<PatientDto> getAllPatient() {
+		return patientService.getAllPatient();
+	}
 }

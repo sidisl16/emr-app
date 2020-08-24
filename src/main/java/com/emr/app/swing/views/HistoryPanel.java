@@ -212,7 +212,7 @@ public class HistoryPanel extends RoutingPanel {
 	private void reset() {
 		patContactTextField.setText("");
 		patIdTextField.setText("");
-		nametextField.getText();
+		nametextField.setText("");
 		patients = uiService.getAllPatient();
 		loadPatientTable();
 	}

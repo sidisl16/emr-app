@@ -11,12 +11,11 @@ import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.ImageIcon;
-import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
@@ -76,6 +75,8 @@ public class HomeScreen extends JFrame {
 	private JProgressBar progressBar;
 	private UIService uiService;
 	private CasePanel casePanel;
+	private Map<String, JPanel> btnGroup;
+	private String btnSelected = "";
 
 	public static void startUIComponent(UIService uiService) {
 		EventQueue.invokeLater(new Runnable() {
@@ -90,6 +91,7 @@ public class HomeScreen extends JFrame {
 					frame.initEvents();
 					frame.initRouters();
 					frame.setVisible(true);
+					frame.markActive("home");
 					Router.INSTANCE.route(AppointmentPanel.class);
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(frame, "Error while starting the application.\n" + e.getMessage(),
@@ -162,6 +164,7 @@ public class HomeScreen extends JFrame {
 		maximizeIcon.setHorizontalTextPosition(SwingConstants.CENTER);
 		maximizeIcon.setIcon(new ImageIcon(HomeScreen.class.getResource("/icons/maximize-24.png")));
 		maximizeBtn.add(maximizeIcon, BorderLayout.CENTER);
+		btnGroup = new HashMap<>();
 
 		closeBtn = new JPanel();
 		closeBtn.setBorder(null);
@@ -266,6 +269,7 @@ public class HomeScreen extends JFrame {
 		settingsBtn.setPreferredSize(new Dimension(10, 53));
 		settingsBtn.setLayout(new BorderLayout(0, 0));
 		settingsBtn.setBackground(Color.decode("#0d0d0d"));
+		addBtnToGrp("settings", settingsBtn);
 		// settingsBtn.setBorder(new LineBorder(Color.decode("#737373")));
 		menuContainer.add(settingsBtn, BorderLayout.SOUTH);
 
@@ -299,6 +303,7 @@ public class HomeScreen extends JFrame {
 		lblHome.setHorizontalTextPosition(SwingConstants.CENTER);
 		lblHome.setHorizontalAlignment(SwingConstants.CENTER);
 		homeBtn.add(lblHome, BorderLayout.SOUTH);
+		addBtnToGrp("home", homeBtn);
 
 		historyBtn = new JPanel();
 		historyBtn.setBorder(new LineBorder(Color.decode("#737373")));
@@ -306,6 +311,7 @@ public class HomeScreen extends JFrame {
 		historyBtn.setBounds(0, 103, 80, 53);
 		subMenuContainer.add(historyBtn);
 		historyBtn.setLayout(new BorderLayout(0, 0));
+		addBtnToGrp("history", historyBtn);
 
 		historyIcon = new JLabel("");
 		historyIcon.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -326,6 +332,7 @@ public class HomeScreen extends JFrame {
 		inventoryBtn.setBounds(0, 168, 80, 53);
 		subMenuContainer.add(inventoryBtn);
 		inventoryBtn.setLayout(new BorderLayout(0, 0));
+		addBtnToGrp("inventory", inventoryBtn);
 
 		inventoryIcon = new JLabel("");
 		inventoryIcon.setIcon(new ImageIcon(HomeScreen.class.getResource("/icons/inventory-32.png")));
@@ -346,6 +353,7 @@ public class HomeScreen extends JFrame {
 		usersBtn.setBounds(0, 233, 80, 53);
 		subMenuContainer.add(usersBtn);
 		usersBtn.setLayout(new BorderLayout(0, 0));
+		addBtnToGrp("user", usersBtn);
 
 		usersIcon = new JLabel("");
 		usersIcon.setIcon(new ImageIcon(HomeScreen.class.getResource("/icons/users-32.png")));
@@ -462,7 +470,14 @@ public class HomeScreen extends JFrame {
 
 			@Override
 			public void mouseExited(MouseEvent e) {
-				changeColor(Color.decode("#0d0d0d"), homeBtn);
+				if (!btnSelected.equals("home"))
+					changeColor(Color.decode("#0d0d0d"), homeBtn);
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Router.INSTANCE.route(AppointmentPanel.class);
+				markActive("home");
 			}
 		});
 
@@ -475,7 +490,13 @@ public class HomeScreen extends JFrame {
 
 			@Override
 			public void mouseExited(MouseEvent e) {
-				changeColor(Color.decode("#0d0d0d"), historyBtn);
+				if (!btnSelected.equals("history"))
+					changeColor(Color.decode("#0d0d0d"), historyBtn);
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				markActive("history");
 			}
 		});
 
@@ -488,7 +509,13 @@ public class HomeScreen extends JFrame {
 
 			@Override
 			public void mouseExited(MouseEvent e) {
-				changeColor(Color.decode("#0d0d0d"), inventoryBtn);
+				if (!btnSelected.equals("inventory"))
+					changeColor(Color.decode("#0d0d0d"), inventoryBtn);
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				markActive("inventory");
 			}
 		});
 
@@ -501,7 +528,13 @@ public class HomeScreen extends JFrame {
 
 			@Override
 			public void mouseExited(MouseEvent e) {
-				changeColor(Color.decode("#0d0d0d"), usersBtn);
+				if (!btnSelected.equals("user"))
+					changeColor(Color.decode("#0d0d0d"), usersBtn);
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				markActive("user");
 			}
 		});
 
@@ -514,35 +547,33 @@ public class HomeScreen extends JFrame {
 
 			@Override
 			public void mouseExited(MouseEvent e) {
-				changeColor(Color.decode("#0d0d0d"), settingsBtn);
+				if (!btnSelected.equals("settings"))
+					changeColor(Color.decode("#0d0d0d"), settingsBtn);
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				markActive("settings");
 			}
 		});
+	}
+
+	private void markActive(String btnName) {
+		btnSelected = btnName;
+		for (Entry<String, JPanel> entry : btnGroup.entrySet()) {
+			if (entry.getKey().equals(btnName)) {
+				changeColor(Color.decode("#4d4d4d"), entry.getValue());
+			} else {
+				changeColor(Color.decode("#0d0d0d"), entry.getValue());
+			}
+		}
+	}
+
+	private void addBtnToGrp(String btnName, JPanel btn) {
+		btnGroup.put(btnName, btn);
 	}
 
 	private void changeColor(Color color, Component component) {
 		component.setBackground(color);
 	}
-}
-
-class DateLabelFormatter extends AbstractFormatter {
-
-	private static final long serialVersionUID = 1L;
-	private String datePattern = "yyyy-MM-dd";
-	private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
-
-	@Override
-	public Object stringToValue(String text) throws ParseException {
-		return dateFormatter.parseObject(text);
-	}
-
-	@Override
-	public String valueToString(Object value) throws ParseException {
-		if (value != null) {
-			Calendar cal = (Calendar) value;
-			return dateFormatter.format(cal.getTime());
-		}
-
-		return "";
-	}
-
 }

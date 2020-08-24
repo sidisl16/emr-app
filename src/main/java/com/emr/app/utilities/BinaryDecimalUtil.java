@@ -9,7 +9,10 @@ public class BinaryDecimalUtil {
 		String res = "";
 		for (int i = 0; i < binary.length; i++) {
 			if (binary[i]) {
-				res += dosageTimings[i] + ", ";
+				if (res.equals(""))
+					res += dosageTimings[i];
+				else
+					res += ", " + dosageTimings[i];
 			}
 		}
 		return res;

@@ -39,7 +39,6 @@ public class VelocityUtil {
 	public static final String DIAGNOSIS = "diagnosis";
 	public static final String MEDICINE_ADVICE = "medicineadvice";
 	public static final String EXAMINATIONS = "examinations";
-
 	public static final String BIN_TO_DEC_UTILITY = "binDecUtil";
 
 	public static String mapVelocityPatientTemplate(PatientDto patientDto, UserDto userDto, CaseDto caseDto) {

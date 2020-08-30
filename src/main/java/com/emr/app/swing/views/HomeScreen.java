@@ -78,6 +78,7 @@ public class HomeScreen extends JFrame {
 	private Map<String, JPanel> btnGroup;
 	private String btnSelected = "";
 	private RoutingPanel historyPanel;
+	private RoutingPanel inventoryPanel;
 
 	public static void startUIComponent(UIService uiService) {
 		EventQueue.invokeLater(new Runnable() {
@@ -121,6 +122,9 @@ public class HomeScreen extends JFrame {
 
 		historyPanel = new HistoryPanel(uiService, progressBar);
 		Router.INSTANCE.registerRoute(historyPanel);
+
+		inventoryPanel = new InventoryPanel(uiService, progressBar);
+		Router.INSTANCE.registerRoute(inventoryPanel);
 
 	}
 
@@ -522,6 +526,7 @@ public class HomeScreen extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				markActive("inventory");
+				Router.INSTANCE.route(InventoryPanel.class);
 			}
 		});
 

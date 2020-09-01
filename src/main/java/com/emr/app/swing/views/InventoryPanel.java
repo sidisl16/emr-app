@@ -74,6 +74,15 @@ public class InventoryPanel extends RoutingPanel {
 	private JLabel lblUpload;
 	private JPanel resetBtn;
 	private JLabel resetLbl;
+	private JPanel examinationAddHeaderpanel;
+	private JTextField examNameTextField;
+	private JTextField examDescTextField;
+	private JPanel addExamBtn;
+	private JLabel addExamLbl;
+	private JScrollPane examScrollPane;
+	private JTable examTable;
+	private JLabel examNamelbl;
+	private JLabel lblDescription;
 
 	public InventoryPanel(UIService uiService, JProgressBar progressBar) {
 		this.uiService = uiService;
@@ -191,7 +200,7 @@ public class InventoryPanel extends RoutingPanel {
 		searchMedicinePanel.add(resetBtn);
 		resetBtn.setLayout(new BorderLayout(0, 0));
 
-		resetLbl = new JLabel("Reset");
+		resetLbl = new JLabel("Refresh");
 		resetLbl.setHorizontalAlignment(SwingConstants.CENTER);
 		resetLbl.setForeground(Color.WHITE);
 		resetLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
@@ -202,7 +211,7 @@ public class InventoryPanel extends RoutingPanel {
 		tablePanel.setBorder(new EmptyBorder(10, 25, 0, 0));
 		tablePanel.setLayout(new BorderLayout(0, 0));
 		scrollPane = new JScrollPane();
-		scrollPane.setPreferredSize(new Dimension(700, 3));
+		scrollPane.setPreferredSize(new Dimension(750, 3));
 		tablePanel.add(scrollPane, BorderLayout.WEST);
 		medicineStockPanel.add(tablePanel, BorderLayout.WEST);
 
@@ -345,6 +354,58 @@ public class InventoryPanel extends RoutingPanel {
 		lblUpload.setFont(new Font("Open Sans", Font.BOLD, 12));
 		csvTemplateUploadButton.add(lblUpload, BorderLayout.CENTER);
 		tabbedPane.addTab("Examination", examination);
+		examination.setLayout(new BorderLayout(0, 0));
+
+		examinationAddHeaderpanel = new JPanel();
+		examinationAddHeaderpanel.setBorder(new LineBorder(Color.DARK_GRAY));
+		examinationAddHeaderpanel.setPreferredSize(new Dimension(10, 60));
+		examinationAddHeaderpanel.setOpaque(false);
+		examination.add(examinationAddHeaderpanel, BorderLayout.NORTH);
+		examinationAddHeaderpanel.setLayout(null);
+
+		examNameTextField = new JTextField();
+		examNameTextField.setPreferredSize(new Dimension(5, 64));
+		examNameTextField.setColumns(10);
+		examNameTextField.setBorder(new LineBorder(Color.DARK_GRAY));
+		examNameTextField.setBounds(54, 12, 200, 36);
+		examinationAddHeaderpanel.add(examNameTextField);
+
+		examNamelbl = new JLabel("Name");
+		examNamelbl.setFont(new Font("Open Sans", Font.BOLD, 12));
+		examNamelbl.setBounds(12, 21, 36, 17);
+		examinationAddHeaderpanel.add(examNamelbl);
+
+		lblDescription = new JLabel("Description");
+		lblDescription.setFont(new Font("Open Sans", Font.BOLD, 12));
+		lblDescription.setBounds(304, 21, 83, 17);
+		examinationAddHeaderpanel.add(lblDescription);
+
+		examDescTextField = new JTextField();
+		examDescTextField.setPreferredSize(new Dimension(5, 64));
+		examDescTextField.setColumns(10);
+		examDescTextField.setBorder(new LineBorder(Color.DARK_GRAY));
+		examDescTextField.setBounds(388, 12, 200, 36);
+		examinationAddHeaderpanel.add(examDescTextField);
+
+		addExamBtn = new JPanel();
+		addExamBtn.setBackground(new Color(77, 148, 255));
+		addExamBtn.setBounds(623, 13, 100, 35);
+		examinationAddHeaderpanel.add(addExamBtn);
+		addExamBtn.setLayout(new BorderLayout(0, 0));
+
+		addExamLbl = new JLabel("Add");
+		addExamLbl.setForeground(Color.WHITE);
+		addExamLbl.setHorizontalAlignment(SwingConstants.CENTER);
+		addExamLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
+		addExamBtn.add(addExamLbl, BorderLayout.CENTER);
+
+		examScrollPane = new JScrollPane();
+		examination.add(examScrollPane, BorderLayout.CENTER);
+
+		examTable = new JTable();
+		examTable.setModel(new DefaultTableModel(new Object[][] {},
+				new String[] { "Sl. no.", "Examination Name", "Description" }));
+		examScrollPane.setViewportView(examTable);
 		inventoryBodyPanel.add(tabbedPane, BorderLayout.CENTER);
 	}
 
@@ -449,6 +510,24 @@ public class InventoryPanel extends RoutingPanel {
 			@Override
 			public void mouseExited(MouseEvent e) {
 				changeColor(Color.decode("#4d94ff"), addMedButton);
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+
+			}
+		});
+
+		addExamBtn.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				changeColor(Color.decode("#99c2ff"), addExamBtn);
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				changeColor(Color.decode("#4d94ff"), addExamBtn);
 			}
 
 			@Override

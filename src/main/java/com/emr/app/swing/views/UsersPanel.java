@@ -211,10 +211,9 @@ public class UsersPanel extends RoutingPanel {
 		addUserBodyPanel.setLayout(null);
 
 		addUserPanel = new JPanel();
-		addUserPanel.setBorder(new TitledBorder(new LineBorder(new Color(64, 64, 64)), "Add/Update User",
-				TitledBorder.LEADING, TitledBorder.TOP, null, Color.DARK_GRAY));
+		addUserPanel.setBorder(new TitledBorder(new LineBorder(new Color(64, 64, 64)), "Add User", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(64, 64, 64)));
 		addUserPanel.setOpaque(false);
-		addUserPanel.setBounds(49, 23, 344, 371);
+		addUserPanel.setBounds(49, 23, 344, 345);
 		addUserBodyPanel.add(addUserPanel);
 		addUserPanel.setLayout(null);
 
@@ -273,7 +272,7 @@ public class UsersPanel extends RoutingPanel {
 
 		qualFieldInfo = new JLabel("(*) Marked will be displayed in Prescription, ensure to fill proper value");
 		qualFieldInfo.setFont(new Font("Open Sans", Font.BOLD, 8));
-		qualFieldInfo.setBounds(12, 341, 298, 17);
+		qualFieldInfo.setBounds(12, 313, 298, 17);
 		addUserPanel.add(qualFieldInfo);
 
 		roleComboBox = new JComboBox();
@@ -282,7 +281,7 @@ public class UsersPanel extends RoutingPanel {
 
 		addUserBtn = new JPanel();
 		addUserBtn.setBackground(new Color(77, 148, 255));
-		addUserBtn.setBounds(210, 280, 100, 35);
+		addUserBtn.setBounds(210, 266, 100, 35);
 		addUserPanel.add(addUserBtn);
 		addUserBtn.setLayout(new BorderLayout(0, 0));
 

@@ -7,32 +7,40 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
+import com.emr.app.dtos.UserDto;
 import com.emr.app.swing.service.UIService;
 
-public class MyUserPanel extends RoutingPanel {
+public class SettingsPanel extends RoutingPanel {
+
 
 	private static final long serialVersionUID = 1L;
-	private JPanel usersHeadingPanel;
-	private JPanel usersHeadingTextContainer;
-	private JLabel usersTextLbl;
-	private JPanel usersBody;
+	private JPanel settingsHeadingPanel;
+	private JPanel settingsHeadingTextContainer;
+	private JLabel settingsTextLbl;
+	private JPanel settingsBody;
 	private JPanel footer;
 	private JLabel copyrightInfo;
 	private UIService uiService;
 	private JProgressBar progressBar;
-	private JPanel userBodyPanel;
-	private JPanel addUserPanel;
+	private JPanel settingsBodyPanel;
+	private JPanel appSettingsPanel;
 	private JLabel nameLbl;
 	private JTextField textField;
 	private JLabel emailLbl;
@@ -41,9 +49,7 @@ public class MyUserPanel extends RoutingPanel {
 	private JTextField qualificationTextField;
 	private JLabel contactLbl;
 	private JTextField contactTextField;
-	private JLabel roleLbl;
 	private JLabel qualFieldInfo;
-	private JComboBox roleComboBox;
 	private JPanel addUserBtn;
 	private JLabel lblUpdate;
 	private JPanel resetPasswordPanel;
@@ -55,14 +61,11 @@ public class MyUserPanel extends RoutingPanel {
 	private JPasswordField existingPasswordField;
 	private JPasswordField newPasswordField;
 	private JPasswordField confirmPasswordField;
-	private JLabel signatureLbl;
-	private JPanel uploadSignBtn;
-	private JLabel browseSignLbl;
 
 	/**
 	 * Create the panel.
 	 */
-	public MyUserPanel(UIService uiService, JProgressBar progressBar) {
+	public SettingsPanel(UIService uiService, JProgressBar progressBar) {
 		initComponents();
 		initEvents();
 		this.uiService = uiService;
@@ -74,36 +77,36 @@ public class MyUserPanel extends RoutingPanel {
 		setLayout(new BorderLayout(0, 0));
 		setSize(1300, 600);
 
-		usersHeadingPanel = new JPanel();
-		usersHeadingPanel.setBorder(new LineBorder(Color.decode("#bfbfbf")));
-		usersHeadingPanel.setBackground(Color.decode("#4d94ff"));
-		usersHeadingPanel.setPreferredSize(new Dimension(70, 50));
-		usersHeadingPanel.setLayout(new BorderLayout(0, 0));
+		settingsHeadingPanel = new JPanel();
+		settingsHeadingPanel.setBorder(new LineBorder(Color.decode("#bfbfbf")));
+		settingsHeadingPanel.setBackground(Color.decode("#4d94ff"));
+		settingsHeadingPanel.setPreferredSize(new Dimension(70, 50));
+		settingsHeadingPanel.setLayout(new BorderLayout(0, 0));
 
-		usersHeadingTextContainer = new JPanel();
-		usersHeadingTextContainer.setBackground(Color.decode("#4d94ff"));
-		usersHeadingTextContainer.setPreferredSize(new Dimension(200, 10));
-		usersHeadingPanel.add(usersHeadingTextContainer, BorderLayout.WEST);
-		usersHeadingTextContainer.setLayout(new BorderLayout(0, 0));
+		settingsHeadingTextContainer = new JPanel();
+		settingsHeadingTextContainer.setBackground(Color.decode("#4d94ff"));
+		settingsHeadingTextContainer.setPreferredSize(new Dimension(200, 10));
+		settingsHeadingPanel.add(settingsHeadingTextContainer, BorderLayout.WEST);
+		settingsHeadingTextContainer.setLayout(new BorderLayout(0, 0));
 
-		usersTextLbl = new JLabel("Account Settings");
-		usersTextLbl.setForeground(Color.decode("#ffffff"));
-		usersTextLbl.setHorizontalTextPosition(SwingConstants.CENTER);
-		usersTextLbl.setHorizontalAlignment(SwingConstants.CENTER);
-		usersTextLbl.setFont(new Font("Open Sans", Font.BOLD, 16));
-		usersHeadingTextContainer.add(usersTextLbl, BorderLayout.CENTER);
+		settingsTextLbl = new JLabel("Settings");
+		settingsTextLbl.setForeground(Color.decode("#ffffff"));
+		settingsTextLbl.setHorizontalTextPosition(SwingConstants.CENTER);
+		settingsTextLbl.setHorizontalAlignment(SwingConstants.CENTER);
+		settingsTextLbl.setFont(new Font("Open Sans", Font.BOLD, 16));
+		settingsHeadingTextContainer.add(settingsTextLbl, BorderLayout.CENTER);
 
-		add(usersHeadingPanel, BorderLayout.NORTH);
+		add(settingsHeadingPanel, BorderLayout.NORTH);
 
-		usersBody = new JPanel();
-		usersBody.setBackground(Color.decode("#ffffff"));
-		usersBody.setLayout(new BorderLayout(0, 0));
-		add(usersBody, BorderLayout.CENTER);
+		settingsBody = new JPanel();
+		settingsBody.setBackground(Color.decode("#ffffff"));
+		settingsBody.setLayout(new BorderLayout(0, 0));
+		add(settingsBody, BorderLayout.CENTER);
 
 		footer = new JPanel();
 		footer.setBackground(Color.decode("#ffffff"));
 		footer.setPreferredSize(new Dimension(10, 20));
-		usersBody.add(footer, BorderLayout.SOUTH);
+		settingsBody.add(footer, BorderLayout.SOUTH);
 		footer.setLayout(new BorderLayout(0, 0));
 
 		copyrightInfo = new JLabel("Copyright \u00a9" + " 2020 Orange Inc.");
@@ -111,85 +114,75 @@ public class MyUserPanel extends RoutingPanel {
 		copyrightInfo.setHorizontalAlignment(SwingConstants.CENTER);
 		footer.add(copyrightInfo, BorderLayout.CENTER);
 
-		userBodyPanel = new JPanel();
-		userBodyPanel.setOpaque(false);
-		usersBody.add(userBodyPanel, BorderLayout.CENTER);
-		userBodyPanel.setLayout(null);
+		settingsBodyPanel = new JPanel();
+		settingsBodyPanel.setOpaque(false);
+		settingsBody.add(settingsBodyPanel, BorderLayout.CENTER);
+		settingsBodyPanel.setLayout(null);
 
-		addUserPanel = new JPanel();
-		addUserPanel.setLayout(null);
-		addUserPanel.setOpaque(false);
-		addUserPanel.setBorder(new TitledBorder(new LineBorder(new Color(64, 64, 64)), "Update User Details",
-				TitledBorder.LEADING, TitledBorder.TOP, null, new Color(64, 64, 64)));
-		addUserPanel.setBounds(22, 23, 344, 425);
-		userBodyPanel.add(addUserPanel);
+		appSettingsPanel = new JPanel();
+		appSettingsPanel.setLayout(null);
+		appSettingsPanel.setOpaque(false);
+		appSettingsPanel.setBorder(new TitledBorder(new LineBorder(new Color(64, 64, 64)), "App Settings", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(64, 64, 64)));
+		appSettingsPanel.setBounds(22, 23, 344, 425);
+		settingsBodyPanel.add(appSettingsPanel);
 
 		nameLbl = new JLabel("Name*");
 		nameLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
 		nameLbl.setBounds(12, 35, 43, 17);
-		addUserPanel.add(nameLbl);
+		appSettingsPanel.add(nameLbl);
 
 		textField = new JTextField();
 		textField.setPreferredSize(new Dimension(5, 64));
 		textField.setColumns(10);
 		textField.setBorder(new LineBorder(Color.DARK_GRAY));
 		textField.setBounds(100, 26, 210, 36);
-		addUserPanel.add(textField);
+		appSettingsPanel.add(textField);
 
 		emailLbl = new JLabel("Email*");
 		emailLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
 		emailLbl.setBounds(12, 88, 43, 17);
-		addUserPanel.add(emailLbl);
+		appSettingsPanel.add(emailLbl);
 
 		emailTextField = new JTextField();
 		emailTextField.setPreferredSize(new Dimension(5, 64));
 		emailTextField.setColumns(10);
 		emailTextField.setBorder(new LineBorder(Color.DARK_GRAY));
 		emailTextField.setBounds(100, 74, 210, 36);
-		addUserPanel.add(emailTextField);
+		appSettingsPanel.add(emailTextField);
 
 		qualificationLbl = new JLabel("Qualification*");
 		qualificationLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
 		qualificationLbl.setBounds(12, 131, 86, 17);
-		addUserPanel.add(qualificationLbl);
+		appSettingsPanel.add(qualificationLbl);
 
 		qualificationTextField = new JTextField();
 		qualificationTextField.setPreferredSize(new Dimension(5, 64));
 		qualificationTextField.setColumns(10);
 		qualificationTextField.setBorder(new LineBorder(Color.DARK_GRAY));
 		qualificationTextField.setBounds(100, 122, 210, 36);
-		addUserPanel.add(qualificationTextField);
+		appSettingsPanel.add(qualificationTextField);
 
 		contactLbl = new JLabel("Contact");
 		contactLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
 		contactLbl.setBounds(12, 179, 70, 17);
-		addUserPanel.add(contactLbl);
+		appSettingsPanel.add(contactLbl);
 
 		contactTextField = new JTextField();
 		contactTextField.setPreferredSize(new Dimension(5, 64));
 		contactTextField.setColumns(10);
 		contactTextField.setBorder(new LineBorder(Color.DARK_GRAY));
 		contactTextField.setBounds(100, 170, 210, 36);
-		addUserPanel.add(contactTextField);
-
-		roleLbl = new JLabel("Role");
-		roleLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
-		roleLbl.setBounds(12, 228, 43, 17);
-		addUserPanel.add(roleLbl);
+		appSettingsPanel.add(contactTextField);
 
 		qualFieldInfo = new JLabel("(*) Marked will be displayed in Prescription, ensure to fill proper value");
 		qualFieldInfo.setFont(new Font("Open Sans", Font.BOLD, 8));
 		qualFieldInfo.setBounds(12, 402, 298, 17);
-		addUserPanel.add(qualFieldInfo);
-
-		roleComboBox = new JComboBox();
-		roleComboBox.setBounds(100, 218, 210, 36);
-		addUserPanel.add(roleComboBox);
+		appSettingsPanel.add(qualFieldInfo);
 
 		addUserBtn = new JPanel();
 		addUserBtn.setBackground(new Color(77, 148, 255));
 		addUserBtn.setBounds(210, 336, 100, 35);
-		addUserPanel.add(addUserBtn);
+		appSettingsPanel.add(addUserBtn);
 		addUserBtn.setLayout(new BorderLayout(0, 0));
 
 		lblUpdate = new JLabel("Update");
@@ -197,23 +190,6 @@ public class MyUserPanel extends RoutingPanel {
 		lblUpdate.setForeground(Color.WHITE);
 		lblUpdate.setFont(new Font("Open Sans", Font.BOLD, 12));
 		addUserBtn.add(lblUpdate, BorderLayout.CENTER);
-		
-		signatureLbl = new JLabel("Upload Signature(JPEG/PNG)*");
-		signatureLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
-		signatureLbl.setBounds(12, 289, 180, 17);
-		addUserPanel.add(signatureLbl);
-		
-		uploadSignBtn = new JPanel();
-		uploadSignBtn.setBackground(new Color(77, 148, 255));
-		uploadSignBtn.setBounds(210, 278, 100, 35);
-		addUserPanel.add(uploadSignBtn);
-		uploadSignBtn.setLayout(new BorderLayout(0, 0));
-		
-		browseSignLbl = new JLabel("Browse");
-		browseSignLbl.setHorizontalAlignment(SwingConstants.CENTER);
-		browseSignLbl.setForeground(Color.WHITE);
-		browseSignLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
-		uploadSignBtn.add(browseSignLbl, BorderLayout.CENTER);
 
 		resetPasswordPanel = new JPanel();
 		resetPasswordPanel.setLayout(null);
@@ -221,7 +197,7 @@ public class MyUserPanel extends RoutingPanel {
 		resetPasswordPanel.setBorder(new TitledBorder(new LineBorder(new Color(64, 64, 64)), "Reset Password",
 				TitledBorder.LEADING, TitledBorder.TOP, null, new Color(64, 64, 64)));
 		resetPasswordPanel.setBounds(439, 23, 344, 231);
-		userBodyPanel.add(resetPasswordPanel);
+		settingsBodyPanel.add(resetPasswordPanel);
 
 		existingLbl = new JLabel("Existing");
 		existingLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
@@ -300,23 +276,6 @@ public class MyUserPanel extends RoutingPanel {
 			public void mouseClicked(MouseEvent e) {
 			}
 		});
-		
-		uploadSignBtn.addMouseListener(new MouseAdapter() {
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				changeColor(Color.decode("#99c2ff"), uploadSignBtn);
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				changeColor(Color.decode("#4d94ff"), uploadSignBtn);
-			}
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-			}
-		});
 	}
 
 	private void changeColor(Color color, Component component) {
@@ -330,4 +289,5 @@ public class MyUserPanel extends RoutingPanel {
 	@Override
 	public void execute(Object... dtos) {
 	}
+
 }

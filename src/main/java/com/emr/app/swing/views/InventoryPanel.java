@@ -11,19 +11,18 @@ import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-
-import org.springframework.data.mongodb.core.aggregation.SetOperators.SetDifference;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
 import com.emr.app.swing.service.UIService;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.border.TitledBorder;
-import javax.swing.border.EmptyBorder;
 
 public class InventoryPanel extends RoutingPanel {
 
@@ -49,7 +48,7 @@ public class InventoryPanel extends RoutingPanel {
 	private JLabel lblComapany;
 	private JPanel searchButton;
 	private JScrollPane scrollPane;
-	private JTable table;
+	private JTable medicinetable;
 	private JPanel addMedicinePanel;
 	private JPanel addBodyPanel;
 	private JTextField medNameAddTextField;
@@ -83,6 +82,9 @@ public class InventoryPanel extends RoutingPanel {
 	private JTable examTable;
 	private JLabel examNamelbl;
 	private JLabel lblDescription;
+	private JTableHeader examtableHeader;
+	private JPanel tablePanel;
+	private JTableHeader medtableHeader;
 
 	public InventoryPanel(UIService uiService, JProgressBar progressBar) {
 		this.uiService = uiService;
@@ -206,7 +208,7 @@ public class InventoryPanel extends RoutingPanel {
 		resetLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
 		resetBtn.add(resetLbl, BorderLayout.CENTER);
 
-		JPanel tablePanel = new JPanel();
+		tablePanel = new JPanel();
 		tablePanel.setOpaque(false);
 		tablePanel.setBorder(new EmptyBorder(10, 25, 0, 0));
 		tablePanel.setLayout(new BorderLayout(0, 0));
@@ -215,10 +217,13 @@ public class InventoryPanel extends RoutingPanel {
 		tablePanel.add(scrollPane, BorderLayout.WEST);
 		medicineStockPanel.add(tablePanel, BorderLayout.WEST);
 
-		table = new JTable();
-		table.setModel(new DefaultTableModel(new Object[][] {},
+		medicinetable = new JTable();
+		medicinetable.setModel(new DefaultTableModel(new Object[][] {},
 				new String[] { "Sl no.", "Name", "Company", "Dose", "Route", "Quantity" }));
-		scrollPane.setViewportView(table);
+		medtableHeader = medicinetable.getTableHeader();
+		medtableHeader.setPreferredSize(new Dimension(100, 32));
+		medicinetable.setRowHeight(32);
+		scrollPane.setViewportView(medicinetable);
 
 		addMedicinePanel = new JPanel();
 		addMedicinePanel.setOpaque(false);
@@ -405,6 +410,9 @@ public class InventoryPanel extends RoutingPanel {
 		examTable = new JTable();
 		examTable.setModel(new DefaultTableModel(new Object[][] {},
 				new String[] { "Sl. no.", "Examination Name", "Description" }));
+		examtableHeader = examTable.getTableHeader();
+		examtableHeader.setPreferredSize(new Dimension(100, 32));
+		examTable.setRowHeight(32);
 		examScrollPane.setViewportView(examTable);
 		inventoryBodyPanel.add(tabbedPane, BorderLayout.CENTER);
 	}

@@ -79,7 +79,8 @@ public class HomeScreen extends JFrame {
 	private String btnSelected = "";
 	private RoutingPanel historyPanel;
 	private RoutingPanel inventoryPanel;
-	private UsersPanel usersPanel;
+	private RoutingPanel usersPanel;
+	private RoutingPanel myUserPanel;
 
 	public static void startUIComponent(UIService uiService) {
 		EventQueue.invokeLater(new Runnable() {
@@ -129,6 +130,9 @@ public class HomeScreen extends JFrame {
 
 		usersPanel = new UsersPanel(uiService, progressBar);
 		Router.INSTANCE.registerRoute(usersPanel);
+
+		myUserPanel = new MyUserPanel(uiService, progressBar);
+		Router.INSTANCE.registerRoute(myUserPanel);
 
 	}
 
@@ -570,6 +574,13 @@ public class HomeScreen extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				markActive("settings");
+			}
+		});
+
+		initialsPanel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Router.INSTANCE.route(MyUserPanel.class);
 			}
 		});
 	}

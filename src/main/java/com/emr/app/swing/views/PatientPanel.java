@@ -446,11 +446,11 @@ public class PatientPanel extends RoutingPanel {
 		pulseRatetextField.setFont(new Font("Open Sans", Font.PLAIN, 12));
 		pulseRatetextField.setColumns(10);
 		pulseRatetextField.setBorder(new LineBorder(Color.decode("#262626")));
-		pulseRatetextField.setBounds(111, 32, 95, 27);
+		pulseRatetextField.setBounds(124, 30, 95, 27);
 		vitalsPanel.add(pulseRatetextField);
 
 		minLbl = new JLabel("/ min");
-		minLbl.setBounds(211, 34, 61, 23);
+		minLbl.setBounds(224, 32, 61, 23);
 		vitalsPanel.add(minLbl);
 
 		heightTextField = new JTextField();
@@ -495,29 +495,29 @@ public class PatientPanel extends RoutingPanel {
 		vitalsPanel.add(bmiLbl);
 
 		bpSystolicLbl = new JLabel("BP Systolic");
-		bpSystolicLbl.setBounds(32, 83, 61, 23);
+		bpSystolicLbl.setBounds(32, 83, 74, 23);
 		vitalsPanel.add(bpSystolicLbl);
 
 		bpSysTextField = new JTextField();
 		bpSysTextField.setFont(new Font("Open Sans", Font.PLAIN, 12));
 		bpSysTextField.setColumns(10);
 		bpSysTextField.setBorder(new LineBorder(Color.decode("#262626")));
-		bpSysTextField.setBounds(111, 81, 95, 27);
+		bpSysTextField.setBounds(124, 79, 95, 27);
 		vitalsPanel.add(bpSysTextField);
 
 		mmhgSysLbl = new JLabel("mm Hg");
-		mmhgSysLbl.setBounds(211, 83, 61, 23);
+		mmhgSysLbl.setBounds(224, 81, 61, 23);
 		vitalsPanel.add(mmhgSysLbl);
 
 		bpDiastolicLbl = new JLabel("BP Diastolic");
-		bpDiastolicLbl.setBounds(32, 127, 73, 23);
+		bpDiastolicLbl.setBounds(32, 127, 74, 23);
 		vitalsPanel.add(bpDiastolicLbl);
 
 		bpDiasTextField = new JTextField();
 		bpDiasTextField.setFont(new Font("Open Sans", Font.PLAIN, 12));
 		bpDiasTextField.setColumns(10);
 		bpDiasTextField.setBorder(new LineBorder(Color.decode("#262626")));
-		bpDiasTextField.setBounds(111, 125, 95, 27);
+		bpDiasTextField.setBounds(124, 123, 95, 27);
 		vitalsPanel.add(bpDiasTextField);
 
 		tempLbl_ = new JLabel("Temp.");
@@ -528,15 +528,15 @@ public class PatientPanel extends RoutingPanel {
 		tempTextField.setFont(new Font("Open Sans", Font.PLAIN, 12));
 		tempTextField.setColumns(10);
 		tempTextField.setBorder(new LineBorder(Color.decode("#262626")));
-		tempTextField.setBounds(111, 174, 95, 27);
+		tempTextField.setBounds(124, 172, 95, 27);
 		vitalsPanel.add(tempTextField);
 
 		tempfarnLbl = new JLabel("\u00b0F");
-		tempfarnLbl.setBounds(211, 176, 61, 23);
+		tempfarnLbl.setBounds(224, 174, 61, 23);
 		vitalsPanel.add(tempfarnLbl);
 
 		mmhgSysLbl_1 = new JLabel("mm Hg");
-		mmhgSysLbl_1.setBounds(211, 127, 61, 23);
+		mmhgSysLbl_1.setBounds(224, 125, 61, 23);
 		vitalsPanel.add(mmhgSysLbl_1);
 
 		patientAdvicePanel = new JPanel();

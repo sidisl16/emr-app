@@ -147,8 +147,10 @@ public class HomeScreen extends JFrame {
 		setBackground(Color.decode("#ffffff"));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setUndecorated(true);
+		pack();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		setSize((int) screenSize.getWidth(), (int) screenSize.getHeight());
+		setResizable(true);
 		// setBounds(100, 100, 950, 550);
 		contentPane = new JPanel();
 		contentPane.setFont(new Font("Open Sans", Font.PLAIN, 12));

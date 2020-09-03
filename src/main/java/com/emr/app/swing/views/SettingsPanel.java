@@ -5,30 +5,25 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.List;
 
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JProgressBar;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
 
-import com.emr.app.dtos.UserDto;
 import com.emr.app.swing.service.UIService;
 
 public class SettingsPanel extends RoutingPanel {
-
 
 	private static final long serialVersionUID = 1L;
 	private JPanel settingsHeadingPanel;
@@ -41,26 +36,28 @@ public class SettingsPanel extends RoutingPanel {
 	private JProgressBar progressBar;
 	private JPanel settingsBodyPanel;
 	private JPanel appSettingsPanel;
-	private JLabel nameLbl;
-	private JTextField textField;
-	private JLabel emailLbl;
+	private JLabel clinicNameLbl;
+	private JTextField clinicNameTextField;
+	private JLabel clinicEmailLbl;
 	private JTextField emailTextField;
-	private JLabel qualificationLbl;
-	private JTextField qualificationTextField;
+	private JLabel clinicAddressLbl;
 	private JLabel contactLbl;
 	private JTextField contactTextField;
 	private JLabel qualFieldInfo;
 	private JPanel addUserBtn;
 	private JLabel lblUpdate;
-	private JPanel resetPasswordPanel;
-	private JLabel existingLbl;
-	private JLabel newLbl;
-	private JLabel confirmLbl;
-	private JPanel resetBtn;
-	private JLabel lblReset;
-	private JPasswordField existingPasswordField;
-	private JPasswordField newPasswordField;
-	private JPasswordField confirmPasswordField;
+	private JPanel updateDatasourcePanel;
+	private JPanel updateDsBtn;
+	private JLabel lblDsBtn;
+	private JToggleButton editEnableToggleBtn;
+	private JTextField hostTextField;
+	private JTextField passwordtextField;
+	private JTextField porttextField;
+	private JLabel datasourceInfo;
+	private JLabel passwordLbl;
+	private JLabel lblPort;
+	private JLabel lblHost;
+	private JTextArea addressTextArea;
 
 	/**
 	 * Create the panel.
@@ -122,26 +119,27 @@ public class SettingsPanel extends RoutingPanel {
 		appSettingsPanel = new JPanel();
 		appSettingsPanel.setLayout(null);
 		appSettingsPanel.setOpaque(false);
-		appSettingsPanel.setBorder(new TitledBorder(new LineBorder(new Color(64, 64, 64)), "App Settings", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(64, 64, 64)));
-		appSettingsPanel.setBounds(22, 23, 344, 425);
+		appSettingsPanel.setBorder(new TitledBorder(new LineBorder(new Color(64, 64, 64)), "Clinic Details",
+				TitledBorder.LEADING, TitledBorder.TOP, null, new Color(64, 64, 64)));
+		appSettingsPanel.setBounds(22, 23, 344, 360);
 		settingsBodyPanel.add(appSettingsPanel);
 
-		nameLbl = new JLabel("Name*");
-		nameLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
-		nameLbl.setBounds(12, 35, 43, 17);
-		appSettingsPanel.add(nameLbl);
+		clinicNameLbl = new JLabel("Clinic Name*");
+		clinicNameLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
+		clinicNameLbl.setBounds(12, 35, 86, 17);
+		appSettingsPanel.add(clinicNameLbl);
 
-		textField = new JTextField();
-		textField.setPreferredSize(new Dimension(5, 64));
-		textField.setColumns(10);
-		textField.setBorder(new LineBorder(Color.DARK_GRAY));
-		textField.setBounds(100, 26, 210, 36);
-		appSettingsPanel.add(textField);
+		clinicNameTextField = new JTextField();
+		clinicNameTextField.setPreferredSize(new Dimension(5, 64));
+		clinicNameTextField.setColumns(10);
+		clinicNameTextField.setBorder(new LineBorder(Color.DARK_GRAY));
+		clinicNameTextField.setBounds(100, 26, 210, 36);
+		appSettingsPanel.add(clinicNameTextField);
 
-		emailLbl = new JLabel("Email*");
-		emailLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
-		emailLbl.setBounds(12, 88, 43, 17);
-		appSettingsPanel.add(emailLbl);
+		clinicEmailLbl = new JLabel("Email*");
+		clinicEmailLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
+		clinicEmailLbl.setBounds(12, 88, 86, 17);
+		appSettingsPanel.add(clinicEmailLbl);
 
 		emailTextField = new JTextField();
 		emailTextField.setPreferredSize(new Dimension(5, 64));
@@ -150,38 +148,31 @@ public class SettingsPanel extends RoutingPanel {
 		emailTextField.setBounds(100, 74, 210, 36);
 		appSettingsPanel.add(emailTextField);
 
-		qualificationLbl = new JLabel("Qualification*");
-		qualificationLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
-		qualificationLbl.setBounds(12, 131, 86, 17);
-		appSettingsPanel.add(qualificationLbl);
+		clinicAddressLbl = new JLabel("Address*");
+		clinicAddressLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
+		clinicAddressLbl.setBounds(12, 131, 86, 17);
+		appSettingsPanel.add(clinicAddressLbl);
 
-		qualificationTextField = new JTextField();
-		qualificationTextField.setPreferredSize(new Dimension(5, 64));
-		qualificationTextField.setColumns(10);
-		qualificationTextField.setBorder(new LineBorder(Color.DARK_GRAY));
-		qualificationTextField.setBounds(100, 122, 210, 36);
-		appSettingsPanel.add(qualificationTextField);
-
-		contactLbl = new JLabel("Contact");
+		contactLbl = new JLabel("Contact*");
 		contactLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
-		contactLbl.setBounds(12, 179, 70, 17);
+		contactLbl.setBounds(12, 249, 70, 17);
 		appSettingsPanel.add(contactLbl);
 
 		contactTextField = new JTextField();
 		contactTextField.setPreferredSize(new Dimension(5, 64));
 		contactTextField.setColumns(10);
 		contactTextField.setBorder(new LineBorder(Color.DARK_GRAY));
-		contactTextField.setBounds(100, 170, 210, 36);
+		contactTextField.setBounds(100, 240, 210, 36);
 		appSettingsPanel.add(contactTextField);
 
 		qualFieldInfo = new JLabel("(*) Marked will be displayed in Prescription, ensure to fill proper value");
 		qualFieldInfo.setFont(new Font("Open Sans", Font.BOLD, 8));
-		qualFieldInfo.setBounds(12, 402, 298, 17);
+		qualFieldInfo.setBounds(12, 335, 298, 17);
 		appSettingsPanel.add(qualFieldInfo);
 
 		addUserBtn = new JPanel();
 		addUserBtn.setBackground(new Color(77, 148, 255));
-		addUserBtn.setBounds(210, 336, 100, 35);
+		addUserBtn.setBounds(210, 288, 100, 35);
 		appSettingsPanel.add(addUserBtn);
 		addUserBtn.setLayout(new BorderLayout(0, 0));
 
@@ -191,55 +182,80 @@ public class SettingsPanel extends RoutingPanel {
 		lblUpdate.setFont(new Font("Open Sans", Font.BOLD, 12));
 		addUserBtn.add(lblUpdate, BorderLayout.CENTER);
 
-		resetPasswordPanel = new JPanel();
-		resetPasswordPanel.setLayout(null);
-		resetPasswordPanel.setOpaque(false);
-		resetPasswordPanel.setBorder(new TitledBorder(new LineBorder(new Color(64, 64, 64)), "Reset Password",
+		addressTextArea = new JTextArea();
+		addressTextArea.setBorder(new LineBorder(Color.DARK_GRAY));
+		addressTextArea.setBounds(100, 131, 210, 97);
+		appSettingsPanel.add(addressTextArea);
+
+		updateDatasourcePanel = new JPanel();
+		updateDatasourcePanel.setForeground(Color.BLACK);
+		updateDatasourcePanel.setLayout(null);
+		updateDatasourcePanel.setOpaque(false);
+		updateDatasourcePanel.setBorder(new TitledBorder(new LineBorder(new Color(64, 64, 64)), "Datasource settings",
 				TitledBorder.LEADING, TitledBorder.TOP, null, new Color(64, 64, 64)));
-		resetPasswordPanel.setBounds(439, 23, 344, 231);
-		settingsBodyPanel.add(resetPasswordPanel);
+		updateDatasourcePanel.setBounds(439, 23, 344, 312);
+		settingsBodyPanel.add(updateDatasourcePanel);
 
-		existingLbl = new JLabel("Existing");
-		existingLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
-		existingLbl.setBounds(12, 51, 79, 17);
-		resetPasswordPanel.add(existingLbl);
+		updateDsBtn = new JPanel();
+		updateDsBtn.setEnabled(false);
+		updateDsBtn.setBackground(new Color(77, 148, 255));
+		updateDsBtn.setBounds(208, 232, 100, 35);
+		updateDsBtn.setLayout(new BorderLayout(0, 0));
+		updateDatasourcePanel.add(updateDsBtn);
 
-		newLbl = new JLabel("New");
-		newLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
-		newLbl.setBounds(12, 95, 79, 17);
-		resetPasswordPanel.add(newLbl);
+		lblDsBtn = new JLabel("Update");
+		lblDsBtn.setHorizontalAlignment(SwingConstants.CENTER);
+		lblDsBtn.setForeground(Color.WHITE);
+		lblDsBtn.setFont(new Font("Open Sans", Font.BOLD, 12));
+		updateDsBtn.add(lblDsBtn, BorderLayout.CENTER);
 
-		confirmLbl = new JLabel("Confirm");
-		confirmLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
-		confirmLbl.setBounds(12, 138, 86, 17);
-		resetPasswordPanel.add(confirmLbl);
+		editEnableToggleBtn = new JToggleButton("Click to Edit");
+		editEnableToggleBtn.setForeground(Color.WHITE);
+		editEnableToggleBtn.setFont(new Font("Open Sans", Font.BOLD, 12));
+		editEnableToggleBtn.setBackground(Color.decode("#4d94ff"));
+		editEnableToggleBtn.setBounds(128, 30, 133, 27);
+		updateDatasourcePanel.add(editEnableToggleBtn);
 
-		resetBtn = new JPanel();
-		resetBtn.setBackground(new Color(77, 148, 255));
-		resetBtn.setBounds(210, 176, 100, 35);
-		resetPasswordPanel.add(resetBtn);
-		resetBtn.setLayout(new BorderLayout(0, 0));
+		lblHost = new JLabel("Host*");
+		lblHost.setFont(new Font("Open Sans", Font.BOLD, 12));
+		lblHost.setBounds(22, 97, 78, 17);
+		updateDatasourcePanel.add(lblHost);
 
-		lblReset = new JLabel("Reset");
-		lblReset.setHorizontalAlignment(SwingConstants.CENTER);
-		lblReset.setForeground(Color.WHITE);
-		lblReset.setFont(new Font("Open Sans", Font.BOLD, 12));
-		resetBtn.add(lblReset, BorderLayout.CENTER);
+		hostTextField = new JTextField();
+		hostTextField.setPreferredSize(new Dimension(5, 64));
+		hostTextField.setColumns(10);
+		hostTextField.setBorder(new LineBorder(Color.DARK_GRAY));
+		hostTextField.setBounds(100, 88, 210, 36);
+		updateDatasourcePanel.add(hostTextField);
 
-		existingPasswordField = new JPasswordField();
-		existingPasswordField.setBorder(new LineBorder(Color.DARK_GRAY));
-		existingPasswordField.setBounds(109, 42, 200, 35);
-		resetPasswordPanel.add(existingPasswordField);
+		passwordLbl = new JLabel("Password*");
+		passwordLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
+		passwordLbl.setBounds(22, 193, 71, 17);
+		updateDatasourcePanel.add(passwordLbl);
 
-		newPasswordField = new JPasswordField();
-		newPasswordField.setBorder(new LineBorder(Color.DARK_GRAY));
-		newPasswordField.setBounds(109, 86, 200, 35);
-		resetPasswordPanel.add(newPasswordField);
+		passwordtextField = new JTextField();
+		passwordtextField.setPreferredSize(new Dimension(5, 64));
+		passwordtextField.setColumns(10);
+		passwordtextField.setBorder(new LineBorder(Color.DARK_GRAY));
+		passwordtextField.setBounds(100, 184, 210, 36);
+		updateDatasourcePanel.add(passwordtextField);
 
-		confirmPasswordField = new JPasswordField();
-		confirmPasswordField.setBorder(new LineBorder(Color.DARK_GRAY));
-		confirmPasswordField.setBounds(110, 129, 200, 35);
-		resetPasswordPanel.add(confirmPasswordField);
+		lblPort = new JLabel("Port*");
+		lblPort.setFont(new Font("Open Sans", Font.BOLD, 12));
+		lblPort.setBounds(22, 145, 64, 17);
+		updateDatasourcePanel.add(lblPort);
+
+		porttextField = new JTextField();
+		porttextField.setPreferredSize(new Dimension(5, 64));
+		porttextField.setColumns(10);
+		porttextField.setBorder(new LineBorder(Color.DARK_GRAY));
+		porttextField.setBounds(100, 136, 210, 36);
+		updateDatasourcePanel.add(porttextField);
+
+		datasourceInfo = new JLabel("(*) Mandatory fields for Mongo DB configuration");
+		datasourceInfo.setFont(new Font("Open Sans", Font.BOLD, 8));
+		datasourceInfo.setBounds(22, 283, 298, 17);
+		updateDatasourcePanel.add(datasourceInfo);
 	}
 
 	private void initEvents() {
@@ -260,20 +276,14 @@ public class SettingsPanel extends RoutingPanel {
 			}
 		});
 
-		resetBtn.addMouseListener(new MouseAdapter() {
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				changeColor(Color.decode("#99c2ff"), resetBtn);
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				changeColor(Color.decode("#4d94ff"), resetBtn);
-			}
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
+		editEnableToggleBtn.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent itemEvent) {
+				int state = itemEvent.getStateChange();
+				if (state == ItemEvent.SELECTED) {
+					enableDatasourceSettings();
+				} else {
+					disableDatasourceSettings();
+				}
 			}
 		});
 	}
@@ -282,12 +292,50 @@ public class SettingsPanel extends RoutingPanel {
 		component.setBackground(color);
 	}
 
+	private void disableDatasourceSettings() {
+		for (Component comp : updateDatasourcePanel.getComponents()) {
+			if (!(comp instanceof JToggleButton))
+				comp.setEnabled(false);
+		}
+		if (updateDsBtn.getMouseListeners().length > 0)
+			updateDsBtn.removeMouseListener(updateDsBtn.getMouseListeners()[0]);
+	}
+
+	private void enableDatasourceSettings() {
+		for (Component comp : updateDatasourcePanel.getComponents()) {
+			if (!(comp instanceof JToggleButton))
+				comp.setEnabled(true);
+		}
+
+		updateDsBtn.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				changeColor(Color.decode("#99c2ff"), updateDsBtn);
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				changeColor(Color.decode("#4d94ff"), updateDsBtn);
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int option = JOptionPane.showConfirmDialog(getParent(),
+						"Make sure you provided proper values else application may not work as expected.", "Warning",
+						JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+				if (option == 0) {
+				}
+			}
+		});
+	}
+
 	@Override
 	public void execute() {
+		disableDatasourceSettings();
 	}
 
 	@Override
 	public void execute(Object... dtos) {
 	}
-
 }

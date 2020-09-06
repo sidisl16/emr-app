@@ -12,9 +12,8 @@ public class MedicineInventoryDto {
 	public MedicineInventoryDto() {
 	}
 
-	public MedicineInventoryDto(String medicineInventoryId, String name, Float dose, String route, String company,
+	public MedicineInventoryDto( String name, Float dose, String route, String company,
 			Integer availableQuantity) {
-		this.medicineInventoryId = medicineInventoryId;
 		this.name = name;
 		this.dose = dose;
 		this.route = route;
@@ -93,7 +92,7 @@ public class MedicineInventoryDto {
 		if (company == null) {
 			if (other.company != null)
 				return false;
-		} else if (!company.equals(other.company))
+		} else if (!company.equalsIgnoreCase(other.company))
 			return false;
 		if (dose == null) {
 			if (other.dose != null)
@@ -103,12 +102,12 @@ public class MedicineInventoryDto {
 		if (name == null) {
 			if (other.name != null)
 				return false;
-		} else if (!name.equals(other.name))
+		} else if (!name.equalsIgnoreCase(other.name))
 			return false;
 		if (route == null) {
 			if (other.route != null)
 				return false;
-		} else if (!route.equals(other.route))
+		} else if (!route.equalsIgnoreCase(other.route))
 			return false;
 		return true;
 	}

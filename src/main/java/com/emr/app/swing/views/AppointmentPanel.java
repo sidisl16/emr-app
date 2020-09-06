@@ -248,20 +248,6 @@ public class AppointmentPanel extends RoutingPanel {
 	@Override
 	public void execute() {
 		loadAppointmentTable();
-		/**TaskWorker.invoke(progressBar, () -> {
-			loadAppointmentTable();
-			return null;
-		}, new Callback() {
-
-			@Override
-			public void onSucess(Object response) {
-			}
-
-			@Override
-			public void onFailure() {
-				JOptionPane.showMessageDialog(getParent(), "Internal error.", "Error", JOptionPane.ERROR_MESSAGE);
-			}
-		});**/
 	}
 
 	@Override

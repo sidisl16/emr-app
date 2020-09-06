@@ -59,9 +59,6 @@ public class SettingsPanel extends RoutingPanel {
 	private JLabel lblHost;
 	private JTextArea addressTextArea;
 
-	/**
-	 * Create the panel.
-	 */
 	public SettingsPanel(UIService uiService, JProgressBar progressBar) {
 		initComponents();
 		initEvents();

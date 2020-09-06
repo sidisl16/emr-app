@@ -12,10 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.emr.app.dtos.CaseDto;
+import com.emr.app.dtos.MedicineInventoryDto;
 import com.emr.app.dtos.PatientDto;
 import com.emr.app.dtos.UserDto;
 import com.emr.app.service.AutoSuggestionService;
 import com.emr.app.service.CaseService;
+import com.emr.app.service.InventoryService;
 import com.emr.app.service.PatientService;
 import com.emr.app.service.PrescriptionService;
 import com.emr.app.swing.views.HomeScreen;
@@ -36,6 +38,9 @@ public class UIServiceImpl implements UIService {
 
 	@Autowired
 	private PrescriptionService prescriptionService;
+
+	@Autowired
+	private InventoryService inventoryService;
 
 	@Override
 	public void startUIComponents() {
@@ -104,9 +109,24 @@ public class UIServiceImpl implements UIService {
 	public boolean storePrescriptionPDF(PatientDto patientDto, UserDto userDto, CaseDto caseDto, File location) {
 		return prescriptionService.storePrescriptionPDF(patientDto, userDto, caseDto, location);
 	}
-	
+
 	@Override
 	public List<PatientDto> getAllPatient() {
 		return patientService.getAllPatient();
+	}
+	
+	@Override
+	public MedicineInventoryDto storeMedicine(MedicineInventoryDto medicineInventoryDto) throws Exception {
+		return inventoryService.addMedicine(medicineInventoryDto);
+	}
+
+	@Override
+	public MedicineInventoryDto updateMedicine(MedicineInventoryDto medicineInventoryDto) throws Exception {
+		return inventoryService.updateMedicine(medicineInventoryDto);
+	}
+	
+	@Override
+	public List<MedicineInventoryDto> getAllMedicine() {
+		return inventoryService.getAllMedicine();
 	}
 }

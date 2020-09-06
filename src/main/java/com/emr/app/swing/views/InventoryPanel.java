@@ -7,8 +7,10 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
@@ -22,7 +24,9 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
+import com.emr.app.dtos.MedicineInventoryDto;
 import com.emr.app.swing.service.UIService;
+import com.emr.app.utilities.InputValidator;
 
 public class InventoryPanel extends RoutingPanel {
 
@@ -85,6 +89,9 @@ public class InventoryPanel extends RoutingPanel {
 	private JTableHeader examtableHeader;
 	private JPanel tablePanel;
 	private JTableHeader medtableHeader;
+	private JLabel updateInfoLbl;
+	private UneditableTableDataModel medicinceTableModel;
+	private List<MedicineInventoryDto> medicinceInventoryDtoList;
 
 	public InventoryPanel(UIService uiService, JProgressBar progressBar) {
 		this.uiService = uiService;
@@ -218,8 +225,9 @@ public class InventoryPanel extends RoutingPanel {
 		medicineStockPanel.add(tablePanel, BorderLayout.WEST);
 
 		medicinetable = new JTable();
-		medicinetable.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "Sl no.", "Name", "Company", "Dose", "Route", "Quantity" }));
+		medicinceTableModel = new UneditableTableDataModel(new Object[][] {},
+				new String[] { "Sl no.", "Name", "Company", "Dose", "Route", "Quantity" });
+		medicinetable.setModel(medicinceTableModel);
 		medtableHeader = medicinetable.getTableHeader();
 		medtableHeader.setPreferredSize(new Dimension(100, 32));
 		medicinetable.setRowHeight(32);
@@ -232,8 +240,8 @@ public class InventoryPanel extends RoutingPanel {
 
 		addBodyPanel = new JPanel();
 		addBodyPanel.setOpaque(false);
-		addBodyPanel.setBorder(new TitledBorder(new LineBorder(new Color(64, 64, 64)), "Add Medicine",
-				TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		addBodyPanel.setBorder(new TitledBorder(new LineBorder(new Color(64, 64, 64)), "Add/Update Medicine",
+				TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
 		addBodyPanel.setBounds(50, 12, 315, 322);
 		addMedicinePanel.add(addBodyPanel);
 		addBodyPanel.setLayout(null);
@@ -314,6 +322,11 @@ public class InventoryPanel extends RoutingPanel {
 		addMedicineBtnLbl.setForeground(Color.WHITE);
 		addMedicineBtnLbl.setHorizontalAlignment(SwingConstants.CENTER);
 		addMedButton.add(addMedicineBtnLbl, BorderLayout.CENTER);
+
+		updateInfoLbl = new JLabel("To update any medicine, double click on table row");
+		updateInfoLbl.setFont(new Font("Open Sans", Font.BOLD, 8));
+		updateInfoLbl.setBounds(12, 18, 291, 17);
+		addBodyPanel.add(updateInfoLbl);
 
 		addViaFilePanel = new JPanel();
 		addViaFilePanel.setBorder(new TitledBorder(new LineBorder(new Color(64, 64, 64)), "Add via file",
@@ -522,6 +535,25 @@ public class InventoryPanel extends RoutingPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
+/**
+				TaskWorker.invoke(progressBar, () -> {
+					addMedicine();
+					loadAllMedicine();
+					return null;
+				}, new Callback() {
+
+					@Override
+					public void onSucess(Object response) {
+						JOptionPane.showMessageDialog(getParent(), "Data saved successfully.", "Info",
+								JOptionPane.INFORMATION_MESSAGE);
+					}
+
+					@Override
+					public void onFailure() {
+						JOptionPane.showMessageDialog(getParent(), "Internal Error.", "Error",
+								JOptionPane.ERROR_MESSAGE);
+					}
+				});**/
 
 			}
 		});
@@ -540,9 +572,54 @@ public class InventoryPanel extends RoutingPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-
 			}
 		});
+	}
+
+	private void addMedicine() {
+
+		String name = medNameAddTextField.getText();
+		String company = companyAddTextField.getText();
+		String dose = doseTextField.getText();
+		String route = routetextField.getText();
+		String quantity = quantityTextField.getText();
+
+		if (validateData(name, company, dose, route, quantity)) {
+			try {
+				uiService.storeMedicine(new MedicineInventoryDto(name, Float.parseFloat(dose), route, company,
+						Integer.parseInt(quantity)));
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(getParent(), "Internal Error.", "Error", JOptionPane.ERROR_MESSAGE);
+			}
+		}
+	}
+
+	private boolean validateData(String name, String company, String dose, String route, String quantity) {
+		if (InputValidator.validateString(name) || InputValidator.validateString(company)
+				|| InputValidator.validateString(route) || InputValidator.validateString(dose)
+				|| !InputValidator.isFloat(dose) || InputValidator.validateString(quantity)
+				|| !InputValidator.isInteger(quantity)) {
+			JOptionPane.showMessageDialog(getParent(), "Please fill medicine data correctly.", "Warning",
+					JOptionPane.WARNING_MESSAGE);
+			return false;
+		}
+		return true;
+	}
+
+	private void loadAllMedicine() {
+		if (medicinceTableModel.getRowCount() > 0) {
+			medicinceTableModel.setRowCount(0);
+		}
+		medicinceTableModel.fireTableDataChanged();
+		medicinceInventoryDtoList = uiService.getAllMedicine();
+		if (medicinceInventoryDtoList != null && !medicinceInventoryDtoList.isEmpty()) {
+			medicinceInventoryDtoList.stream().forEach(medicine -> {
+				medicinceTableModel.addRow(
+						new Object[] { medicinceTableModel.getRowCount() + 1, medicine.getName(), medicine.getCompany(),
+								medicine.getDose(), medicine.getRoute(), medicine.getAvailableQuantity() });
+			});
+		}
+		medicinceTableModel.fireTableDataChanged();
 	}
 
 	private void changeColor(Color color, Component component) {
@@ -551,6 +628,7 @@ public class InventoryPanel extends RoutingPanel {
 
 	@Override
 	public void execute() {
+		loadAllMedicine();
 	}
 
 	@Override

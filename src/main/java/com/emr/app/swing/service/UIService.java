@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.emr.app.dtos.CaseDto;
+import com.emr.app.dtos.MedicineInventoryDto;
 import com.emr.app.dtos.PatientDto;
 import com.emr.app.dtos.UserDto;
 
@@ -35,4 +36,10 @@ public interface UIService {
 	public boolean storePrescriptionPDF(PatientDto patientDto, UserDto userDto, CaseDto caseDto, File location);
 
 	List<PatientDto> getAllPatient();
+
+	MedicineInventoryDto storeMedicine(MedicineInventoryDto medicineInventoryDto) throws Exception;
+
+	MedicineInventoryDto updateMedicine(MedicineInventoryDto medicineInventoryDto) throws Exception;
+
+	List<MedicineInventoryDto> getAllMedicine();
 }

@@ -17,14 +17,23 @@ public class InventoryMongoDALImpl implements InventoryMongoDAL {
 
 	@Override
 	public MedicineInventory upsertData(MedicineInventory medicinceInventory) {
-		Criteria criteria = Criteria.where("name").regex("^" + medicinceInventory.getName() + "$", "i").and("dose")
-				.regex("^" + medicinceInventory.getDose() + "$", "i").and("company")
+		Criteria criteria = Criteria.where("name").regex("^" + medicinceInventory.getName() + "$", "i").and("company")
 				.regex("^" + medicinceInventory.getCompany() + "$", "i").and("route")
-				.regex("^" + medicinceInventory.getRoute() + "$", "i");
+				.regex("^" + medicinceInventory.getRoute() + "$", "i").and("dose").is(medicinceInventory.getDose());
 		Query query = new Query(criteria);
-		Update update = new Update().push("availableQuantity", medicinceInventory.getAvailableQuantity());
+		Update update = new Update().set("name", medicinceInventory.getName()).set("dose", medicinceInventory.getDose())
+				.set("route", medicinceInventory.getRoute()).set("company", medicinceInventory.getCompany())
+				.set("availableQuantity", medicinceInventory.getAvailableQuantity());
 		mongoTemplate.upsert(query, update, MedicineInventory.class);
 		return mongoTemplate.findOne(query, MedicineInventory.class);
+	}
+
+	@Override
+	public MedicineInventory findMedicineInventory(MedicineInventory medicinceInventory) {
+		Criteria criteria = Criteria.where("name").regex("^" + medicinceInventory.getName() + "$", "i").and("company")
+				.regex("^" + medicinceInventory.getCompany() + "$", "i").and("route")
+				.regex("^" + medicinceInventory.getRoute() + "$", "i").and("dose").is(medicinceInventory.getDose());
+		return mongoTemplate.findOne(new Query(criteria), MedicineInventory.class);
 	}
 
 }

@@ -6,4 +6,6 @@ public interface InventoryMongoDAL {
 
 	MedicineInventory upsertData(MedicineInventory medicinceInventory);
 
+	MedicineInventory findMedicineInventory(MedicineInventory medicinceInventory);
+
 }

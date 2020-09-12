@@ -9,9 +9,12 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.emr.app.dtos.ExaminationDto;
 import com.emr.app.dtos.MedicineInventoryDto;
 import com.emr.app.mongo.dal.InventoryMongoDAL;
+import com.emr.app.mongo.entities.Examination;
 import com.emr.app.mongo.entities.MedicineInventory;
+import com.emr.app.mongo.repositories.ExaminationRepository;
 import com.emr.app.mongo.repositories.MedicineInventoryRepository;
 import com.emr.app.utilities.EntityAndDtoConversionUtil;
 
@@ -26,6 +29,9 @@ public class InventoryServiceImpl implements InventoryService {
 
 	@Autowired
 	private AutoSuggestionService autoSuggestionService;
+
+	@Autowired
+	private ExaminationRepository examinationRepository;
 
 	@Override
 	public MedicineInventoryDto addMedicine(MedicineInventoryDto medicineInventoryDto) throws Exception {
@@ -89,4 +95,29 @@ public class InventoryServiceImpl implements InventoryService {
 		medicineInventoryRepository.deleteById(new ObjectId(id));
 	}
 
+	@Override
+	public List<ExaminationDto> getAllExamination() {
+		List<Examination> examinations = examinationRepository.findAllOrderByName();
+		List<ExaminationDto> examinationDtos = new ArrayList<>();
+		examinations.forEach(examination -> {
+			ExaminationDto examinationDto = EntityAndDtoConversionUtil.convert(examination, ExaminationDto.class);
+			examinationDto.setExaminationId(examination.getId().toHexString());
+			examinationDtos.add(examinationDto);
+		});
+		return examinationDtos;
+	}
+
+	@Override
+	public ExaminationDto storeExamination(ExaminationDto examinationDto) {
+		Examination examination = examinationRepository
+				.save(EntityAndDtoConversionUtil.convert(examinationDto, Examination.class));
+		EntityAndDtoConversionUtil.copy(examination, examinationDto);
+		examinationDto.setExaminationId(examination.getId().toString());
+		return examinationDto;
+	}
+	
+	@Override
+	public void deleteExamination(String id) {
+		examinationRepository.deleteById(new ObjectId(id));
+	}
 }

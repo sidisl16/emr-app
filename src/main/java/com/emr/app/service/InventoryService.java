@@ -3,6 +3,7 @@ package com.emr.app.service;
 import java.io.File;
 import java.util.List;
 
+import com.emr.app.dtos.ExaminationDto;
 import com.emr.app.dtos.MedicineInventoryDto;
 
 public interface InventoryService {
@@ -18,4 +19,10 @@ public interface InventoryService {
 	List<MedicineInventoryDto> searchMedicine(String name, String company);
 
 	void deleteMedicineById(String id);
+
+	List<ExaminationDto> getAllExamination();
+
+	ExaminationDto storeExamination(ExaminationDto examinationDto);
+
+	void deleteExamination(String id);	
 }

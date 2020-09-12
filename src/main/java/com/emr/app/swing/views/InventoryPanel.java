@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
@@ -21,14 +23,13 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
+import com.emr.app.dtos.ExaminationDto;
 import com.emr.app.dtos.MedicineInventoryDto;
 import com.emr.app.swing.service.UIService;
 import com.emr.app.utilities.InputValidator;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import com.google.common.base.Strings;
 
 public class InventoryPanel extends RoutingPanel {
 
@@ -94,9 +95,11 @@ public class InventoryPanel extends RoutingPanel {
 	private JLabel updateInfoLbl;
 	private UneditableTableDataModel medicinceTableModel;
 	private List<MedicineInventoryDto> medicinceInventoryDtoList;
+	private List<ExaminationDto> examinationList;
 	private MedicineInventoryDto medicineInventoryDto;
 	private JPanel clearBtn;
 	private JLabel clearMedicineBtnLbl;
+	private UneditableTableDataModel examTableModel;
 
 	public InventoryPanel(UIService uiService, JProgressBar progressBar) {
 		this.uiService = uiService;
@@ -438,8 +441,9 @@ public class InventoryPanel extends RoutingPanel {
 		examination.add(examScrollPane, BorderLayout.CENTER);
 
 		examTable = new JTable();
-		examTable.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "Sl. no.", "Examination Name", "Description" }));
+		examTableModel = new UneditableTableDataModel(new Object[][] {},
+				new String[] { "Sl. no.", "Examination Name", "Description" });
+		examTable.setModel(examTableModel);
 		examtableHeader = examTable.getTableHeader();
 		examtableHeader.setPreferredSize(new Dimension(100, 32));
 		examTable.setRowHeight(32);
@@ -621,6 +625,27 @@ public class InventoryPanel extends RoutingPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
+
+				TaskWorker.invoke(progressBar, () -> {
+					addExamination();
+					loadAllExamination();
+					clearAll();
+					return null;
+				}, new Callback() {
+
+					@Override
+					public void onSucess(Object response) {
+						JOptionPane.showMessageDialog(getParent(), "Data saved successfully.", "Info",
+								JOptionPane.INFORMATION_MESSAGE);
+					}
+
+					@Override
+					public void onFailure() {
+						JOptionPane.showMessageDialog(getParent(), "Internal Error.", "Error",
+								JOptionPane.ERROR_MESSAGE);
+					}
+				});
+
 			}
 		});
 
@@ -652,17 +677,33 @@ public class InventoryPanel extends RoutingPanel {
 				}
 			}
 		});
+		
 		medicinetable.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_DELETE) {
 					int option = JOptionPane.showConfirmDialog(getParent(),
-							"Are you sure to delete the selected record in tabel?",
-							"Confirmation", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+							"Are you sure to delete the selected record in tabel?", "Confirmation",
+							JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 					if (option == 0) {
 						uiService.deleteMedicineById(
 								medicinceInventoryDtoList.get(medicinetable.getSelectedRow()).getMedicineInventoryId());
 						loadAllMedicine();
+					}
+				}
+			}
+		});
+
+		examTable.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+					int option = JOptionPane.showConfirmDialog(getParent(),
+							"Are you sure to delete the selected record in tabel?", "Confirmation",
+							JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+					if (option == 0) {
+						uiService.deleteExamination(examinationList.get(examTable.getSelectedRow()).getExaminationId());
+						loadAllExamination();
 					}
 				}
 			}
@@ -721,7 +762,7 @@ public class InventoryPanel extends RoutingPanel {
 		String route = routetextField.getText();
 		String quantity = quantityTextField.getText();
 
-		if (validateData(name, company, dose, route, quantity)) {
+		if (validateMedicineData(name, company, dose, route, quantity)) {
 			if (medicineInventoryDto != null) {
 				int option = JOptionPane.showConfirmDialog(getParent(),
 						"Are you sure to update the selected record in tabel? If no then please use Clear button to add new record.",
@@ -736,7 +777,19 @@ public class InventoryPanel extends RoutingPanel {
 		}
 	}
 
-	private boolean validateData(String name, String company, String dose, String route, String quantity) {
+	private void addExamination() {
+		String examName = examNameTextField.getText();
+		String desc = examDescTextField.getText();
+
+		if (!Strings.isNullOrEmpty(examName)) {
+			uiService.storeExamination(new ExaminationDto(examName, desc));
+		} else {
+			JOptionPane.showMessageDialog(getParent(), "Please fill medicine examination correctly.", "Warning",
+					JOptionPane.WARNING_MESSAGE);
+		}
+	}
+
+	private boolean validateMedicineData(String name, String company, String dose, String route, String quantity) {
 		if (InputValidator.validateString(name) || InputValidator.validateString(company)
 				|| InputValidator.validateString(route) || InputValidator.validateString(dose)
 				|| !InputValidator.isFloat(dose) || InputValidator.validateString(quantity)
@@ -764,6 +817,23 @@ public class InventoryPanel extends RoutingPanel {
 		medicinceTableModel.fireTableDataChanged();
 	}
 
+	private void loadAllExamination() {
+
+		if (examTableModel.getRowCount() > 0) {
+			examTableModel.setRowCount(0);
+		}
+		examTableModel.fireTableDataChanged();
+		examinationList = uiService.getAllExamination();
+		if (examinationList != null && !examinationList.isEmpty()) {
+			examinationList.stream().forEach(examination -> {
+				examTableModel.addRow(new Object[] { examTableModel.getRowCount() + 1, examination.getName(),
+						examination.getDescription() });
+			});
+		}
+		examTableModel.fireTableDataChanged();
+
+	}
+
 	private void changeColor(Color color, Component component) {
 		component.setBackground(color);
 	}
@@ -772,6 +842,7 @@ public class InventoryPanel extends RoutingPanel {
 	public void execute() {
 		clearAll();
 		loadAllMedicine();
+		loadAllExamination();
 	}
 
 	@Override

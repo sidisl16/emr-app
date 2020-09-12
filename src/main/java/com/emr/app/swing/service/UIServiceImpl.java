@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.emr.app.dtos.CaseDto;
+import com.emr.app.dtos.ExaminationDto;
 import com.emr.app.dtos.MedicineInventoryDto;
 import com.emr.app.dtos.PatientDto;
 import com.emr.app.dtos.UserDto;
@@ -138,5 +139,20 @@ public class UIServiceImpl implements UIService {
 	@Override
 	public void deleteMedicineById(String id) {
 		inventoryService.deleteMedicineById(id);
+	}
+
+	@Override
+	public List<ExaminationDto> getAllExamination() {
+		return inventoryService.getAllExamination();
+	}
+
+	@Override
+	public ExaminationDto storeExamination(ExaminationDto examinationDto) {
+		return inventoryService.storeExamination(examinationDto);
+	}
+
+	@Override
+	public void deleteExamination(String id) {
+		inventoryService.deleteExamination(id);
 	}
 }

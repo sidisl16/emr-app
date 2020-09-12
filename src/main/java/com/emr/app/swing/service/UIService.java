@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.emr.app.dtos.CaseDto;
+import com.emr.app.dtos.ExaminationDto;
 import com.emr.app.dtos.MedicineInventoryDto;
 import com.emr.app.dtos.PatientDto;
 import com.emr.app.dtos.UserDto;
@@ -46,4 +47,10 @@ public interface UIService {
 	List<MedicineInventoryDto> searchMedicine(String name, String company);
 
 	void deleteMedicineById(String id);
+
+	ExaminationDto storeExamination(ExaminationDto examinationDto);
+
+	void deleteExamination(String id);
+
+	List<ExaminationDto> getAllExamination();
 }

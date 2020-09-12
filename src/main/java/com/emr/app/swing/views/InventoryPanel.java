@@ -603,7 +603,7 @@ public class InventoryPanel extends RoutingPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-
+				clearAll();
 			}
 		});
 
@@ -611,7 +611,7 @@ public class InventoryPanel extends RoutingPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
-					medicineInventoryDto = medicinceInventoryDtoList.get(medicinetable.getSelectedRow() - 1);
+					medicineInventoryDto = medicinceInventoryDtoList.get(medicinetable.getSelectedRow());
 					setMedicinevalues();
 				}
 			}
@@ -655,7 +655,7 @@ public class InventoryPanel extends RoutingPanel {
 						"Are you sure to update the selected record in tabel? If no then please use Clear button to add new record.",
 						"Confirmation", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 				if (option == 0) {
-					uiService.updateMedicine(medicineInventoryDto);
+					uiService.storeMedicine(medicineInventoryDto);
 				}
 			} else {
 				uiService.storeMedicine(new MedicineInventoryDto(name, Float.parseFloat(dose), route, company,

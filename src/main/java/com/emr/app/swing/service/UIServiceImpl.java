@@ -114,7 +114,7 @@ public class UIServiceImpl implements UIService {
 	public List<PatientDto> getAllPatient() {
 		return patientService.getAllPatient();
 	}
-	
+
 	@Override
 	public MedicineInventoryDto storeMedicine(MedicineInventoryDto medicineInventoryDto) throws Exception {
 		return inventoryService.addMedicine(medicineInventoryDto);
@@ -124,9 +124,19 @@ public class UIServiceImpl implements UIService {
 	public MedicineInventoryDto updateMedicine(MedicineInventoryDto medicineInventoryDto) throws Exception {
 		return inventoryService.updateMedicine(medicineInventoryDto);
 	}
-	
+
 	@Override
 	public List<MedicineInventoryDto> getAllMedicine() {
 		return inventoryService.getAllMedicine();
+	}
+
+	@Override
+	public List<MedicineInventoryDto> searchMedicine(String name, String company) {
+		return inventoryService.searchMedicine(name, company);
+	}
+
+	@Override
+	public void deleteMedicineById(String id) {
+		inventoryService.deleteMedicineById(id);
 	}
 }

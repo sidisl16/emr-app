@@ -62,7 +62,7 @@ public class InventoryServiceImpl implements InventoryService {
 
 	@Override
 	public List<MedicineInventoryDto> getAllMedicine() {
-		List<MedicineInventory> medicines = medicineInventoryRepository.findAll();
+		List<MedicineInventory> medicines = medicineInventoryRepository.findAllOrderByName();
 		List<MedicineInventoryDto> medicineDtos = new ArrayList<>();
 		medicines.forEach(medicine -> {
 			MedicineInventoryDto medicineDto = EntityAndDtoConversionUtil.convert(medicine, MedicineInventoryDto.class);
@@ -70,6 +70,23 @@ public class InventoryServiceImpl implements InventoryService {
 			medicineDtos.add(medicineDto);
 		});
 		return medicineDtos;
+	}
+
+	@Override
+	public List<MedicineInventoryDto> searchMedicine(String name, String company) {
+		List<MedicineInventory> medicines = inventoryMongoDAL.searchmedicine(name, company);
+		List<MedicineInventoryDto> medicineDtos = new ArrayList<>();
+		medicines.forEach(medicine -> {
+			MedicineInventoryDto medicineDto = EntityAndDtoConversionUtil.convert(medicine, MedicineInventoryDto.class);
+			medicineDto.setMedicineInventoryId(medicine.getId().toString());
+			medicineDtos.add(medicineDto);
+		});
+		return medicineDtos;
+	}
+
+	@Override
+	public void deleteMedicineById(String id) {
+		medicineInventoryRepository.deleteById(new ObjectId(id));
 	}
 
 }

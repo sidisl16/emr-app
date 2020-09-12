@@ -14,4 +14,8 @@ public interface InventoryService {
 	void uploadInventoryFile(File inventoryFile) throws Exception;
 
 	List<MedicineInventoryDto> getAllMedicine();
+
+	List<MedicineInventoryDto> searchMedicine(String name, String company);
+
+	void deleteMedicineById(String id);
 }

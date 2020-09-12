@@ -12,9 +12,9 @@ class EmrApplicationTests {
 
 	@Autowired
 	private InventoryMongoDAL inventoryMongoDAL;
-	
+
 	@Test
-	void testGetMeicine() {
+	public void testGetMeicine() {
 		MedicineInventory in = new MedicineInventory();
 		in.setCompany("Colpol");
 		in.setDose(650f);
@@ -22,6 +22,11 @@ class EmrApplicationTests {
 		in.setRoute("Oral");
 		MedicineInventory response = inventoryMongoDAL.findMedicineInventory(in);
 		System.out.println(response);
+	}
+
+	@Test
+	public void testSearchMedicine() {
+		System.out.println(inventoryMongoDAL.searchmedicine("para", null));
 	}
 
 }

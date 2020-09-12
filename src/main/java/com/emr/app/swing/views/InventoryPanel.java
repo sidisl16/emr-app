@@ -27,6 +27,8 @@ import javax.swing.table.JTableHeader;
 import com.emr.app.dtos.MedicineInventoryDto;
 import com.emr.app.swing.service.UIService;
 import com.emr.app.utilities.InputValidator;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class InventoryPanel extends RoutingPanel {
 
@@ -212,7 +214,7 @@ public class InventoryPanel extends RoutingPanel {
 		searchMedicinePanel.add(resetBtn);
 		resetBtn.setLayout(new BorderLayout(0, 0));
 
-		resetLbl = new JLabel("Refresh");
+		resetLbl = new JLabel("Reset");
 		resetLbl.setHorizontalAlignment(SwingConstants.CENTER);
 		resetLbl.setForeground(Color.WHITE);
 		resetLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
@@ -461,6 +463,22 @@ public class InventoryPanel extends RoutingPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 
+				TaskWorker.invoke(progressBar, () -> {
+					search();
+					return null;
+				}, new Callback() {
+
+					@Override
+					public void onSucess(Object response) {
+					}
+
+					@Override
+					public void onFailure() {
+						JOptionPane.showMessageDialog(getParent(), "Internal Error.", "Error",
+								JOptionPane.ERROR_MESSAGE);
+					}
+				});
+
 			}
 		});
 
@@ -478,6 +496,23 @@ public class InventoryPanel extends RoutingPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
+
+				TaskWorker.invoke(progressBar, () -> {
+					loadAllMedicine();
+					clearAll();
+					return null;
+				}, new Callback() {
+
+					@Override
+					public void onSucess(Object response) {
+					}
+
+					@Override
+					public void onFailure() {
+						JOptionPane.showMessageDialog(getParent(), "Internal Error.", "Error",
+								JOptionPane.ERROR_MESSAGE);
+					}
+				});
 
 			}
 		});
@@ -613,13 +648,50 @@ public class InventoryPanel extends RoutingPanel {
 				if (e.getClickCount() == 2) {
 					medicineInventoryDto = medicinceInventoryDtoList.get(medicinetable.getSelectedRow());
 					setMedicinevalues();
+					addMedicineBtnLbl.setText("Update");
 				}
 			}
 		});
+		medicinetable.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+					int option = JOptionPane.showConfirmDialog(getParent(),
+							"Are you sure to delete the selected record in tabel?",
+							"Confirmation", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+					if (option == 0) {
+						uiService.deleteMedicineById(
+								medicinceInventoryDtoList.get(medicinetable.getSelectedRow()).getMedicineInventoryId());
+						loadAllMedicine();
+					}
+				}
+			}
+		});
+
+	}
+
+	private void search() {
+		String medName = medNameTextField.getText();
+		String company = companyTextField.getText();
+
+		if (medicinceTableModel.getRowCount() > 0) {
+			medicinceTableModel.setRowCount(0);
+		}
+		medicinceTableModel.fireTableDataChanged();
+		medicinceInventoryDtoList = uiService.searchMedicine(medName, company);
+		if (medicinceInventoryDtoList != null && !medicinceInventoryDtoList.isEmpty()) {
+			medicinceInventoryDtoList.stream().forEach(medicine -> {
+				medicinceTableModel.addRow(
+						new Object[] { medicinceTableModel.getRowCount() + 1, medicine.getName(), medicine.getCompany(),
+								medicine.getDose(), medicine.getRoute(), medicine.getAvailableQuantity() });
+			});
+		}
+		medicinceTableModel.fireTableDataChanged();
 	}
 
 	private void clearAll() {
 		medicineInventoryDto = null;
+		addMedicineBtnLbl.setText("Add");
 		for (Component component : addBodyPanel.getComponents()) {
 			if (component instanceof JTextField) {
 				((JTextField) component).setText("");
@@ -677,24 +749,19 @@ public class InventoryPanel extends RoutingPanel {
 	}
 
 	private void loadAllMedicine() {
-		try {
-			if (medicinceTableModel.getRowCount() > 0) {
-				medicinceTableModel.setRowCount(0);
-			}
-			medicinceTableModel.fireTableDataChanged();
-			medicinceInventoryDtoList = uiService.getAllMedicine();
-			if (medicinceInventoryDtoList != null && !medicinceInventoryDtoList.isEmpty()) {
-				medicinceInventoryDtoList.stream().forEach(medicine -> {
-					medicinceTableModel.addRow(new Object[] { medicinceTableModel.getRowCount() + 1, medicine.getName(),
-							medicine.getCompany(), medicine.getDose(), medicine.getRoute(),
-							medicine.getAvailableQuantity() });
-				});
-			}
-			medicinceTableModel.fireTableDataChanged();
-		} catch (Exception e) {
-			e.printStackTrace();
-
+		if (medicinceTableModel.getRowCount() > 0) {
+			medicinceTableModel.setRowCount(0);
 		}
+		medicinceTableModel.fireTableDataChanged();
+		medicinceInventoryDtoList = uiService.getAllMedicine();
+		if (medicinceInventoryDtoList != null && !medicinceInventoryDtoList.isEmpty()) {
+			medicinceInventoryDtoList.stream().forEach(medicine -> {
+				medicinceTableModel.addRow(
+						new Object[] { medicinceTableModel.getRowCount() + 1, medicine.getName(), medicine.getCompany(),
+								medicine.getDose(), medicine.getRoute(), medicine.getAvailableQuantity() });
+			});
+		}
+		medicinceTableModel.fireTableDataChanged();
 	}
 
 	private void changeColor(Color color, Component component) {

@@ -42,4 +42,8 @@ public interface UIService {
 	MedicineInventoryDto updateMedicine(MedicineInventoryDto medicineInventoryDto) throws Exception;
 
 	List<MedicineInventoryDto> getAllMedicine();
+
+	List<MedicineInventoryDto> searchMedicine(String name, String company);
+
+	void deleteMedicineById(String id);
 }

@@ -43,6 +43,7 @@ public class AutoSuggestionServiceImpl implements AutoSuggestionService {
 				medicineTrie.get(medicineInventoryDto.getName().toLowerCase()).add(medicineInventoryDto);
 			} else {
 				Set<MedicineInventoryDto> medicineDtoSet = new HashSet<>();
+				medicineDtoSet.add(medicineInventoryDto);
 				medicineTrie.put(medicineInventoryDto.getName().toLowerCase(), medicineDtoSet);
 			}
 		});
@@ -54,7 +55,6 @@ public class AutoSuggestionServiceImpl implements AutoSuggestionService {
 			examinationDto.setExaminationId(examination.getId().toString());
 			examinationTrie.put(examinationDto.getName(), examinationDto.getName());
 		});
-
 	}
 
 	@Override

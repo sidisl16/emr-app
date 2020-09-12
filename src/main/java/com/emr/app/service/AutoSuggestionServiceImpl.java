@@ -10,8 +10,11 @@ import org.apache.commons.collections4.trie.PatriciaTrie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.emr.app.dtos.ExaminationDto;
 import com.emr.app.dtos.MedicineInventoryDto;
+import com.emr.app.mongo.entities.Examination;
 import com.emr.app.mongo.entities.MedicineInventory;
+import com.emr.app.mongo.repositories.ExaminationRepository;
 import com.emr.app.mongo.repositories.MedicineInventoryRepository;
 import com.emr.app.utilities.EntityAndDtoConversionUtil;
 
@@ -22,13 +25,16 @@ public class AutoSuggestionServiceImpl implements AutoSuggestionService {
 	private Trie<String, String> examinationTrie;
 
 	@Autowired
-	private MedicineInventoryRepository medicineceInventoryRepository;
+	private MedicineInventoryRepository medicineInventoryRepository;
+
+	@Autowired
+	private ExaminationRepository examinationRepository;
 
 	@Override
 	public void loadAllMedicineAndExaminationDataInMemory() {
 
 		medicineTrie = new PatriciaTrie<>();
-		List<MedicineInventory> medicines = medicineceInventoryRepository.findAll();
+		List<MedicineInventory> medicines = medicineInventoryRepository.findAll();
 		medicines.forEach(medicine -> {
 			MedicineInventoryDto medicineInventoryDto = EntityAndDtoConversionUtil.convert(medicine,
 					MedicineInventoryDto.class);
@@ -37,14 +43,17 @@ public class AutoSuggestionServiceImpl implements AutoSuggestionService {
 				medicineTrie.get(medicineInventoryDto.getName().toLowerCase()).add(medicineInventoryDto);
 			} else {
 				Set<MedicineInventoryDto> medicineDtoSet = new HashSet<>();
-				medicineTrie.putIfAbsent(medicineInventoryDto.getName().toLowerCase(), medicineDtoSet);
+				medicineTrie.put(medicineInventoryDto.getName().toLowerCase(), medicineDtoSet);
 			}
 		});
 
 		examinationTrie = new PatriciaTrie<>();
-		examinationTrie.put("cbc", "CBC");
-		examinationTrie.put("xray", "XRAY");
-		examinationTrie.put("urine", "Urine");
+		List<Examination> examinations = examinationRepository.findAllOrderByName();
+		examinations.forEach(examination -> {
+			ExaminationDto examinationDto = EntityAndDtoConversionUtil.convert(examination, ExaminationDto.class);
+			examinationDto.setExaminationId(examination.getId().toString());
+			examinationTrie.put(examinationDto.getName(), examinationDto.getName());
+		});
 
 	}
 
@@ -79,6 +88,22 @@ public class AutoSuggestionServiceImpl implements AutoSuggestionService {
 			medicineTrie.put(medicineInventoryDto.getName().toLowerCase(), medicineSet);
 		}
 	}
+
+	@Override
+	public void updateMedicineTrie(MedicineInventoryDto medicineInventoryDto) {
+		if (medicineTrie.containsKey(medicineInventoryDto.getName().toLowerCase())) {
+			medicineTrie.get(medicineInventoryDto.getName()).add(medicineInventoryDto);
+		}
+	}
+
+	@Override
+	public void removeMedicineFromMedicineTrie(MedicineInventoryDto medicineInventoryDto) {
+		if (medicineTrie.containsKey(medicineInventoryDto.getName().toLowerCase())) {
+			medicineTrie.get(medicineInventoryDto.getName()).remove(medicineInventoryDto);
+		}
+	}
+	
+	
 
 	@Override
 	public void addExaminationToTrie(String examination) {

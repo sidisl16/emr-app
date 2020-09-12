@@ -15,4 +15,8 @@ public interface AutoSuggestionService {
 	void addMedicineToTrie(MedicineInventoryDto medicineInventoryDto);
 
 	void addExaminationToTrie(String examination);
+
+	void updateMedicineTrie(MedicineInventoryDto medicineInventoryDto);
+
+	void removeMedicineFromMedicineTrie(MedicineInventoryDto medicineInventoryDto);
 }

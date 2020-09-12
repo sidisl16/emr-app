@@ -386,7 +386,7 @@ public class InventoryPanel extends RoutingPanel {
 		addViaFilePanel.add(csvTemplateUploadButton);
 		csvTemplateUploadButton.setLayout(new BorderLayout(0, 0));
 
-		lblUpload = new JLabel("Upload");
+		lblUpload = new JLabel("Upload (max 100 records in CSV file)");
 		lblUpload.setHorizontalAlignment(SwingConstants.CENTER);
 		lblUpload.setForeground(Color.WHITE);
 		lblUpload.setFont(new Font("Open Sans", Font.BOLD, 12));

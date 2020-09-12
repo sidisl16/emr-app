@@ -85,6 +85,7 @@ public class AutoSuggestionServiceImpl implements AutoSuggestionService {
 			medicineTrie.get(medicineInventoryDto.getName().toLowerCase()).add(medicineInventoryDto);
 		} else {
 			Set<MedicineInventoryDto> medicineSet = new HashSet<>();
+			medicineSet.add(medicineInventoryDto);
 			medicineTrie.put(medicineInventoryDto.getName().toLowerCase(), medicineSet);
 		}
 	}
@@ -102,8 +103,6 @@ public class AutoSuggestionServiceImpl implements AutoSuggestionService {
 			medicineTrie.get(medicineInventoryDto.getName()).remove(medicineInventoryDto);
 		}
 	}
-	
-	
 
 	@Override
 	public void addExaminationToTrie(String examination) {

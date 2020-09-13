@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
+import java.util.TreeSet;
 
 import org.apache.commons.collections4.Trie;
 import org.apache.commons.collections4.trie.PatriciaTrie;
@@ -16,6 +17,7 @@ import com.emr.app.mongo.entities.Examination;
 import com.emr.app.mongo.entities.MedicineInventory;
 import com.emr.app.mongo.repositories.ExaminationRepository;
 import com.emr.app.mongo.repositories.MedicineInventoryRepository;
+import com.emr.app.utilities.AppUtil;
 import com.emr.app.utilities.EntityAndDtoConversionUtil;
 
 @Service
@@ -92,20 +94,46 @@ public class AutoSuggestionServiceImpl implements AutoSuggestionService {
 
 	@Override
 	public void updateMedicineTrie(MedicineInventoryDto medicineInventoryDto) {
-		if (medicineTrie.containsKey(medicineInventoryDto.getName().toLowerCase())) {
-			medicineTrie.get(medicineInventoryDto.getName()).add(medicineInventoryDto);
+		Set<String> names = new TreeSet<>((o1, o2) -> {
+			Integer dist1 = AppUtil.getHammingDistance(o1, medicineInventoryDto.getName());
+			Integer dist2 = AppUtil.getHammingDistance(o2, medicineInventoryDto.getName());
+			return dist2.compareTo(dist1);
+		});
+
+		for (String key : medicineTrie.keySet()) {
+			names.add(key);
+		}
+
+		boolean isLoopRequired = true;
+		for (String name : names) {
+			Set<MedicineInventoryDto> medicines = medicineTrie.get(name);
+			for (MedicineInventoryDto medicine : medicines) {
+				if (medicine.getMedicineInventoryId().equals(medicineInventoryDto.getMedicineInventoryId())) {
+					medicine = medicineInventoryDto;
+					isLoopRequired = false;
+					break;
+				}
+			}
+			if (!isLoopRequired) {
+				break;
+			}
 		}
 	}
 
 	@Override
 	public void removeMedicineFromMedicineTrie(MedicineInventoryDto medicineInventoryDto) {
 		if (medicineTrie.containsKey(medicineInventoryDto.getName().toLowerCase())) {
-			medicineTrie.get(medicineInventoryDto.getName()).remove(medicineInventoryDto);
+			medicineTrie.get(medicineInventoryDto.getName().toLowerCase()).remove(medicineInventoryDto);
 		}
 	}
 
 	@Override
 	public void addExaminationToTrie(String examination) {
 		examinationTrie.put(examination, examination);
+	}
+
+	@Override
+	public void removeExaminationFromTrie(String examination) {
+		examinationTrie.remove(examination);
 	}
 }

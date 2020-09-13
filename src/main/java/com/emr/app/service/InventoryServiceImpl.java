@@ -57,7 +57,7 @@ public class InventoryServiceImpl implements InventoryService {
 		medicinceInventory = medicineInventoryRepository.save(medicinceInventory);
 		EntityAndDtoConversionUtil.copy(medicinceInventory, medicineInventoryDto);
 		medicineInventoryDto.setMedicineInventoryId(medicinceInventory.getId().toString());
-		autoSuggestionService.addMedicineToTrie(medicineInventoryDto);
+		autoSuggestionService.updateMedicineTrie(medicineInventoryDto);
 		return medicineInventoryDto;
 	}
 
@@ -92,7 +92,10 @@ public class InventoryServiceImpl implements InventoryService {
 
 	@Override
 	public void deleteMedicineById(String id) {
+		MedicineInventory medInventory = medicineInventoryRepository.findById(new ObjectId(id)).get();
+		MedicineInventoryDto medicine = EntityAndDtoConversionUtil.convert(medInventory, MedicineInventoryDto.class);
 		medicineInventoryRepository.deleteById(new ObjectId(id));
+		autoSuggestionService.removeMedicineFromMedicineTrie(medicine);
 	}
 
 	@Override
@@ -113,11 +116,15 @@ public class InventoryServiceImpl implements InventoryService {
 				.save(EntityAndDtoConversionUtil.convert(examinationDto, Examination.class));
 		EntityAndDtoConversionUtil.copy(examination, examinationDto);
 		examinationDto.setExaminationId(examination.getId().toString());
+		autoSuggestionService.addExaminationToTrie(examinationDto.getName());
 		return examinationDto;
 	}
-	
+
 	@Override
 	public void deleteExamination(String id) {
+		ExaminationDto examination = EntityAndDtoConversionUtil
+				.convert(examinationRepository.findById(new ObjectId(id)).get(), ExaminationDto.class);
 		examinationRepository.deleteById(new ObjectId(id));
+		autoSuggestionService.removeExaminationFromTrie(examination.getName());
 	}
 }

@@ -19,4 +19,6 @@ public interface AutoSuggestionService {
 	void updateMedicineTrie(MedicineInventoryDto medicineInventoryDto);
 
 	void removeMedicineFromMedicineTrie(MedicineInventoryDto medicineInventoryDto);
+
+	void removeExaminationFromTrie(String examination);
 }

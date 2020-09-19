@@ -1,6 +1,7 @@
 package com.emr.app.service;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -9,13 +10,16 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.emr.app.dtos.CSVBean;
 import com.emr.app.dtos.ExaminationDto;
+import com.emr.app.dtos.MedicinceCSVBean;
 import com.emr.app.dtos.MedicineInventoryDto;
 import com.emr.app.mongo.dal.InventoryMongoDAL;
 import com.emr.app.mongo.entities.Examination;
 import com.emr.app.mongo.entities.MedicineInventory;
 import com.emr.app.mongo.repositories.ExaminationRepository;
 import com.emr.app.mongo.repositories.MedicineInventoryRepository;
+import com.emr.app.utilities.CSVUtils;
 import com.emr.app.utilities.EntityAndDtoConversionUtil;
 
 @Service
@@ -63,7 +67,16 @@ public class InventoryServiceImpl implements InventoryService {
 
 	@Override
 	public void uploadInventoryFile(File inventoryFile) throws Exception {
+		validate(inventoryFile);
+	}
 
+	private List<MedicinceCSVBean> validate(File inventoryFile) throws Exception {
+		List<MedicinceCSVBean> medList = CSVUtils.getList(Paths.get(inventoryFile.getAbsolutePath()),
+				MedicinceCSVBean.class);
+		for (MedicinceCSVBean csvBean : medList) {
+
+		}
+		return medList;
 	}
 
 	@Override

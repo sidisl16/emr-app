@@ -155,6 +155,7 @@ public class AppointmentPanel extends RoutingPanel {
 		uneditableTableDataModel = new UneditableTableDataModel(new Object[][] {},
 				new String[] { "Sl. No.", "Patient Name", "Age", "Gender", "Patient Number", "Appointment Time" });
 		appointmentTable.setModel(uneditableTableDataModel);
+		appointmentTable.getColumnModel().getColumn(0).setPreferredWidth(10);
 		tableHeader = appointmentTable.getTableHeader();
 		tableHeader.setPreferredSize(new Dimension(100, 32));
 		appointmentTable.setRowHeight(32);

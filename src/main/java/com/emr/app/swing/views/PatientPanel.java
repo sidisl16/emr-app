@@ -299,6 +299,7 @@ public class PatientPanel extends RoutingPanel {
 		patientDetailsPanel.setLayout(null);
 
 		patientNameLbl = new JLabel("Name(*)");
+		patientNameLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
 		patientNameLbl.setBounds(12, 43, 61, 23);
 		patientDetailsPanel.add(patientNameLbl);
 
@@ -310,10 +311,12 @@ public class PatientPanel extends RoutingPanel {
 		patientNameTextField.setColumns(10);
 
 		genderLbl = new JLabel("Gender(*)");
+		genderLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
 		genderLbl.setBounds(12, 93, 61, 23);
 		patientDetailsPanel.add(genderLbl);
 
 		contactLbl = new JLabel("Contact No.(*)");
+		contactLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
 		contactLbl.setBounds(301, 91, 87, 23);
 		patientDetailsPanel.add(contactLbl);
 
@@ -324,6 +327,7 @@ public class PatientPanel extends RoutingPanel {
 		patientDetailsPanel.add(contactTextField);
 
 		ageLbl = new JLabel("Age(*)");
+		ageLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
 		ageLbl.setBounds(301, 43, 61, 23);
 		patientDetailsPanel.add(ageLbl);
 
@@ -335,6 +339,7 @@ public class PatientPanel extends RoutingPanel {
 		patientDetailsPanel.add(ageTextField);
 
 		addressLbl = new JLabel("Address");
+		addressLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
 		addressLbl.setBounds(12, 145, 61, 23);
 		patientDetailsPanel.add(addressLbl);
 
@@ -344,6 +349,7 @@ public class PatientPanel extends RoutingPanel {
 		patientDetailsPanel.add(addressTextArea);
 
 		emailLbl = new JLabel("Email");
+		emailLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
 		emailLbl.setBounds(301, 145, 74, 23);
 		patientDetailsPanel.add(emailLbl);
 
@@ -362,7 +368,7 @@ public class PatientPanel extends RoutingPanel {
 		patientDetailsPanel.add(genderComboBox);
 
 		mandatoryLegend = new JLabel("(*) - Mandatory fields");
-		mandatoryLegend.setFont(new Font("Dialog", Font.PLAIN, 9));
+		mandatoryLegend.setFont(new Font("Open Sans", Font.PLAIN, 9));
 		mandatoryLegend.setBounds(12, 18, 102, 13);
 		patientDetailsPanel.add(mandatoryLegend);
 
@@ -414,6 +420,8 @@ public class PatientPanel extends RoutingPanel {
 		ccTableDataModel = (DefaultTableModel) ccTable.getModel();
 		ccTableDataModel.addColumn("Sl No.");
 		ccTableDataModel.addColumn("Chief Complaints");
+		ccTable.getColumnModel().getColumn(0).setPreferredWidth(10);
+		ccTable.getColumnModel().getColumn(1).setPreferredWidth(500);
 		ccTableScrollPane.setViewportView(ccTable);
 
 		diagnosisPanel = new JPanel();
@@ -439,6 +447,7 @@ public class PatientPanel extends RoutingPanel {
 		vitalsPanel.setLayout(null);
 
 		pulseRateLbl = new JLabel("Pulse rate");
+		pulseRateLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
 		pulseRateLbl.setBounds(32, 34, 61, 23);
 		vitalsPanel.add(pulseRateLbl);
 
@@ -450,6 +459,7 @@ public class PatientPanel extends RoutingPanel {
 		vitalsPanel.add(pulseRatetextField);
 
 		minLbl = new JLabel("/ min");
+		minLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
 		minLbl.setBounds(224, 32, 61, 23);
 		vitalsPanel.add(minLbl);
 
@@ -461,10 +471,12 @@ public class PatientPanel extends RoutingPanel {
 		vitalsPanel.add(heightTextField);
 
 		heightLbl = new JLabel("Height");
+		heightLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
 		heightLbl.setBounds(320, 34, 61, 23);
 		vitalsPanel.add(heightLbl);
 
 		heightCmLbl = new JLabel("cm");
+		heightCmLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
 		heightCmLbl.setBounds(499, 34, 61, 23);
 		vitalsPanel.add(heightCmLbl);
 
@@ -476,10 +488,12 @@ public class PatientPanel extends RoutingPanel {
 		vitalsPanel.add(weightTextField);
 
 		weightLbl = new JLabel("Weight");
+		weightLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
 		weightLbl.setBounds(320, 83, 61, 23);
 		vitalsPanel.add(weightLbl);
 
 		weightKgLbl = new JLabel("Kg");
+		weightKgLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
 		weightKgLbl.setBounds(499, 83, 61, 23);
 		vitalsPanel.add(weightKgLbl);
 
@@ -491,10 +505,12 @@ public class PatientPanel extends RoutingPanel {
 		vitalsPanel.add(bmiTextField);
 
 		bmiLbl = new JLabel("BMI");
+		bmiLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
 		bmiLbl.setBounds(320, 127, 61, 23);
 		vitalsPanel.add(bmiLbl);
 
 		bpSystolicLbl = new JLabel("BP Systolic");
+		bpSystolicLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
 		bpSystolicLbl.setBounds(32, 83, 74, 23);
 		vitalsPanel.add(bpSystolicLbl);
 
@@ -506,10 +522,12 @@ public class PatientPanel extends RoutingPanel {
 		vitalsPanel.add(bpSysTextField);
 
 		mmhgSysLbl = new JLabel("mm Hg");
+		mmhgSysLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
 		mmhgSysLbl.setBounds(224, 81, 61, 23);
 		vitalsPanel.add(mmhgSysLbl);
 
 		bpDiastolicLbl = new JLabel("BP Diastolic");
+		bpDiastolicLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
 		bpDiastolicLbl.setBounds(32, 127, 74, 23);
 		vitalsPanel.add(bpDiastolicLbl);
 
@@ -521,6 +539,7 @@ public class PatientPanel extends RoutingPanel {
 		vitalsPanel.add(bpDiasTextField);
 
 		tempLbl_ = new JLabel("Temp.");
+		tempLbl_.setFont(new Font("Open Sans", Font.BOLD, 12));
 		tempLbl_.setBounds(32, 176, 61, 23);
 		vitalsPanel.add(tempLbl_);
 
@@ -532,10 +551,12 @@ public class PatientPanel extends RoutingPanel {
 		vitalsPanel.add(tempTextField);
 
 		tempfarnLbl = new JLabel("\u00b0F");
+		tempfarnLbl.setFont(new Font("Open Sans", Font.BOLD, 12));
 		tempfarnLbl.setBounds(224, 174, 61, 23);
 		vitalsPanel.add(tempfarnLbl);
 
 		mmhgSysLbl_1 = new JLabel("mm Hg");
+		mmhgSysLbl_1.setFont(new Font("Open Sans", Font.BOLD, 12));
 		mmhgSysLbl_1.setBounds(224, 125, 61, 23);
 		vitalsPanel.add(mmhgSysLbl_1);
 
@@ -560,7 +581,7 @@ public class PatientPanel extends RoutingPanel {
 		medicineTableDataModel.addColumn("Sl No.");
 		medicineTableDataModel.addColumn("Medicine");
 		medicineTableDataModel.addColumn("Days");
-		medicineTableDataModel.addColumn("Dosage Direction");
+		medicineTableDataModel.addColumn("Direction");
 		medicineTableDataModel.addColumn("SOS");
 		medicineTableDataModel.addColumn("BF");
 		medicineTableDataModel.addColumn("AF");
@@ -573,13 +594,15 @@ public class PatientPanel extends RoutingPanel {
 		medicinetable = new JTable(medicineTableDataModel);
 		medicinetable.setVerifyInputWhenFocusTarget(false);
 		medicinetable.setRowHeight(25);
+		medicinetable.getColumnModel().getColumn(1).setPreferredWidth(550);
+		medicinetable.getColumnModel().getColumn(3).setPreferredWidth(200);
 		medicineTableScrollPane.setViewportView(medicinetable);
 
 		legendLbl = new JLabel(
 				"SOS - if necessary, BF - Before breakfast, AF - After breakfast, BL - Before lunch, AL - After lunch, EV - Evening, BD - Before dinner, AD - After dinner");
 		legendLbl.setHorizontalAlignment(SwingConstants.CENTER);
 		legendLbl.setFont(new Font("Open Sans", Font.PLAIN, 12));
-		legendLbl.setBounds(472, 250, 727, 17);
+		legendLbl.setBounds(116, 250, 1083, 17);
 		medicineAdvicePanel.add(legendLbl);
 
 		medicineAutoSuggestion = new AutoSuggestionComponent(uiService);
@@ -605,7 +628,8 @@ public class PatientPanel extends RoutingPanel {
 		examinationTableModel = (DefaultTableModel) examinationTable.getModel();
 		examinationTableModel.addColumn("Sl No.");
 		examinationTableModel.addColumn("Examination");
-
+		examinationTable.getColumnModel().getColumn(0).setPreferredWidth(10);
+		examinationTable.getColumnModel().getColumn(1).setPreferredWidth(500);
 		examinationTableScrollPane.setViewportView(examinationTable);
 
 		examinationAutoSuggestion = new AutoSuggestionComponent(uiService);

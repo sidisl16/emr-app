@@ -541,7 +541,8 @@ public class AddAppointmentPanel extends RoutingPanel {
 						attendNowBtn.setEnabled(true);
 						// Is routing required
 						if (response != null && (response instanceof PatientDto)) {
-							Router.INSTANCE.routeWithData(CasePanel.class, (PatientDto) response);
+							Router.INSTANCE.routeWithData(CasePanel.class, (PatientDto) response,
+									AppointmentPanel.class);
 						}
 					}
 

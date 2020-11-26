@@ -152,6 +152,7 @@ public class CasePanel extends RoutingPanel {
 		uneditableTableDataModel = new UneditableTableDataModel(new Object[][] {},
 				new String[] { "Sl. No.", "Case Created on", "Status" });
 		caseTable.setModel(uneditableTableDataModel);
+		caseTable.getColumnModel().getColumn(0).setPreferredWidth(10);
 		tableHeader = caseTable.getTableHeader();
 		tableHeader.setPreferredSize(new Dimension(100, 32));
 		caseTable.setRowHeight(32);

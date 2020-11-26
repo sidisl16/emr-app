@@ -12,7 +12,7 @@ table {
 
 tbody, td,th {
   padding: 5px;
-  border: 1px solid #000000;
+  border: 0.7px solid #000000;
 }
 
 th {
@@ -37,137 +37,181 @@ th {
 </table>  
 
 <table>
-   <tbody>
-      <tr>
-         <th colspan="5">
-            Patient Details
-         </th>
-      </tr>
-      <tr>
-         <td>
-            Patient No.
-         </td>
-         <td>
-            Name
-         </td>
-         <td>
-            Age
-         </td>
-         <td>
-            Gender
-         </td>
-         <td>
-          	Contact
-         </td>
-      </tr>
-      <tr>
-         <td>
-            #if ($patno) $patno #end 
-         </td>
-         <td>
-           #if ($patname) $patname #end 
-         </td>
-         <td>
-           #if ($patage) $patage #end 
-         </td>
-         <td>
-            #if ($patgender) $patgender #end 
-         </td>
-         <td>
-         	#if ($patcontact) $patcontact #end
-         </td>
-      </tr>
-   </tbody>
+  <tbody>
+    <tr>
+      <td>
+        <table>
+           <tbody>
+              <tr>
+                 <th colspan="2">
+                    Patient Details
+                 </th>
+              </tr>
+                <tr>
+                  <td>
+                    Patient No.
+                  </td>
+                   <td>
+                      #if ($patno) $patno #end 
+                   </td>
+                </tr>   
+                <tr>
+                  <td>
+                    Name
+                  </td>  
+                   <td>
+                     #if ($patname) $patname #end 
+                   </td>
+                </tr>
+                <tr>
+                  <td>
+                    Age
+                 </td>
+                   <td>
+                     #if ($patage) $patage #end 
+                   </td>
+                </tr>
+                <tr>
+                  <td>
+                    Gender
+                 </td>
+                   <td>
+                      #if ($patgender) $patgender #end 
+                   </td>
+                </tr>
+                <tr>
+                  <td>
+                    Contact
+                 </td>
+                   <td>
+                    #if ($patcontact) $patcontact #end
+                   </td>
+                </tr>
+                <tr><td>Address</td><td>
+                  
+                </td></tr>
+           </tbody>
+        </table>
+
+      </td>
+      <td>
+        <table>
+           <tbody>
+              <tr>
+                 <th colspan="2">
+                    Patient Vitals
+                 </th>
+              </tr>
+              <tr>
+                <td>
+                    Pulse rate (BPM)
+                 </td>
+                 <td>
+                    #if ($pulserate) $pulserate #end
+                 </td>
+              </tr>
+              <tr>
+                <td>
+                    BP Systolic (mm Hg)
+                 </td>   
+                 <td>
+                   #if ($bpsys) $bpsys #end
+                 </td>
+              </tr>
+              <tr>
+                <td>
+                    BP Diastolic (mm Hg)
+                 </td>   
+                 <td>
+                   #if ($bpdias) $bpdias #end 
+                 </td>
+              </tr>
+              <tr>   
+                 <td>
+                    Temperature (F)
+                 </td>
+                 <td>
+                   #if ($temp) $temp #end
+                 </td>
+              </tr>
+              <tr>
+                <td>
+                    Height (cms)
+                 </td>   
+                 <td>
+                   #if ($height) $height #end 
+                 </td>
+              </tr>
+              <tr>
+                <td>
+                    Weight (Kg)
+                 </td>   
+                 <td>
+                   #if ($weight) $weight #end
+                 </td>
+              </tr>
+              <tr>
+                 <td>
+                    BMI
+                 </td>    
+                 <td>
+                   #if ($bmi) $bmi #end
+                 </td>
+              </tr>
+           </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+
 </table>
 
 <table>
-   <tbody>
-      <tr>
-         <th colspan="7">
-            Patient Vitals
-         </th>
-      </tr>
-      <tr>
-         <td>
-            Pulse rate (BPM)
-         </td>
-         <td>
-            BP Systolic (mm Hg)
-         </td>
-         <td>
-            BP Diastolic (mm Hg)
-         </td>
-         <td>
-            Temperature (F)
-         </td>
-         <td>
-          	Height (cms)
-         </td>
-         <td>
-          	Weight (Kg)
-         </td>
-         <td>
-          	BMI
-         </td>
-      </tr>
-      <tr>
-         <td>
-            #if ($pulserate) $pulserate #end
-         </td>
-         <td>
-           #if ($bpsys) $bpsys #end
-         </td>
-         <td>
-           #if ($bpdias) $bpdias #end 
-         </td>
-         <td>
-           #if ($temp) $temp #end
-         </td>
-         <td>
-           #if ($height) $height #end 
-         </td>
-         <td>
-           #if ($weight) $weight #end
-         </td>
-         <td>
-           #if ($bmi) $bmi #end
-         </td>
-      </tr>
-   </tbody>
+  <tbody>
+    <tr>
+      <td>
+          <table>
+            <tbody>
+              <tr>
+                <th colspan="2">Chief Complaints</th>
+              </tr>
+            #if($chiefcomplaints) 
+            #set( $count = 1 )  
+            #foreach( $cc in $chiefcomplaints )
+              <tr>
+                <td>$count</td>
+                <td>$cc</td>
+              </tr>
+             #set( $count = $count + 1 )
+               #end 
+               #else
+                <tr>
+                <td colspan="2">NA</td>
+              </tr>
+            #end  
+            </tbody>
+          </table>
+      </td>
+
+      <td>
+        <table>
+          <tbody>
+            <tr>
+              <th>Diagnosis</th>
+            </tr>
+            <tr>
+              <td>#if ($diagnosis) $diagnosis #else NA #end</td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+
+    </tr>
+  </tbody>
 </table>
 
-<table>
-	<tbody>
-		<tr>
-			<th colspan="2">Chief Complaints</th>
-		</tr>
-	#if($chiefcomplaints)	
-	#set( $count = 1 )	
-	#foreach( $cc in $chiefcomplaints )
-		<tr>
-			<td>$count</td>
-			<td>$cc</td>
-		</tr>
-	 #set( $count = $count + 1 )
-     #end	
-     #else
-     	<tr>
-			<td colspan="2">NA</td>
-		</tr>
-	#end	
-	</tbody>
-</table>
 
-<table>
-	<tbody>
-		<tr>
-			<th>Diagnosis</th>
-		</tr>
-		<tr>
-			<td>#if ($diagnosis) $diagnosis #else NA #end</td>
-		</tr>
-	</tbody>
-</table>
+
 
 
 <table>

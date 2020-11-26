@@ -143,7 +143,7 @@ public class PatientPanel extends RoutingPanel {
 	private void initComponents() {
 		setBackground(Color.decode("#ffffff"));
 		setLayout(new BorderLayout(0, 0));
-		setSize(1200, 800);
+		setSize(1500, 800);
 
 		fileChooser = new JFileChooser();
 		fileChooser.setDialogTitle("Save Prescription");
